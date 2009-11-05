@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+
+<project name="ObstacleCleaner" default="all" basedir=".">
+
+<property name="src.dir"     value="source"/>
+
+<property name="build.dir"   value="build"/>
+<property name="classes.dir" value="${build.dir}/classes"/>
+<property name="dist.dir"     value="dist"/>
+<property name="lib.dir"     value="lib"/>
+
+<path id="classpath">
+	<fileset dir="${lib.dir}" includes="**/*.jar, **/*.zip"/>
+</path>
+
+<manifestclasspath property="manifest.classpath" jarfile="${dist.dir}/${ant.project.name}.jar">
+	<classpath refid="classpath" />
+</manifestclasspath>
+
+<property name="main-class" value="source.de.tudresden.inf.ggp.basicplayer.MyPlayer" />
+
+<target name="clean">
+	<delete dir="${build.dir}"/>
+</target>
+
+<target name="compile">
+	<mkdir dir="${classes.dir}"/>
+	<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
+</target>
+
+<target name="jar" depends="compile">
+<mkdir dir="${dist.dir}"/>
+  <jar destfile="${dist.dir}/${ant.project.name}.jar" compress="true">
+    <fileset dir="${classes.dir}" includes="**/*.*" />
+    <manifest>
+      <attribute name="Main-Class" value="${main-class}" />
+      <attribute name="Class-Path" value="${manifest.classpath}" />
+    </manifest>
+  </jar>
+</target>
+
+<target name="run" depends="jar">
+	<java fork="true" classname="${main-class}">
+		<classpath>
+			<path refid="classpath"/>
+			<path location="${dist.dir}/${ant.project.name}.jar"/>
+		</classpath>
+	</java>
+</target>
+
+<target name="clean-build" depends="clean,jar"/>
+
+<target name="all" depends="clean,run"/>
+
+<target name="pack" depends="jar, clean">
+      <zip destfile="../Konrad_Winkler_3437015.zip"
+           basedir="."
+           compress = "true"
+           level = "9"
+           update="false"
+      />
+</target>
+
+</project>
