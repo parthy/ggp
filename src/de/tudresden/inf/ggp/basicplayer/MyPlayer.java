@@ -1,4 +1,4 @@
-package src.de.tudresden.inf.ggp.basicplayer;
+package de.tudresden.inf.ggp.basicplayer;
 
 
 import de.tudresden.inf.ggp.basicplayer.*;

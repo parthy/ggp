@@ -1,6 +1,6 @@
-package src.de.tudresden.inf.ggp.basicplayer;
+package de.tudresden.inf.ggp.basicplayer;
 
-import src.de.tudresden.inf.ggp.basicplayer.MyPlayer;
+import de.tudresden.inf.ggp.basicplayer.MyPlayer;
 import java.io.IOException;
 import java.util.Map;
 
