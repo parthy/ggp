@@ -1,10 +1,9 @@
 package de.tudresden.inf.ggp.basicplayer;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
@@ -14,11 +13,12 @@ import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
 
 
 public class IDSStrategy extends AbstractStrategy {
-	private List<IGameNode> queue;
-	private List<IGameNode> currentWay;
-	private Set<IGameState> visitedStates;
+	private List<IGameNode> queue = new ArrayList<IGameNode>();
+	private List<IGameNode> currentWay = new ArrayList<IGameNode>();
+	private Map<Integer, IGameState> visitedStates = new HashMap<Integer, IGameState>();
 	private boolean foundSolution = false;
 	private int currentDepthLimit;
+	private int nodesVisited;
 	IGameNode solution;
 	IGameNode node;
 	IGameNode sol;
@@ -28,14 +28,9 @@ public class IDSStrategy extends AbstractStrategy {
 		super.initMatch(initMatch);
 		// initiate solution search
 		game = initMatch.getGame();
-		currentWay = new ArrayList<IGameNode>();
-		queue = new ArrayList<IGameNode>();
-		visitedStates = new HashSet<IGameState>();
 		queue.add(game.getTree().getRootNode());
-		System.out.println(new Date());
 		IDS(1);
-		System.out.println(new Date());
-		System.out.println("Solution found:"+solution);
+		System.out.println("Solution found: "+solution);
 		fillCurrentWay();
 		System.out.println(currentWay);
 	}
@@ -64,13 +59,11 @@ public class IDSStrategy extends AbstractStrategy {
     			node = queue.remove(0);
     			
     			// try to regenerate state information of the node
-    			if(node.getState() == null) {
-    				try {
-    					game.regenerateNode(node);
-    				} catch (InterruptedException e2) {}
-    			}
-    			visitedStates.add(node.getState());
-    			//System.out.println(node);
+				try {
+					node = game.getNextNode(node.getParent(), node.getMoves());
+				} catch (InterruptedException e2) {}
+    			// track our way of states so we don't visit states multiple times
+    			visitedStates.put(node.getState().hashCode(), null);
     			
     			if(node.getState().getGoalValue(0) == 100) {
     				foundSolution = true;
@@ -80,10 +73,14 @@ public class IDSStrategy extends AbstractStrategy {
     			if(node.getDepth() < this.currentDepthLimit) {
     				// add successor nodes to queue
     				try {
-    					for(IMove[] combMoves : game.getCombinedMoves(node)) {
+    					List<IMove[]> allMoves = game.getCombinedMoves(node);
+    					IMove[] combMoves;
+    					for(int i=0; i<allMoves.size(); ++i) {
     						try {
-    							if(!visitedStates.contains(game.getNextNode(node, combMoves).getState()))
+    							combMoves = allMoves.get(i);
+    							if(!visitedStates.containsKey(game.getNextNode(node, combMoves).getState().hashCode())) {
     								queue.add(0, game.getNextNode(node, combMoves));
+    							}
     						} catch (InterruptedException e) {}
     					}
     				} catch (InterruptedException e1) {}
@@ -96,7 +93,6 @@ public class IDSStrategy extends AbstractStrategy {
     		queue.add(game.getTree().getRootNode());
     		currentDepthLimit++;
     	}
-    	return;
     }
 
 	void DLS() {
