@@ -16,6 +16,7 @@ public class IDSStrategy extends AbstractStrategy {
 	private List<IGameNode> queue = new ArrayList<IGameNode>();
 	private List<IGameNode> currentWay = new ArrayList<IGameNode>();
 	private Map<Integer, IGameState> visitedStates = new HashMap<Integer, IGameState>();
+	private Map<Integer, IGameState> unusefulStates = new HashMap<Integer, IGameState>();
 	private boolean foundSolution = false;
 	private int currentDepthLimit;
 	private int nodesVisited;
@@ -55,6 +56,8 @@ public class IDSStrategy extends AbstractStrategy {
     	currentDepthLimit = depthLimit;
     	
     	while(!foundSolution) {
+			System.err.println("currentDepth"+currentDepthLimit);
+			System.err.println("unusefulStates:"+unusefulStates.size());
     		while(!queue.isEmpty()) {
     			node = queue.remove(0);
     			
@@ -76,14 +79,22 @@ public class IDSStrategy extends AbstractStrategy {
     				try {
     					List<IMove[]> allMoves = game.getCombinedMoves(node);
     					IMove[] combMoves;
+						Boolean noSuccesor = true;
     					for(int i=0; i<allMoves.size(); ++i) {
     						try {
     							combMoves = allMoves.get(i);
-    							if(!visitedStates.containsKey(game.getNextNode(node, combMoves).getState().hashCode())) {
+    							if((!visitedStates.containsKey(game.getNextNode(node, combMoves).getState().hashCode()))
+									&& !unusefulStates.containsKey(game.getNextNode(node, combMoves).getState().hashCode())){
     								queue.add(0, game.getNextNode(node, combMoves));
+									noSuccesor = false;
     							}
     						} catch (InterruptedException e) {}
     					}
+						if(noSuccesor){
+							if(node.getState() == null)
+								game.regenerateNode(node);
+							unusefulStates.put(node.getState().hashCode(), null);
+						}
     				} catch (InterruptedException e1) {}
     				
     			}
