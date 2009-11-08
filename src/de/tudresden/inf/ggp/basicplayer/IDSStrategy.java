@@ -1,13 +1,10 @@
 package de.tudresden.inf.ggp.basicplayer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
-
-import javax.media.jai.CollectionImage;
 
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
@@ -25,6 +22,7 @@ public class IDSStrategy extends AbstractStrategy {
 	IGameNode solution;
 	IGameNode node;
 	IGameNode sol;
+	long regen;
 	
 	@Override
 	public void initMatch(Match initMatch) {
@@ -38,6 +36,7 @@ public class IDSStrategy extends AbstractStrategy {
 		System.out.println(new Date());
 		IDS(1);
 		System.out.println(new Date());
+		System.out.println("Regen: "+regen);
 		System.out.println("Solution found:"+solution);
 		fillCurrentWay();
 		System.out.println(currentWay);
@@ -80,8 +79,11 @@ public class IDSStrategy extends AbstractStrategy {
 			// try to regenerate state information of the node
 			if(node.getState() == null) {
 				try {
-				game.regenerateNode(node);
-			} catch (InterruptedException e2) {}
+					long now = System.currentTimeMillis();
+					game.regenerateNode(node);
+					long now2 = System.currentTimeMillis();
+					this.regen += (now2-now);
+				} catch (InterruptedException e2) {}
 			}
 			visitedStates.add(node.getState());
 			//System.out.println(node);
