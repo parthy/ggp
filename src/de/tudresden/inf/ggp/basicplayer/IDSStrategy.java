@@ -22,7 +22,6 @@ public class IDSStrategy extends AbstractStrategy {
 	IGameNode solution;
 	IGameNode node;
 	IGameNode sol;
-	long regen;
 	
 	@Override
 	public void initMatch(Match initMatch) {
@@ -36,7 +35,6 @@ public class IDSStrategy extends AbstractStrategy {
 		System.out.println(new Date());
 		IDS(1);
 		System.out.println(new Date());
-		System.out.println("Regen: "+regen);
 		System.out.println("Solution found:"+solution);
 		fillCurrentWay();
 		System.out.println(currentWay);
@@ -62,7 +60,36 @@ public class IDSStrategy extends AbstractStrategy {
     	currentDepthLimit = depthLimit;
     	
     	while(!foundSolution) {
-    		DLS(); 
+    		while(!queue.isEmpty()) {
+    			node = queue.remove(0);
+    			
+    			// try to regenerate state information of the node
+    			if(node.getState() == null) {
+    				try {
+    					game.regenerateNode(node);
+    				} catch (InterruptedException e2) {}
+    			}
+    			visitedStates.add(node.getState());
+    			//System.out.println(node);
+    			
+    			if(node.getState().getGoalValue(0) == 100) {
+    				foundSolution = true;
+    				this.solution = node;
+    			}
+    			
+    			if(node.getDepth() < this.currentDepthLimit) {
+    				// add successor nodes to queue
+    				try {
+    					for(IMove[] combMoves : game.getCombinedMoves(node)) {
+    						try {
+    							if(!visitedStates.contains(game.getNextNode(node, combMoves).getState()))
+    								queue.add(0, game.getNextNode(node, combMoves));
+    						} catch (InterruptedException e) {}
+    					}
+    				} catch (InterruptedException e1) {}
+    				
+    			}
+    		}
     		if(foundSolution) return;
     		queue.clear();
     		visitedStates.clear();
@@ -73,39 +100,7 @@ public class IDSStrategy extends AbstractStrategy {
     }
 
 	void DLS() {
-		while(!queue.isEmpty()) {
-			node = queue.remove(0);
-			
-			// try to regenerate state information of the node
-			if(node.getState() == null) {
-				try {
-					long now = System.currentTimeMillis();
-					game.regenerateNode(node);
-					long now2 = System.currentTimeMillis();
-					this.regen += (now2-now);
-				} catch (InterruptedException e2) {}
-			}
-			visitedStates.add(node.getState());
-			//System.out.println(node);
-			
-			if(node.getState().getGoalValue(0) == 100) {
-				foundSolution = true;
-				this.solution = node;
-			}
-			
-			if(node.getDepth() < this.currentDepthLimit) {
-				// add successor nodes to queue
-				try {
-					for(IMove[] combMoves : game.getCombinedMoves(node)) {
-						try {
-							if(!visitedStates.contains(game.getNextNode(node, combMoves).getState()))
-								queue.add(0, game.getNextNode(node, combMoves));
-						} catch (InterruptedException e) {}
-					}
-				} catch (InterruptedException e1) {}
-				
-			}
-		}
+		
 	}
     
 	void fillCurrentWay() {
