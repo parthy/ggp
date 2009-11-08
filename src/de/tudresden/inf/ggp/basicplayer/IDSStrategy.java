@@ -59,9 +59,10 @@ public class IDSStrategy extends AbstractStrategy {
     			node = queue.remove(0);
     			
     			// try to regenerate state information of the node
+    			
 				try {
 					node = game.getNextNode(node.getParent(), node.getMoves());
-				} catch (InterruptedException e2) {}
+				} catch (Exception e2) {}
     			// track our way of states so we don't visit states multiple times
     			visitedStates.put(node.getState().hashCode(), null);
     			
