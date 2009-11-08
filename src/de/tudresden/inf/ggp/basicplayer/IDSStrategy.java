@@ -1,9 +1,16 @@
 package de.tudresden.inf.ggp.basicplayer;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+
+import javax.media.jai.CollectionImage;
 
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
+import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.IMove;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
@@ -12,20 +19,26 @@ import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
 public class IDSStrategy extends AbstractStrategy {
 	private List<IGameNode> queue;
 	private List<IGameNode> currentWay;
+	private Set<IGameState> visitedStates;
 	private boolean foundSolution = false;
+	private int currentDepthLimit;
 	IGameNode solution;
-	private long endOfStartTime;
+	IGameNode node;
+	IGameNode sol;
 	
 	@Override
 	public void initMatch(Match initMatch) {
 		super.initMatch(initMatch);
-		//generate the game tree
+		// initiate solution search
 		game = initMatch.getGame();
 		currentWay = new ArrayList<IGameNode>();
 		queue = new ArrayList<IGameNode>();
+		visitedStates = new HashSet<IGameState>();
 		queue.add(game.getTree().getRootNode());
-		solution = IDS(1);
-		System.out.println(solution);
+		System.out.println(new Date());
+		IDS(1);
+		System.out.println(new Date());
+		System.out.println("Solution found:"+solution);
 		fillCurrentWay();
 		System.out.println(currentWay);
 	}
@@ -35,52 +48,61 @@ public class IDSStrategy extends AbstractStrategy {
     	/*
     	 * return the head element of currentWay and remove it from the list
     	 */
-    	return currentWay.remove(0).getMoves()[0];
+    	if(!currentWay.isEmpty()) return currentWay.remove(0).getMoves()[0];
+		else // if no way is there, just do something.
+			try {
+				return game.getRandomMove(currentNode)[0]; 
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return currentNode.getMoves()[0]; // should not happen
     }
     
-    IGameNode IDS(int depthLimit) {
-    	int currentDepthLimit = depthLimit;
-    	IGameNode sol;
+    void IDS(int depthLimit) {
+    	currentDepthLimit = depthLimit;
     	
     	while(!foundSolution) {
-    		sol = DLS(currentDepthLimit); 
-    		if(foundSolution) return sol;
+    		DLS(); 
+    		if(foundSolution) return;
     		queue.clear();
+    		visitedStates.clear();
     		queue.add(game.getTree().getRootNode());
     		currentDepthLimit++;
     	}
-    	return null;
+    	return;
     }
 
-	IGameNode DLS(int depth) {
-		if(queue.isEmpty()) return null;
-		IGameNode node = queue.remove(0);
-		System.out.println(node);
-		if(node.getState().isTerminal() && node.getState().getGoalValue(0) == 100) {
-			foundSolution = true;
-			return node;
-		}
-		
-		if(node.getDepth() < depth) {
-			List<IMove[]> legalMoves = new ArrayList<IMove[]>();
-			// add successor nodes to queue
-			try {
-				legalMoves = game.getCombinedMoves(node);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			for(IMove[] combMoves : legalMoves) {
+	void DLS() {
+		while(!queue.isEmpty()) {
+			node = queue.remove(0);
+			
+			// try to regenerate state information of the node
+			if(node.getState() == null) {
 				try {
-					queue.add(0, game.getNextNode(node, combMoves));
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				game.regenerateNode(node);
+			} catch (InterruptedException e2) {}
 			}
-			// and start over again
-			return DLS(depth);
-		} else {
-			return DLS(depth); // continue search
+			visitedStates.add(node.getState());
+			//System.out.println(node);
+			
+			if(node.getState().getGoalValue(0) == 100) {
+				foundSolution = true;
+				this.solution = node;
+			}
+			
+			if(node.getDepth() < this.currentDepthLimit) {
+				// add successor nodes to queue
+				try {
+					for(IMove[] combMoves : game.getCombinedMoves(node)) {
+						try {
+							if(!visitedStates.contains(game.getNextNode(node, combMoves).getState()))
+								queue.add(0, game.getNextNode(node, combMoves));
+						} catch (InterruptedException e) {}
+					}
+				} catch (InterruptedException e1) {}
+				
+			}
 		}
 	}
     
