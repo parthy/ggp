@@ -89,6 +89,11 @@ public class IDSStrategy extends AbstractStrategy {
     				this.solution = node;
     			}
     			
+    			if(node.isTerminal()) {
+    				unusefulStates.put(node.getState().hashCode(), null);
+    				continue;
+    			}
+    			
     			if(node.getDepth() < this.currentDepthLimit) {
     				// add successor nodes to queue
     				try {

@@ -53,7 +53,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			
 			System.err.println("currentDepth"+currentDepthLimit);
 			System.err.println("Now: "+System.currentTimeMillis()+", endTime: "+endTime);
-			System.err.println("Terminals Size: "+terminals.size());
+			System.err.println("Visited: "+nodesVisited);
 			
 			while(!queue.isEmpty() && System.currentTimeMillis() < endTime) {
 				// get next element from queue
@@ -70,7 +70,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				visitedStates.put(currentNode.getState().hashCode(), null);
 				
 				// if terminal, add to terminals and continue
-				if(currentNode.isTerminal()) {
+				if(currentNode.getState().isTerminal()) {
 					terminals.add(currentNode);
 					continue;
 				}
