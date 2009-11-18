@@ -93,6 +93,10 @@ public class IDSStrategy extends AbstractStrategy {
     				foundSolution = true;
     				this.solution = node;
     			}
+
+				if(node.getState().isTerminal()){
+					break;
+				}
     			
     			if(node.getDepth() < this.currentDepthLimit) {
 					expandedNodes++;
