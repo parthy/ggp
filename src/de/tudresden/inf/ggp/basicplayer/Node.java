@@ -13,10 +13,11 @@ import org.eclipse.palamedes.gdl.core.model.IMove;
  *
  * @author konrad
  */
-public class Node  implements IGameNode {
+public class Node implements IGameNode, Comparable<Node> {
 
 	private IGameNode wrapped;
 	private int value;
+	private int heuristic;
 
 	public Node(IGameNode wrappee) {
 		this.wrapped = wrappee;
@@ -73,6 +74,19 @@ public class Node  implements IGameNode {
 
 	public void setValue(int arg0) {
 		this.value = arg0;
+	}
+	
+	public int getHeuristic() {
+		return this.heuristic;
+	}
+
+	public void setHeuristic(int arg0) {
+		this.heuristic = arg0;
+	}
+
+	@Override
+	public int compareTo(Node arg0) {
+		return (this.heuristic > arg0.heuristic) ? 1 : -1;
 	}
 
 }
