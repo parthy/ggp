@@ -162,9 +162,9 @@ public class IDSStrategy extends AbstractStrategy {
     					for(int i=0; i<allMoves.size(); ++i) {
     						try {
     							combMoves = allMoves.get(i);
-    							if((!visitedStates.containsKey(game.getNextNode(node, combMoves).getState().hashCode()))
-									&& !unusefulStates.containsKey(game.getNextNode(node, combMoves).getState().hashCode())){
-    								queue.add(0, new Node(game.getNextNode(node, combMoves)));
+    							if((!visitedStates.containsKey(game.getNextNode(node.getWrapped(), combMoves).getState().hashCode()))
+									&& !unusefulStates.containsKey(game.getNextNode(node.getWrapped(), combMoves).getState().hashCode())){
+    								queue.add(0, new Node(game.getNextNode(node.getWrapped(), combMoves)));
 									noSuccesor = false;
     							}
     						} catch (InterruptedException e) {}
