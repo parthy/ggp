@@ -52,7 +52,7 @@ public final class MyPlayer extends Player {
 
         
         /** XXX: If you implement another strategy here is the place to instantiate it */
-        IStrategy strategy = new IDSStrategy();
+        IStrategy strategy = new MainStrategy();
 
         System.out.println( "MyPlayer created the strategy "      +
                             strategy.getClass().getSimpleName() +
