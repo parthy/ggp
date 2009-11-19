@@ -10,10 +10,11 @@ import org.eclipse.palamedes.gdl.core.model.GameFactory;
 import org.eclipse.palamedes.gdl.core.model.IGame;
 import org.eclipse.palamedes.gdl.core.model.utils.Game;
 import org.eclipse.palamedes.gdl.core.simulation.IStrategy;
+import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.SMonteCarlo;
 
 public final class MyPlayer extends Player {
-
+	private IStrategy strategy;
     /**
      * This method is called when a new match begins.
 	 *
@@ -52,7 +53,7 @@ public final class MyPlayer extends Player {
 
         
         /** XXX: If you implement another strategy here is the place to instantiate it */
-        IStrategy strategy = new MainStrategy();
+        strategy = new MainStrategy();
 
         System.out.println( "MyPlayer created the strategy "      +
                             strategy.getClass().getSimpleName() +
@@ -92,7 +93,7 @@ public final class MyPlayer extends Player {
         if ( msg.hasMoves() ){
             System.out.println( "Moves from GameMaster: " +
                                 Arrays.toString(msg.getMoves()) );
-
+           
             String[] prepared = prepareMoves(msg);
 
             // got the initial NIL in case of length == 0

@@ -26,12 +26,15 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
 	//private PriorityQueue<Node> queue = new PriorityQueue<Node>();
 	private LinkedList<Node> queue = new LinkedList<Node>();
-	private HashMap<Integer, IGameState> visitedStates = new HashMap<Integer, IGameState>();
+	private HashMap<Integer, Integer> visitedStates = new HashMap<Integer, Integer>();
+	
+	private HashMap<Integer, Node> gameNodes = new HashMap<Integer, Node>();
 	
 	private int currentDepthLimit;
 	private int nodesVisited;
 	
 	private Node currentNode;
+	private Node currentGameNode;
 	private Node startNode;
 	
 	private long endTime;
@@ -39,12 +42,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	public void initMatch(Match initMatch) {
 		game = initMatch.getGame();
 		currentNode = new Node(initMatch.getGame().getTree().getRootNode());
-		currentNode.setHeuristic(0);
 		queue.add(0, currentNode);
 		currentDepthLimit = 9;
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000L;
 		IDS();
+		System.out.println("Search finished, visited Nodes: "+nodesVisited);
 		buildStrategy();
+		currentGameNode = startNode;
 	}
 	
 	public void IDS() {
@@ -60,7 +64,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				// get next element from queue
 				currentNode = queue.remove(0);
 				nodesVisited++;
-				
+				if(nodesVisited % 1000 == 0) System.out.println("visited: "+nodesVisited);
 				// regenerate node, if necessary
 				if(currentNode.getState() == null)
 					try {
@@ -68,7 +72,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 					} catch (InterruptedException e2) {}
 				
 				// leave tracing infos
-				visitedStates.put(currentNode.getState().hashCode(), null);
+				visitedStates.put(currentNode.getState().hashCode(), currentNode.getDepth()-1);
 				
 				TreeSet<Node> children = new TreeSet<Node>();
 				
@@ -82,13 +86,15 @@ public class TwoPlayerStrategy extends AbstractStrategy {
     					for(int i=0; i<allMoves.size(); ++i) {
     						try {
     							combMoves = allMoves.get(i);
-    							if((!visitedStates.containsKey(game.getNextNode(currentNode.getWrapped(), combMoves).getState().hashCode()))){
-    								Node temp = new Node(game.getNextNode(currentNode.getWrapped(), combMoves));
-    								//temp.setHeuristic(currentNode.getHeuristic()+1+i); // for now we use the order to realise depth-first
+    							boolean doIt = false;
+    							Integer foundDepth = visitedStates.get(game.getNextNode(currentNode.getWrapped(), combMoves).getState().hashCode());
+    							if(foundDepth == null || foundDepth > currentNode.getDepth()) doIt = true;
+    							Node temp = new Node(game.getNextNode(currentNode.getWrapped(), combMoves));
+    							if(doIt){
     								queue.add(0, temp);
-    								children.add(temp);
     								expanded = true;
     							}
+    							children.add(temp);
     						} catch (InterruptedException e) {}
     					}
 					} catch (InterruptedException e1) {}
@@ -107,6 +113,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			currentNode = new Node(game.getTree().getRootNode());
 			currentNode.setHeuristic(0);
 			queue.add(currentNode);
+			gameNodes.put(currentNode.getWrapped().getState().getFluents().hashCode(), currentNode);
 		}
 	}
 	
@@ -146,7 +153,36 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	
 	@Override
 	public IMove getMove(IGameNode arg0) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		// find out our position using the gameNodes hash
+		if(arg0.getDepth() == 0) currentGameNode = startNode;
+		else {
+			// find child of currentGameNode such that the state matches arg0.getState().getFluents().hashCode()
+			for(Node child : currentGameNode.getChildren()) {
+				try {
+					game.regenerateNode(child.getWrapped());
+				} catch (InterruptedException e) {}
+				
+				if(child.getState().getFluents().hashCode() == arg0.getState().getFluents().hashCode()) {
+					currentGameNode = child;
+					System.out.println("Found successor node.");
+					break;
+				}
+			}
+		}
+		System.out.println("Our position now: "+currentGameNode+", "+currentGameNode.getDepth());
+		// find the "best" successor
+		Node best = null;
+		for(Node child : currentGameNode.getChildren()) {
+			if(best == null) best = child;
+			if(best != null && child.getValue() > best.getValue()) best = child;
+		}
+		if(best == null) { // this shouldn't happen!
+			System.err.println("We've been demanded a Move where we think none exists!");
+			try {
+				return game.getRandomMove(arg0)[playerNumber];
+			} catch (InterruptedException e) {}
+		}
+		return best.getMoves()[this.playerNumber];
 	}
 
 }

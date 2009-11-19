@@ -31,6 +31,10 @@ public class Node implements IGameNode, Comparable<Node> {
 		return this.wrapped;
 	}
 
+	public int hashCode() {
+		return wrapped.hashCode();
+	}
+	
 	@Override
 	public int getDepth() {
 		return wrapped.getDepth();
