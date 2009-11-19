@@ -5,6 +5,8 @@
 
 package de.tudresden.inf.ggp.basicplayer;
 
+import java.util.TreeSet;
+
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.IMove;
@@ -16,6 +18,7 @@ import org.eclipse.palamedes.gdl.core.model.IMove;
 public class Node implements IGameNode, Comparable<Node> {
 
 	private IGameNode wrapped;
+	private TreeSet<Node> children;
 	private int value;
 	private int heuristic;
 
@@ -82,6 +85,14 @@ public class Node implements IGameNode, Comparable<Node> {
 
 	public void setHeuristic(int arg0) {
 		this.heuristic = arg0;
+	}
+	
+	public TreeSet<Node> getChildren() {
+		return this.children;
+	}
+
+	public void setChildren(TreeSet<Node> children) {
+		this.children = children;
 	}
 
 	@Override
