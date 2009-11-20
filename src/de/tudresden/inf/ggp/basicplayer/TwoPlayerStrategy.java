@@ -165,9 +165,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 					game.regenerateNode(current.getWrapped());
 				} catch(InterruptedException ex) {}
 			}
-			// hooray, a start node
-			if(current.getParent() == null) {
-				System.out.println("We have a node with depth 0 and the queue has still size: "+queue.size());
+			// hooray, the start node
+			if(current.getParentNode() == null) {
+				System.out.println("We have a node with noe parentNode and the queue has still size: "+queue.size());
 				currentGameNode = current;
 				continue;
 			}
@@ -206,21 +206,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	
 	@Override
 	public IMove getMove(IGameNode arg0) {
-		// find out our position using the gameTree
 		if(arg0.getParent() == null) currentGameNode = startNode;
 		else {
-			// find child of currentGameNode such that the state matches arg0.getState().getFluents().hashCode()
-			for(Node node : gameTree) {
-				if(node.getState() == null) {
-					int value = node.getValue();
-					try {
-						node = new Node(game.getNextNode(node.getWrapped().getParent(), node.getWrapped().getMoves()));
-						node.setValue(value);
-					} catch (InterruptedException e) {}
-				}
+			// search children for currentGameNode for the one matching arg0
+			for(Node node : currentGameNode.getChildren()) {
 				if(node.getState().hashCode() == arg0.getState().hashCode()) {
 					currentGameNode = node;
-					if(currentGameNode.getChildren().size() > 0 || currentGameNode.getState().isTerminal()) break;
+					break;
 				}
 			}
 		}
