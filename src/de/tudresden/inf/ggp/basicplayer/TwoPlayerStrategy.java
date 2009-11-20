@@ -5,6 +5,7 @@
 
 package de.tudresden.inf.ggp.basicplayer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,15 +28,15 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	//private PriorityQueue<Node> queue = new PriorityQueue<Node>();
 	private LinkedList<Node> queue = new LinkedList<Node>();
 	private HashMap<Integer, Integer> visitedStates = new HashMap<Integer, Integer>();
-	
-	private HashMap<Integer, Node> gameNodes = new HashMap<Integer, Node>();
+	private ArrayList<Node> gameTree = new ArrayList<Node>();
 	
 	private int currentDepthLimit;
 	private int nodesVisited;
+	private int nully;
 	
 	private Node currentNode;
 	private Node currentGameNode;
-	private Node startNode;
+	private Node startNode=null;
 	
 	private long endTime;
 	
@@ -44,10 +45,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		currentNode = new Node(initMatch.getGame().getTree().getRootNode());
 		queue.add(0, currentNode);
 		currentDepthLimit = 9;
-		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000L;
+		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 5000;
 		IDS();
-		System.out.println("Search finished, visited Nodes: "+nodesVisited);
-		buildStrategy();
 		currentGameNode = startNode;
 	}
 	
@@ -59,6 +58,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			System.err.println("currentDepth"+currentDepthLimit);
 			System.err.println("Now: "+System.currentTimeMillis()+", endTime: "+endTime);
 			System.err.println("Visited: "+nodesVisited);
+			System.err.println("GameTree: "+gameTree.size());
 			
 			while(!queue.isEmpty() && System.currentTimeMillis() < endTime) {
 				// get next element from queue
@@ -73,6 +73,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				
 				// leave tracing infos
 				visitedStates.put(currentNode.getState().hashCode(), currentNode.getDepth()-1);
+				
+				//if(currentNode.getState().isTerminal()) System.out.println("Found terminal state with value: "+currentNode.getState().getGoalValue(playerNumber));
 				
 				TreeSet<Node> children = new TreeSet<Node>();
 				
@@ -103,7 +105,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 					if(!currentNode.isTerminal() && game.getCombinedMoves(currentNode.getWrapped()).size() > 0 && !expanded && currentNode.getDepth() >= currentDepthLimit ) flag = true;
 				} catch (InterruptedException e) {}
 				currentNode.setChildren(children);
-				if(currentNode.getParent() == null) 
+				if(currentNode.getChildren() == null) System.out.println("Nully children.");
+				gameTree.add(currentNode);
+				if(startNode == null) 
 					startNode = currentNode;
 			}
 			currentDepthLimit++;
@@ -113,23 +117,28 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			currentNode = new Node(game.getTree().getRootNode());
 			currentNode.setHeuristic(0);
 			queue.add(currentNode);
-			gameNodes.put(currentNode.getWrapped().getState().getFluents().hashCode(), currentNode);
 		}
+		System.out.println("Search finished, visited Nodes: "+nodesVisited);
+		buildStrategy();
 	}
 	
 	public void buildStrategy() {
-		int best = setGoalValues(startNode, 0);
+		setGoalValues(startNode, playerNumber);
 		for(Node child : startNode.getChildren()) {
-			System.out.println("Child with value "+child.getValue());
+			System.out.println("Child with value "+child.getValue()+" and children: "+child.getChildren());
 		}
+		System.out.println("nully children: "+nully);
 	}
 	
 	public int setGoalValues(Node node, int max) {
-		try {
-                        game.regenerateNode(node.getWrapped());
-                } catch (InterruptedException e) {}
-                
-		if(node.getChildren() == null || node.getChildren().isEmpty()) {
+		if(node.getWrapped().getState() == null)
+			try {
+				game.regenerateNode(node.getWrapped());
+			} catch (InterruptedException e) {}
+        if(node.getChildren() == null) {
+        	nully++;
+        }
+		if(node.isTerminal() || node.getChildren() == null || node.getChildren().isEmpty()) {
 			node.setValue(node.getState().getGoalValue(playerNumber));			
 			return node.getState().getGoalValue(playerNumber);
 		}
@@ -153,18 +162,16 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	
 	@Override
 	public IMove getMove(IGameNode arg0) {
-		// find out our position using the gameNodes hash
+		// find out our position using the gameTree
 		if(arg0.getDepth() == 0) currentGameNode = startNode;
 		else {
 			// find child of currentGameNode such that the state matches arg0.getState().getFluents().hashCode()
-			for(Node child : currentGameNode.getChildren()) {
+			for(Node node : gameTree) {
 				try {
-					game.regenerateNode(child.getWrapped());
-				} catch (InterruptedException e) {}
-				
-				if(child.getState().getFluents().hashCode() == arg0.getState().getFluents().hashCode()) {
-					currentGameNode = child;
-					System.out.println("Found successor node.");
+					game.regenerateNode(node.getWrapped());
+				} catch(InterruptedException ex) {}
+				if(node.getState().equals(arg0.getState())) {
+					currentGameNode = node;
 					break;
 				}
 			}

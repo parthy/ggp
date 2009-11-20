@@ -96,7 +96,7 @@ public class Node implements IGameNode, Comparable<Node> {
 	}
 
 	public void setChildren(TreeSet<Node> children) {
-		this.children = children;
+		this.children = new TreeSet<Node>(children);
 	}
 
 	@Override
