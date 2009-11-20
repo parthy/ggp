@@ -150,7 +150,56 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	}
 	
 	public int setGoalValues() {
-		
+		// find all terminals in gameTree
+		queue.clear();
+		for(Node node : gameTree) {
+			if(node.isTerminal()) System.out.println("Terminal: "+node.getState().getGoalValue(game.getRoleIndex(match.getRole())));
+			queue.add(node);
+		}
+		while(!queue.isEmpty()) {
+			Node current = queue.remove(0);
+			if(current.getState() == null) {
+				try {
+					game.regenerateNode(current.getWrapped());
+				} catch(InterruptedException ex) {}
+			}
+			// hooray, a start node
+			if(current.getParent() == null) {
+				System.out.println("We have a node with depth 0 and the queue has still size: "+queue.size());
+				currentGameNode = current;
+				continue;
+			}
+			
+			// remove node from gameTree
+			gameTree.remove(current);
+			
+			// adjust the parent's value
+			if(current.getDepth()%2 == 1) { // we apply exactly what "max" tells us
+				if(max == 0) { // we minimize the parent's value
+					if(current.getParentNode().getValue() > current.getValue() || current.getParentNode().getValue() == -1)
+						current.getParentNode().setValue(current.getValue());
+				} else { // we maximize it
+					if(current.getParentNode().getValue() < current.getValue() || current.getParentNode().getValue() == -1)
+						current.getParentNode().setValue(current.getValue());
+				}
+			} else { // we do the opposite of max
+				if(max == 0) { // we maximize the parent's value
+					if(current.getParentNode().getValue() < current.getValue() || current.getParentNode().getValue() == -1)
+						current.getParentNode().setValue(current.getValue());
+				} else { // we minimize it
+					if(current.getParentNode().getValue() > current.getValue() || current.getParentNode().getValue() == -1)
+						current.getParentNode().setValue(current.getValue());
+				}
+			}
+			
+			// and add the parent to the queue, at the end, of course
+			queue.add(current.getParentNode());
+			
+			// plus, write back the node to gameTree
+			gameTree.add(current);
+
+		}
+		return 0;
 	}
 	
 	@Override
