@@ -35,7 +35,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	
 	private int currentDepthLimit;
 	private int nodesVisited;
-	private int max;
+	private int max=1;
 	
 	private Node currentNode;
 	private Node currentGameNode;
@@ -154,7 +154,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		queue.clear();
 		for(Node node : gameTree) {
 			if(node.isTerminal()) {
-				System.out.println("Terminal: "+node.getState().getGoalValue(game.getRoleIndex(match.getRole())));
+				System.out.println("Terminal: "+node.getState().getGoalValue(game.getRoleIndex(match.getRole()))+", has Parent: "+node.getParentNode());
 				queue.add(node);
 			}
 		}
