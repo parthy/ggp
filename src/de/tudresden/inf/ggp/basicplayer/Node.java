@@ -5,6 +5,7 @@
 
 package de.tudresden.inf.ggp.basicplayer;
 
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
@@ -18,8 +19,9 @@ import org.eclipse.palamedes.gdl.core.model.IMove;
 public class Node implements IGameNode, Comparable<Node> {
 
 	private IGameNode wrapped;
-	private TreeSet<Node> children;
-	// since we get robbed eventually, we kepp our state safely here.
+	private ArrayList<Node> children;
+	private Node parent;
+	// since we get robbed eventually, we keep our state safely here.
 	private IGameState state;
 	private int value;
 	private int heuristic;
@@ -27,6 +29,7 @@ public class Node implements IGameNode, Comparable<Node> {
 	public Node(IGameNode wrappee) {
 		this.wrapped = wrappee;
 		this.state = wrappee.getState();
+		this.parent = null;
 		this.value = -1;
 	}
 
@@ -95,14 +98,22 @@ public class Node implements IGameNode, Comparable<Node> {
 		this.heuristic = arg0;
 	}
 	
-	public TreeSet<Node> getChildren() {
+	public ArrayList<Node> getChildren() {
 		return this.children;
 	}
 
-	public void setChildren(TreeSet<Node> children) {
-		this.children = new TreeSet<Node>(children);
+	public void setChildren(ArrayList<Node> children) {
+		this.children = new ArrayList<Node>(children);
 	}
 
+	public void setParentNode(Node parent) {
+		this.parent = parent;
+	}
+	
+	public Node getParentNode() {
+		return this.parent;
+	}
+	
 	@Override
 	public int compareTo(Node arg0) {
 		return (this.heuristic > arg0.heuristic) ? 1 : -1;
