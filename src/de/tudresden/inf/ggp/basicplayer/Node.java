@@ -19,11 +19,14 @@ public class Node implements IGameNode, Comparable<Node> {
 
 	private IGameNode wrapped;
 	private TreeSet<Node> children;
+	// since we get robbed eventually, we kepp our state safely here.
+	private IGameState state;
 	private int value;
 	private int heuristic;
 
 	public Node(IGameNode wrappee) {
 		this.wrapped = wrappee;
+		this.state = wrappee.getState();
 		this.value = -1;
 	}
 
@@ -52,7 +55,8 @@ public class Node implements IGameNode, Comparable<Node> {
 
 	@Override
 	public IGameState getState() {
-		return wrapped.getState();
+		if(this.state != null) return this.state;
+		else return this.wrapped.getState();
 	}
 
 	@Override

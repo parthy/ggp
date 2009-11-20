@@ -18,34 +18,48 @@ import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.IMove;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 /**
  *
  * @author konrad
  */
 public class TwoPlayerStrategy extends AbstractStrategy {
-
+	
 	//private PriorityQueue<Node> queue = new PriorityQueue<Node>();
 	private LinkedList<Node> queue = new LinkedList<Node>();
 	private HashMap<Integer, Integer> visitedStates = new HashMap<Integer, Integer>();
 	private ArrayList<Node> gameTree = new ArrayList<Node>();
 	
+	private TreeSet<Node> children = new TreeSet<Node>();
+	
 	private int currentDepthLimit;
 	private int nodesVisited;
-	private int nully;
+	private int max;
 	
 	private Node currentNode;
 	private Node currentGameNode;
 	private Node startNode=null;
 	
+	private long startTime;
 	private long endTime;
 	
 	public void initMatch(Match initMatch) {
+		match = initMatch;
 		game = initMatch.getGame();
-		currentNode = new Node(initMatch.getGame().getTree().getRootNode());
+		currentNode = new Node(game.getTree().getRootNode());
 		queue.add(0, currentNode);
-		currentDepthLimit = 9;
+		currentDepthLimit = 3;
+		startTime = System.currentTimeMillis();
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 5000;
+		try {
+			IGameNode root = game.getTree().getRootNode();
+			IMove[][] allMoves = game.getLegalMoves(root);
+			String role = initMatch.getRole();
+			int index = game.getRoleIndex(role);
+			IMove[] myMoves = allMoves[index];
+			if(myMoves.length <= 1) max=0;
+		} catch (InterruptedException e) {}
 		IDS();
 		currentGameNode = startNode;
 	}
@@ -74,9 +88,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				// leave tracing infos
 				visitedStates.put(currentNode.getState().hashCode(), currentNode.getDepth()-1);
 				
-				//if(currentNode.getState().isTerminal()) System.out.println("Found terminal state with value: "+currentNode.getState().getGoalValue(playerNumber));
+				if(currentNode.getState().isTerminal()) {
+					//System.out.println("Found terminal state with value: "+currentNode.getState().getGoalValue(game.getRoleIndex(match.getRole())));
+					gameTree.add(currentNode);
+					continue;
+				}
 				
-				TreeSet<Node> children = new TreeSet<Node>();
+				children.clear();
 				
 				boolean expanded=false;
 				// find out possible successors
@@ -105,7 +123,6 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 					if(!currentNode.isTerminal() && game.getCombinedMoves(currentNode.getWrapped()).size() > 0 && !expanded && currentNode.getDepth() >= currentDepthLimit ) flag = true;
 				} catch (InterruptedException e) {}
 				currentNode.setChildren(children);
-				if(currentNode.getChildren() == null) System.out.println("Nully children.");
 				gameTree.add(currentNode);
 				if(startNode == null) 
 					startNode = currentNode;
@@ -123,24 +140,22 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	}
 	
 	public void buildStrategy() {
-		setGoalValues(startNode, playerNumber);
-		for(Node child : startNode.getChildren()) {
-			System.out.println("Child with value "+child.getValue()+" and children: "+child.getChildren());
-		}
-		System.out.println("nully children: "+nully);
+		// find possible moves in start node. if there's only one, it is likely that we are the min player.
+		System.out.println("We assume we are "+((max==0) ? "min" : "max")+" player.");
+		setGoalValues(startNode, max);
 	}
 	
 	public int setGoalValues(Node node, int max) {
-		if(node.getWrapped().getState() == null)
+
+		if(node.getState() == null)
 			try {
 				game.regenerateNode(node.getWrapped());
 			} catch (InterruptedException e) {}
-        if(node.getChildren() == null) {
-        	nully++;
-        }
-		if(node.isTerminal() || node.getChildren() == null || node.getChildren().isEmpty()) {
-			node.setValue(node.getState().getGoalValue(playerNumber));			
-			return node.getState().getGoalValue(playerNumber);
+
+		if(node.getState().isTerminal() || node.getChildren() == null || node.getChildren().isEmpty()) {
+			node.setValue(node.getState().getGoalValue(playerNumber));
+			System.out.println("Setting terminal value: "+node.getState().getGoalValue(game.getRoleIndex(match.getRole()))+", terminal: "+node.getState().isTerminal());
+			return node.getState().getGoalValue(game.getRoleIndex(match.getRole()));
 		}
 		else {
 			int value = (max == 0) ? 100 : 0;
@@ -163,13 +178,17 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	@Override
 	public IMove getMove(IGameNode arg0) {
 		// find out our position using the gameTree
-		if(arg0.getDepth() == 0) currentGameNode = startNode;
+		if(arg0.getParent() == null) currentGameNode = startNode;
 		else {
 			// find child of currentGameNode such that the state matches arg0.getState().getFluents().hashCode()
 			for(Node node : gameTree) {
-				try {
-					game.regenerateNode(node.getWrapped());
-				} catch(InterruptedException ex) {}
+				if(node.getState() == null) {
+					int value = node.getValue();
+					try {
+						node = new Node(game.getNextNode(node.getWrapped().getParent(), node.getWrapped().getMoves()));
+						node.setValue(value);
+					} catch (InterruptedException e) {}
+				}
 				if(node.getState().equals(arg0.getState())) {
 					currentGameNode = node;
 					break;
@@ -189,7 +208,17 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				return game.getRandomMove(arg0)[playerNumber];
 			} catch (InterruptedException e) {}
 		}
-		return best.getMoves()[this.playerNumber];
+		int move=0;
+		for(int i=0; i<best.getMoves().length; i++) {
+			System.out.println("Move in Array: "+best.getMoves()[i].toString());
+			if(best.getMoves()[i].getRole().equals(match.getRole())) {
+				System.out.println("Found move for role "+match.getRole()+" at index "+i);
+				move = i;
+				break;
+			}
+		}
+		
+		return best.getMoves()[move];
 	}
 
 }
