@@ -153,8 +153,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		// find all terminals in gameTree
 		queue.clear();
 		for(Node node : gameTree) {
-			if(node.isTerminal()) System.out.println("Terminal: "+node.getState().getGoalValue(game.getRoleIndex(match.getRole())));
-			queue.add(node);
+			if(node.isTerminal()) {
+				System.out.println("Terminal: "+node.getState().getGoalValue(game.getRoleIndex(match.getRole())));
+				queue.add(node);
+			}
 		}
 		while(!queue.isEmpty()) {
 			Node current = queue.remove(0);
