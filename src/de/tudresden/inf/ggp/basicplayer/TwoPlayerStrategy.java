@@ -154,8 +154,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		queue.clear();
 		for(Node node : gameTree) {
 			if(node.isTerminal()) {
-				System.out.println("Terminal: "+node.getState().getGoalValue(game.getRoleIndex(match.getRole()))+", has Parent: "+node.getParentNode());
-				queue.add(node);
+				Node toAdd = new Node(node.getWrapped());
+				toAdd.setValue(node.getValue());
+				toAdd.setParentNode(node.getParentNode());
+				System.out.println("Terminal: "+toAdd.getState().getGoalValue(game.getRoleIndex(match.getRole()))+", has Parent: "+toAdd.getParentNode());
+				queue.add(toAdd);
 			}
 		}
 		while(!queue.isEmpty()) {
@@ -173,7 +176,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			}
 			
 			// remove node from gameTree
-			gameTree.remove(current);
+			//gameTree.remove(current);
 			
 			// adjust the parent's value
 			if(current.getDepth()%2 == 1) { // we apply exactly what "max" tells us
@@ -198,7 +201,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			queue.add(current.getParentNode());
 			
 			// plus, write back the node to gameTree
-			gameTree.add(current);
+			//gameTree.add(current);
 
 		}
 		return 0;
