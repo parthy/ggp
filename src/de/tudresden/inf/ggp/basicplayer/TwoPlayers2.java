@@ -11,10 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IMove;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
@@ -26,17 +22,14 @@ import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
  */
 public class TwoPlayers2 extends AbstractStrategy {
 	private List<IGameNode> queue = new LinkedList<IGameNode>();
-	private List<IGameNode> currentWay = new LinkedList<IGameNode>();
 	private Map<Integer, Integer> hash = new HashMap<Integer, Integer>();
 	//to save the value for each Node
 	private Map<Integer, Integer> values = new HashMap<Integer, Integer>();
 
 	private long endTime;
-	private boolean foundSolution = false;
 	private int currentDepthLimit;
 	private int expandedNodes;
 	private long start;
-	private IGameNode solution;
 	private boolean gotFirstMove;
 
 	@Override
@@ -45,12 +38,13 @@ public class TwoPlayers2 extends AbstractStrategy {
 
 
 		// initiate solution search
+		hash.clear();
 		game = initMatch.getGame();
-		queue.add(game.getTree().getRootNode());
-		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 5000L;
+		match = initMatch;
+		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 2000L;
 		try {
 			whoIsStarting(game.getTree().getRootNode());
-			IDS(1);
+			IDS(game.getTree().getRootNode(), 1);
 		} catch (InterruptedException ex) {
 		}
 		System.err.println(" we are player "+game.getRoleNames()[playerNumber]);
@@ -73,6 +67,17 @@ public class TwoPlayers2 extends AbstractStrategy {
 		}
 
 		try {
+			/**
+			 * simulate the game for a few seconds...
+			 */
+			endTime = System.currentTimeMillis() + match.getPlayTime()*1000-2000L;
+			queue.clear();
+			queue.add(currentNode);
+			try {
+				IDS(currentNode, 1+currentNode.getDepth());
+			} catch (InterruptedException ex) {
+			}
+
 			/**
 			 * calcuate all children and compare the values (choose highest)
 			 */
@@ -102,21 +107,26 @@ public class TwoPlayers2 extends AbstractStrategy {
 		}
 	}
 
-	void IDS(int depthLimit) throws InterruptedException {
-    	currentDepthLimit = depthLimit;
+	void IDS(IGameNode startNode, int depthLimit) throws InterruptedException {
+		queue.clear();
+		queue.add(startNode);
+		currentDepthLimit = depthLimit;
 		expandedNodes = 0;
 		start = System.currentTimeMillis();
 		IGameNode node;
+		hash.clear();
 
-		Boolean foundSomethingNew = true;
+	//	Boolean foundSomethingNew = true;
+		int oldSize = -1;
 
-    	while(foundSomethingNew) {
-			foundSomethingNew = false;
+    	while(oldSize < hash.size()) {
+			oldSize = hash.size();
+			hash.clear();
 
-			System.err.println("currentDepth: "+currentDepthLimit);
-			System.err.println("current size of hash: "+hash.size());
+			System.err.println("\ncurrentDepth: "+currentDepthLimit);
+			//System.err.println("current size of hash: "+hash.size());
 			System.err.println("current amount of known values "+values.size());
-			System.err.println("expanded "+expandedNodes+" Nodes in "+(System.currentTimeMillis()-start)+" seconds.");
+			System.err.println("expanded "+expandedNodes+" Nodes in "+(System.currentTimeMillis()-start)+" ms");
     		while(!queue.isEmpty() && (System.currentTimeMillis() < endTime)) {
     			node = queue.remove(0);
 
@@ -124,7 +134,7 @@ public class TwoPlayers2 extends AbstractStrategy {
 					node = game.getNextNode(node.getParent(), node.getMoves());
 				} catch (Exception e2) {}
 
-				hash.put(node.getState().hashCode(), currentDepthLimit-node.getDepth());
+				hash.put(node.getState().hashCode(), /*currentDepthLimit-node.getDepth()*/ null );
 
 				/**
 				 * here comes the evaluation of the nodes
@@ -139,25 +149,24 @@ public class TwoPlayers2 extends AbstractStrategy {
 						// add successor nodes to queue
 						List<IMove[]> moves = game.getCombinedMoves(node);
 						for(IMove[] move: moves) {
+							if((game==null) || (node==null)){
+								System.err.println("WWWWWWWWWWWWWWW");
+							}
 							IGameNode newNode = game.getNextNode(node, move);
 							if(!hash.containsKey(newNode.getState().hashCode())) {
 								queue.add(newNode);
-								foundSomethingNew = true;
+				//				foundSomethingNew = true;
 							} else {
 								if(values.containsKey(newNode.getState().hashCode())){
 									evaluateStates(node, values.get(newNode.getState().hashCode()));
 								}
-							}
 							
-							
-							
-							/*else {
-								if((currentDepthLimit-newNode.getDepth()) > hash.get(newNode.getState().hashCode())){
+				/*				if((currentDepthLimit-newNode.getDepth()) > hash.get(newNode.getState().hashCode())){
 									queue.add(newNode);
 								} else {
 	//								foundSomethingNew = true;
-								}
-							}*/
+								}	*/
+							}	
 						}
 					}
 				}
@@ -166,15 +175,15 @@ public class TwoPlayers2 extends AbstractStrategy {
 				System.err.println("break because of time");
 				System.err.println("currentDepth: "+currentDepthLimit);
 				System.err.println("current size of hash: "+hash.size());
-				System.err.println("current amount of known values "+values.size()+" ("+Math.floor(100*values.size()/hash.size())+"%)");
+				System.err.println("current amount of known values "+values.size());
 				System.err.println("expanded "+expandedNodes+" Nodes in "+(System.currentTimeMillis()-start)+" seconds.");
 
 				return;
 			}
     		queue.clear();
-    		queue.add( game.getTree().getRootNode());
+    		queue.add( startNode);
     		currentDepthLimit++;
-			hash.clear();
+		//	hash.clear();
     	}
     }
 
