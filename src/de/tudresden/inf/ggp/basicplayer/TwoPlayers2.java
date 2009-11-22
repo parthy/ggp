@@ -5,6 +5,7 @@
 
 package de.tudresden.inf.ggp.basicplayer;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,14 +84,15 @@ public class TwoPlayers2 extends AbstractStrategy {
 				IGameNode child = game.getNextNode(currentNode, move);
 				if(values.containsKey(child.getState().hashCode())){
 					children.add(new Node2(game, child, values.get(child.getState().hashCode())));
-					System.err.println("child with value "+values.get(child.getState().hashCode()));
+					System.err.println("child "+Arrays.asList(child.getMoves())+" with value "+values.get(child.getState().hashCode()));
 				} else {
 					children.add(new Node2(game, child));
-					System.err.println("child without value");
+					System.err.println("child "+Arrays.asList(child.getMoves())+" without value");
 				}
 			}
 			//choose the one with the higest value
 			IGameNode child = children.peek().getWrapped();
+			System.err.println("we took the child "+Arrays.asList(child.getMoves())+" with value "+children.peek().getValue());
 			return child.getMoves()[playerNumber];
 		} catch (InterruptedException ex) {
 			return lastOption;

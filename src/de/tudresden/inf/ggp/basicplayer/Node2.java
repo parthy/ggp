@@ -92,12 +92,12 @@ public class Node2 implements IGameNode, Comparable {
 	public int compareTo(Object obj) {
 		Node2 o = (Node2) obj;
 		if(value < o.getValue()){
-			return -1;
+			return 1;
 		} else {
 			if(value == o.getValue()){
 				return 0;
 			} else {
-				return 1;
+				return -1;
 			}
 		}
 
