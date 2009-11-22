@@ -84,8 +84,13 @@ public class TwoPlayers2 extends AbstractStrategy {
 					children.add(new Node2(game, child, values.get(child.getState().hashCode())));
 					System.err.println("child "+Arrays.asList(child.getMoves())+" with value "+values.get(child.getState().hashCode()));
 				} else {
-					children.add(new Node2(game, child));
-					System.err.println("child "+Arrays.asList(child.getMoves())+" without value");
+					if(game.isTerminal(child)){
+						children.add(new Node2(game, child, game.getGoalValues(child)[playerNumber]));
+						System.err.println("child "+Arrays.asList(child.getMoves())+" with value "+game.getGoalValues(child)[playerNumber]);
+					} else {
+						children.add(new Node2(game, child));
+						System.err.println("child "+Arrays.asList(child.getMoves())+" without value");
+					}
 				}
 			}
 			//choose the one with the higest value
