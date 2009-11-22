@@ -9,13 +9,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IMove;
-import org.eclipse.palamedes.gdl.core.model.utils.Game;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
 
@@ -43,7 +43,7 @@ public class TwoPlayers2 extends AbstractStrategy {
 	public void initMatch(Match initMatch) {
 		super.initMatch(initMatch);
 
-		logger.setLevel(Level.ALL);
+		logger.setLevel(Level.OFF);
 
 		// initiate solution search
 		game = initMatch.getGame();
@@ -53,20 +53,24 @@ public class TwoPlayers2 extends AbstractStrategy {
 			whoIsStarting(game.getTree().getRootNode());
 			IDS(1);
 		} catch (InterruptedException ex) {
-			Logger.getLogger(TwoPlayers2.class.getName()).log(Level.SEVERE, null, ex);
 		}
+		logger.info(" we are player "+game.getRoleNames()[playerNumber]);
+		logger.info("did we get the first move ? "+gotFirstMove);
 		hash.clear();
 		//if(foundSolution) fillCurrentWay();
 	}
 
 	@Override
 	public IMove getMove(IGameNode currentNode) {
+		try {
+			currentNode = game.getNextNode(currentNode.getParent(), currentNode.getMoves());
+		} catch (Exception e2) {}
 		IMove lastOption = null;
 		//calc last option if we get interrupted (shouldnt happen)
 		try {
 			lastOption = game.getRandomMove(currentNode)[playerNumber];
 		} catch (InterruptedException ex) {
-			Logger.getLogger(TwoPlayers2.class.getName()).log(Level.SEVERE, null, ex);
+	//		Logger.getLogger(TwoPlayers2.class.getName()).info(Level.SEVERE, null, ex);
 		}
 
 		try {
@@ -74,36 +78,23 @@ public class TwoPlayers2 extends AbstractStrategy {
 			 * calcuate all children and compare the values (choose highest)
 			 */
 			List<IMove[]> moves = game.getCombinedMoves(currentNode);
-			List<IGameNode> children = new LinkedList<IGameNode>();
+			PriorityQueue<Node2> children = new PriorityQueue<Node2>();
 			for (IMove[] move : moves) {
-				children.add(game.getNextNode(currentNode, move));
+				IGameNode child = game.getNextNode(currentNode, move);
+				if(values.containsKey(child.getState().hashCode())){
+					children.add(new Node2(game, child, values.get(child.getState().hashCode())));
+					System.err.println("child with value "+values.get(child.getState().hashCode()));
+				} else {
+					children.add(new Node2(game, child));
+					System.err.println("child without value");
+				}
 			}
 			//choose the one with the higest value
-			IGameNode child = children.remove(0);
-			if(values.containsKey(child.getState().hashCode())){
-				int max = values.get(child.getState().hashCode());
-				logger.info("alternative: "+max);
-				while(!children.isEmpty()){
-					IGameNode child2 = children.get(0);
-					if(values.containsKey(child2.getState().hashCode())){
-						if(values.get(child2.getState().hashCode()) > max){
-							child = child2;
-							max = values.get(child.getState().hashCode());
-							logger.info("alternative: "+max);
-						}
-					}
-				}
-				//return how we got to the highest child
-				return child.getMoves()[playerNumber];
-			} else {
-				//we dont have information for the child
-				return lastOption;
-			}
-
+			IGameNode child = children.peek().getWrapped();
+			return child.getMoves()[playerNumber];
 		} catch (InterruptedException ex) {
 			return lastOption;
 		}
-
 	}
 
 	void IDS(int depthLimit) throws InterruptedException {
@@ -119,6 +110,7 @@ public class TwoPlayers2 extends AbstractStrategy {
 
 			System.err.println("currentDepth: "+currentDepthLimit);
 			System.err.println("current size of hash: "+hash.size());
+			System.err.println("current amount of known values "+values.size());
 			System.err.println("expanded "+expandedNodes+" Nodes in "+(System.currentTimeMillis()-start)+" seconds.");
     		while(!queue.isEmpty() && (System.currentTimeMillis() < endTime)) {
     			node = queue.remove(0);
@@ -132,46 +124,14 @@ public class TwoPlayers2 extends AbstractStrategy {
 				/**
 				 * here comes the evaluation of the nodes
 				 */
-				if(node.getState().isTerminal()){
+				if(values.containsKey(node.getState().hashCode())){
+					logger.info("looking at node with depth "+node.getDepth()+" goalValue "+values.get(node.getState().hashCode()));
+				}else{
+					logger.info("looking at node with depth "+node.getDepth()+" goalValue no information");
+				}
+				if(game.isTerminal(node)){
 					//put the values and propagate until nothing changes or root reached
-					IGameNode nodeWithNewValue = node;
-					int value = game.getGoalValues(node)[playerNumber];
-					Boolean changedSomething = true;
-					logger.log(Level.CONFIG, "we found a terminal with value"+value);
-
-					while(changedSomething && (nodeWithNewValue != null)){
-						changedSomething = false;
-
-						try {
-							nodeWithNewValue = game.getNextNode(nodeWithNewValue.getParent(), nodeWithNewValue.getMoves());
-						} catch (Exception e3) {}
-						//if no value is known yet
-						if(!values.containsKey(nodeWithNewValue.getState().hashCode())){
-							values.put(nodeWithNewValue.getState().hashCode(), value);
-							changedSomething = true;
-						} else {
-							int oldValue = values.get(nodeWithNewValue.getState().hashCode());
-
-							//do we have to minimize or maximize the parent ?
-							//if(gotFirstMove _XOR_ ((node.getDepth() % 2)==1) )
-							logger.log(Level.CONFIG, "propagating up "+nodeWithNewValue.getDepth()+" "+gotFirstMove);
-							if(gotFirstMove ^ ((nodeWithNewValue.getDepth() % 2)==1) ){
-								//we maximize
-								if(value > oldValue){
-									values.put(nodeWithNewValue.getState().hashCode(), value);
-									changedSomething = true;
-								}
-							} else {
-								//minimize
-								if(value < oldValue){
-									values.put(nodeWithNewValue.getState().hashCode(), value);
-									changedSomething = true;
-								}
-							}
-						}
-						nodeWithNewValue = nodeWithNewValue.getParent();
-					}
-				//evaluation finished
+					evaluateStates(node);
 				} else {
 
 					if(node.getDepth() < this.currentDepthLimit) {
@@ -194,12 +154,58 @@ public class TwoPlayers2 extends AbstractStrategy {
 					}
 				}
     		}
-    		if(System.currentTimeMillis() >= endTime) return;
+    		if(System.currentTimeMillis() >= endTime){
+				System.err.println("break because of time");
+				return;
+			}
     		queue.clear();
     		queue.add( game.getTree().getRootNode());
     		currentDepthLimit++;
     	}
     }
+
+	private void evaluateStates(IGameNode node) throws InterruptedException {
+					int value = game.getGoalValues(node)[playerNumber];
+					Boolean changedSomething = true;
+					logger.info("we found a terminal with value"+value);
+
+					while(changedSomething && (node != null)){
+						changedSomething = false;
+
+						try {
+							node = game.getNextNode(node.getParent(), node.getMoves());
+						} catch (Exception e3) {}
+						//if no value is known yet
+						if(!values.containsKey(node.getState().hashCode())){
+							values.put(node.getState().hashCode(), value);
+							changedSomething = true;
+							logger.info("new value "+value+" at level "+node.getDepth());
+						} else {
+							int oldValue = values.get(node.getState().hashCode());
+
+							//do we have to minimize or maximize the parent ?
+							//if(gotFirstMove _XOR_ ((node.getDepth() % 2)==1) )
+							logger.info("propagating at level "+node.getDepth());
+							if(gotFirstMove ^ ((node.getDepth() % 2)==1) ){
+								//we maximize
+								if(value > oldValue){
+									System.err.println("we maximize");
+									values.put(node.getState().hashCode(), value);
+									changedSomething = true;
+								}
+							} else {
+								//minimize
+								if(value < oldValue){
+									values.put(node.getState().hashCode(), value);
+									changedSomething = true;
+									System.err.println("we minimize");
+								}
+							}
+						}
+						node = node.getParent();
+					}
+				//evaluation finished
+	}
 
 	private void whoIsStarting(IGameNode node) throws InterruptedException {
 		List<IMove[]> allMoves = game.getCombinedMoves(node);
@@ -218,7 +224,6 @@ public class TwoPlayers2 extends AbstractStrategy {
 				}
 			}
 		}
-		logger.log(Level.INFO, "did we get the first move ? "+gotFirstMove);
 	}
 
 
