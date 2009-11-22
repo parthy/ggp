@@ -24,7 +24,7 @@ public class Node2 implements IGameNode, Comparable {
 	public Node2(IGame game, IGameNode wrappee) {
 		this.game = game;
 		this.wrapped = wrappee;
-		this.value = 50;
+		this.value = -1;
 	}
 
 	public Node2(IGame game, IGameNode wrappee, int value) {
@@ -91,10 +91,28 @@ public class Node2 implements IGameNode, Comparable {
 
 	public int compareTo(Object obj) {
 		Node2 o = (Node2) obj;
-		if(value < o.getValue()){
+		int tmpValue = value;
+		int oValue = o.getValue();
+		//when we have no value yet treat it like value 50
+		//except for the case the other one has exactly 50, which is better
+		if(value == -1){
+			if(oValue == 50){
+				return 1;
+			} else {
+				tmpValue = 50;
+			}
+		}
+		if(oValue == -1){
+			if(value == 50){
+				return -1;
+			} else {
+				oValue = 50;
+			}
+		}
+		if(tmpValue < oValue){
 			return 1;
 		} else {
-			if(value == o.getValue()){
+			if(tmpValue == oValue){
 				return 0;
 			} else {
 				return -1;

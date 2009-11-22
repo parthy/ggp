@@ -126,7 +126,7 @@ public class TwoPlayers2 extends AbstractStrategy {
 				 */
 				if(game.isTerminal(node)){
 					//put the values and propagate until nothing changes or root reached
-					evaluateStates(node);
+					evaluateStates(node, game.getGoalValues(node)[playerNumber]);
 				} else {
 
 					if(node.getDepth() < this.currentDepthLimit) {
@@ -138,7 +138,15 @@ public class TwoPlayers2 extends AbstractStrategy {
 							if(!hash.containsKey(newNode.getState().hashCode())) {
 								queue.add(newNode);
 								foundSomethingNew = true;
-							} /*else {
+							} else {
+								if(values.containsKey(newNode.getState().hashCode())){
+									evaluateStates(node, values.get(newNode.getState().hashCode()));
+								}
+							}
+							
+							
+							
+							/*else {
 								if((currentDepthLimit-newNode.getDepth()) > hash.get(newNode.getState().hashCode())){
 									queue.add(newNode);
 								} else {
@@ -165,8 +173,7 @@ public class TwoPlayers2 extends AbstractStrategy {
     	}
     }
 
-	private void evaluateStates(IGameNode node) throws InterruptedException {
-					int value = game.getGoalValues(node)[playerNumber];
+	private void evaluateStates(IGameNode node, int value) throws InterruptedException {
 					Boolean changedSomething = true;
 
 					while(changedSomething && (node != null)){
@@ -187,14 +194,14 @@ public class TwoPlayers2 extends AbstractStrategy {
 							if(gotFirstMove ^ ((node.getDepth() % 2)==1) ){
 								//System.err.println("at level "+node.getDepth()+" do minimize");
 								//we maximize
-								if(value < oldValue){
+								if(value > oldValue){
 									values.put(node.getState().hashCode(), value);
 									changedSomething = true;
 								}
 							} else {
 								//System.err.println("at level "+node.getDepth()+" do maximize");
 								//minimize
-								if(value > oldValue){
+								if(value < oldValue){
 									values.put(node.getState().hashCode(), value);
 									changedSomething = true;
 								}
