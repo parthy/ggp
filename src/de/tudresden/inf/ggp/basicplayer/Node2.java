@@ -24,7 +24,7 @@ public class Node2 implements IGameNode, Comparable {
 	public Node2(IGame game, IGameNode wrappee) {
 		this.game = game;
 		this.wrapped = wrappee;
-		this.value = -1;
+		this.value = 50;
 	}
 
 	public Node2(IGame game, IGameNode wrappee, int value) {

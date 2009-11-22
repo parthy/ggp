@@ -30,7 +30,6 @@ public class TwoPlayers2 extends AbstractStrategy {
 	private Map<Integer, Integer> hash = new HashMap<Integer, Integer>();
 	//to save the value for each Node
 	private Map<Integer, Integer> values = new HashMap<Integer, Integer>();
-	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private long endTime;
 	private boolean foundSolution = false;
@@ -44,7 +43,6 @@ public class TwoPlayers2 extends AbstractStrategy {
 	public void initMatch(Match initMatch) {
 		super.initMatch(initMatch);
 
-		logger.setLevel(Level.OFF);
 
 		// initiate solution search
 		game = initMatch.getGame();
@@ -55,8 +53,8 @@ public class TwoPlayers2 extends AbstractStrategy {
 			IDS(1);
 		} catch (InterruptedException ex) {
 		}
-		logger.info(" we are player "+game.getRoleNames()[playerNumber]);
-		logger.info("did we get the first move ? "+gotFirstMove);
+		System.err.println(" we are player "+game.getRoleNames()[playerNumber]);
+		System.err.println("did we get the first move ? "+gotFirstMove);
 		hash.clear();
 		//if(foundSolution) fillCurrentWay();
 	}
@@ -126,11 +124,6 @@ public class TwoPlayers2 extends AbstractStrategy {
 				/**
 				 * here comes the evaluation of the nodes
 				 */
-				if(values.containsKey(node.getState().hashCode())){
-					logger.info("looking at node with depth "+node.getDepth()+" goalValue "+values.get(node.getState().hashCode()));
-				}else{
-					logger.info("looking at node with depth "+node.getDepth()+" goalValue no information");
-				}
 				if(game.isTerminal(node)){
 					//put the values and propagate until nothing changes or root reached
 					evaluateStates(node);
@@ -145,31 +138,36 @@ public class TwoPlayers2 extends AbstractStrategy {
 							if(!hash.containsKey(newNode.getState().hashCode())) {
 								queue.add(newNode);
 								foundSomethingNew = true;
-							} else {
+							} /*else {
 								if((currentDepthLimit-newNode.getDepth()) > hash.get(newNode.getState().hashCode())){
 									queue.add(newNode);
 								} else {
 	//								foundSomethingNew = true;
 								}
-							}
+							}*/
 						}
 					}
 				}
     		}
     		if(System.currentTimeMillis() >= endTime){
 				System.err.println("break because of time");
+				System.err.println("currentDepth: "+currentDepthLimit);
+				System.err.println("current size of hash: "+hash.size());
+				System.err.println("current amount of known values "+values.size()+" ("+Math.floor(100*values.size()/hash.size())+"%)");
+				System.err.println("expanded "+expandedNodes+" Nodes in "+(System.currentTimeMillis()-start)+" seconds.");
+
 				return;
 			}
     		queue.clear();
     		queue.add( game.getTree().getRootNode());
     		currentDepthLimit++;
+			hash.clear();
     	}
     }
 
 	private void evaluateStates(IGameNode node) throws InterruptedException {
 					int value = game.getGoalValues(node)[playerNumber];
 					Boolean changedSomething = true;
-					logger.info("we found a terminal with value"+value);
 
 					while(changedSomething && (node != null)){
 						changedSomething = false;
@@ -181,26 +179,24 @@ public class TwoPlayers2 extends AbstractStrategy {
 						if(!values.containsKey(node.getState().hashCode())){
 							values.put(node.getState().hashCode(), value);
 							changedSomething = true;
-							logger.info("new value "+value+" at level "+node.getDepth());
 						} else {
 							int oldValue = values.get(node.getState().hashCode());
 
 							//do we have to minimize or maximize the parent ?
 							//if(gotFirstMove _XOR_ ((node.getDepth() % 2)==1) )
-							logger.info("propagating at level "+node.getDepth());
 							if(gotFirstMove ^ ((node.getDepth() % 2)==1) ){
+								//System.err.println("at level "+node.getDepth()+" do minimize");
 								//we maximize
-								if(value > oldValue){
-									System.err.println("we maximize");
+								if(value < oldValue){
 									values.put(node.getState().hashCode(), value);
 									changedSomething = true;
 								}
 							} else {
+								//System.err.println("at level "+node.getDepth()+" do maximize");
 								//minimize
-								if(value < oldValue){
+								if(value > oldValue){
 									values.put(node.getState().hashCode(), value);
 									changedSomething = true;
-									System.err.println("we minimize");
 								}
 							}
 						}
