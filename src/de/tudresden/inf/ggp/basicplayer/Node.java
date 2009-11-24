@@ -16,11 +16,11 @@ import org.eclipse.palamedes.gdl.core.model.IMove;
  *
  * @author konrad
  */
-public class Node implements IGameNode, Comparable<Node> {
+public class Node implements IGameNode, Comparable<Node>, Cloneable {
 
 	private IGameNode wrapped;
 	private ArrayList<Node> children;
-	private Node parent;
+	private Integer parentHash;
 	// since we get robbed eventually, we keep our state safely here.
 	private IGameState state;
 	private int value;
@@ -29,7 +29,7 @@ public class Node implements IGameNode, Comparable<Node> {
 	public Node(IGameNode wrappee) {
 		this.wrapped = wrappee;
 		this.state = wrappee.getState();
-		this.parent = null;
+		this.parentHash = -1;
 		this.value = -1;
 	}
 
@@ -106,12 +106,12 @@ public class Node implements IGameNode, Comparable<Node> {
 		this.children = new ArrayList<Node>(children);
 	}
 
-	public void setParentNode(Node parent) {
-		this.parent = parent;
+	public void setParentNode(int parent) {
+		this.parentHash = parent;
 	}
 	
-	public Node getParentNode() {
-		return this.parent;
+	public int getParentNode() {
+		return this.parentHash;
 	}
 	
 	@Override

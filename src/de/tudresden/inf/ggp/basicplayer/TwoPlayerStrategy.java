@@ -7,6 +7,7 @@ package de.tudresden.inf.ggp.basicplayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -29,7 +30,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	//private PriorityQueue<Node> queue = new PriorityQueue<Node>();
 	private LinkedList<Node> queue = new LinkedList<Node>();
 	private HashMap<Integer, Integer> visitedStates = new HashMap<Integer, Integer>();
-	private ArrayList<Node> gameTree = new ArrayList<Node>();
+	private HashMap<Node, Integer> gameTree = new HashMap<Node, Integer>();
+	private HashMap<Integer, Node> parents = new HashMap<Integer, Node>();
+	private HashMap<Integer, Integer> values = new HashMap<Integer, Integer>();
 	
 	private ArrayList<Node> children = new ArrayList<Node>();
 	
@@ -49,7 +52,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		game = initMatch.getGame();
 		currentNode = new Node(game.getTree().getRootNode());
 		queue.add(0, currentNode);
-		currentDepthLimit = 3;
+		currentDepthLimit = 9;
 		startTime = System.currentTimeMillis();
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 5000;
 		try {
@@ -95,11 +98,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				
 				// leave tracing infos
 				visitedStates.put(currentNode.getState().hashCode(), currentNode.getDepth()-1);
+				//parents.put(currentNode.hashCode(), currentNode);
 				
 				if(currentNode.getState().isTerminal()) {
 					//System.out.println("Found terminal state with value: "+currentNode.getState().getGoalValue(game.getRoleIndex(match.getRole())));
 					currentNode.setValue(currentNode.getState().getGoalValue(game.getRoleIndex(match.getRole())));
-					gameTree.add(currentNode);
+					gameTree.put(currentNode, currentNode.getValue());
+					values.put(currentNode.getState().hashCode(), currentNode.getValue());
 					continue;
 				}
 				
@@ -119,7 +124,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
     							Integer foundDepth = visitedStates.get(game.getNextNode(currentNode.getWrapped(), combMoves).getState().hashCode());
     							if(foundDepth == null || foundDepth > currentNode.getDepth()) doIt = true;
     							Node temp = new Node(game.getNextNode(currentNode.getWrapped(), combMoves));
-    							temp.setParentNode(currentNode);
+    							temp.setParentNode(currentNode.hashCode());
     							if(doIt){
     								queue.add(0, temp);
     								expanded = true;
@@ -133,117 +138,128 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 					if(!currentNode.isTerminal() && game.getCombinedMoves(currentNode.getWrapped()).size() > 0 && !expanded && currentNode.getDepth() >= currentDepthLimit ) flag = true;
 				} catch (InterruptedException e) {}
 				currentNode.setChildren(children);
-				if(currentNode.getState().isTerminal() || children.size() > 0) gameTree.add(currentNode);
-				if(startNode == null) 
+				
+				// check if we get a value for the values hash
+				int value = -1;
+				boolean insert = true;
+				for(Node child : children) {
+					if(values.get(child.getState().hashCode()) == null || values.get(child.getState().hashCode()) == -1) {
+						insert = false;
+						break;
+					}
+					// should we maximize or minimize?
+					if(max == 1) { // we are max player
+						if(currentNode.getDepth()%2 == 0) { // maximize
+							if(values.get(child.getState().hashCode()) > value) value = values.get(child.getState().hashCode());
+						} else { // minimize
+							if(values.get(child.getState().hashCode()) < value || value == -1) value = values.get(child.getState().hashCode());
+						}
+					} else { // we are min player
+						if(currentNode.getDepth()%2 == 0) { // minimize
+							if(values.get(child.getState().hashCode()) < value || value == -1) value = values.get(child.getState().hashCode());
+						} else { // maximize
+							if(values.get(child.getState().hashCode()) > value) value = values.get(child.getState().hashCode());
+						}
+					}
+				}
+				if(value != -1 && insert) values.put(currentNode.getState().hashCode(), value);
+				
+				//if(children.size() > 0) gameTree.put(currentNode, -1);
+				if(startNode == null) {
 					startNode = currentNode;
+					startNode.setChildren(currentNode.getChildren());
+					System.out.println("");
+				}
 			}
 			currentDepthLimit++;
 		}
-		System.out.println("Search finished, visited Nodes: "+nodesVisited);
+		System.out.println("Search finished, visited Nodes: "+nodesVisited+", visitedStates: "+visitedStates.size()+", values: "+values.size());
 		buildStrategy();
 	}
 	
 	public void buildStrategy() {
 		// find possible moves in start node. if there's only one, it is likely that we are the min player.
 		System.out.println("We assume we are "+((max==0) ? "min" : "max")+" player.");
-		setGoalValues();
+		// fill in the last few values starting from startnode
+		fillValues(game.getTree().getRootNode());
+		System.out.println("Values: "+values.size());
 	}
 	
-	public int setGoalValues() {
-		// find all terminals in gameTree
-		queue.clear();
-		for(Node node : gameTree) {
-			if(node.isTerminal()) {
-				Node toAdd = new Node(node.getWrapped());
-				toAdd.setValue(node.getValue());
-				toAdd.setParentNode(node.getParentNode());
-				System.out.println("Terminal: "+toAdd.getState().getGoalValue(game.getRoleIndex(match.getRole()))+", has Parent: "+toAdd.getParentNode());
-				queue.add(toAdd);
+	public int fillValues(IGameNode node) {
+		if(node.getState() == null) {
+			try {
+				game.regenerateNode(node);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-		while(!queue.isEmpty()) {
-			Node current = queue.remove(0);
-			if(current.getState() == null) {
-				try {
-					game.regenerateNode(current.getWrapped());
-				} catch(InterruptedException ex) {}
-			}
-			// hooray, the start node
-			if(current.getParentNode() == null) {
-				System.out.println("We have a node with noe parentNode and the queue has still size: "+queue.size());
-				currentGameNode = current;
-				continue;
-			}
-			
-			// remove node from gameTree
-			//gameTree.remove(current);
-			
-			// adjust the parent's value
-			if(current.getDepth()%2 == 1) { // we apply exactly what "max" tells us
-				if(max == 0) { // we minimize the parent's value
-					if(current.getParentNode().getValue() > current.getValue() || current.getParentNode().getValue() == -1)
-						current.getParentNode().setValue(current.getValue());
-				} else { // we maximize it
-					if(current.getParentNode().getValue() < current.getValue() || current.getParentNode().getValue() == -1)
-						current.getParentNode().setValue(current.getValue());
-				}
-			} else { // we do the opposite of max
-				if(max == 0) { // we maximize the parent's value
-					if(current.getParentNode().getValue() < current.getValue() || current.getParentNode().getValue() == -1)
-						current.getParentNode().setValue(current.getValue());
-				} else { // we minimize it
-					if(current.getParentNode().getValue() > current.getValue() || current.getParentNode().getValue() == -1)
-						current.getParentNode().setValue(current.getValue());
+		if(values.get(node.getState().hashCode()) != null && values.get(node.getState().hashCode()) != -1) return values.get(node.getState().hashCode());
+		int value = -1;
+		try {
+			for(IMove[] move : game.getCombinedMoves(node)) {
+				IGameNode child = game.getNextNode(node, move);
+				// should we maximize or minimize?
+				int newValue = fillValues(child);
+				if(max == 1) { // we are max player
+					if(node.getDepth()%2 == 0) { // maximize
+						if(newValue > value) value = newValue;
+					} else { // minimize
+						if(newValue < value || value == -1) value = newValue;
+					}
+				} else { // we are min player
+					if(node.getDepth()%2 == 0) { // minimize
+						if(newValue < value || value == -1) value = newValue;
+					} else { // maximize
+						if(newValue > value) value = newValue;
+					}
 				}
 			}
-			
-			// and add the parent to the queue, at the end, of course
-			queue.add(current.getParentNode());
-			
-			// plus, write back the node to gameTree
-			//gameTree.add(current);
-
+		} catch (InterruptedException e) {}
+		if(node.getState() == null) {
+			try {
+				game.regenerateNode(node);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		return 0;
+		if(node.getState() != null)
+			values.put(node.getState().hashCode(), value);
+		return value;
 	}
+	
 	
 	@Override
 	public IMove getMove(IGameNode arg0) {
-		if(arg0.getParent() == null) currentGameNode = startNode;
-		else {
-			// search children for currentGameNode for the one matching arg0
-			for(Node node : currentGameNode.getChildren()) {
-				if(node.getState().hashCode() == arg0.getState().hashCode()) {
-					currentGameNode = node;
-					break;
+		// determine possible next states
+		fillValues(arg0);
+		IMove best = null; 
+		try {
+			int bestValue = -1;
+			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
+				System.out.println("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
+				System.out.println("Value: "+values.get(game.getNextNode(arg0, combMove).getState().hashCode()));
+				if(best == null) { 
+					best = combMove[game.getRoleIndex(match.getRole())];
+					if(values.get(game.getNextNode(arg0, combMove).getState().hashCode()) != null) {
+						bestValue = values.get(game.getNextNode(arg0, combMove).getState().hashCode());
+						System.out.println("New best value: "+bestValue);
+					}
+					continue; 
 				}
+				if(values.get(game.getNextNode(arg0, combMove).getState().hashCode()) != null && values.get(game.getNextNode(arg0, combMove).getState().hashCode()) > bestValue) {
+					best = combMove[game.getRoleIndex(match.getRole())];
+					bestValue = values.get(game.getNextNode(arg0, combMove).getState().hashCode());
+				}
+				//if((max == 1 && bestValue == 100) || (max == 0 && bestValue == 0)) break;
 			}
-		}
-		System.out.println("Our position now: "+currentGameNode+", "+currentGameNode.getDepth());
-		// find the "best" successor
-		Node best = null;
-		for(Node child : currentGameNode.getChildren()) {
-			System.out.println("Zur Auswahl: "+child.getValue());
-			if(best == null) best = child;
-			if(best != null && child.getValue() > best.getValue()) best = child;
-		}
-		if(best == null) { // this shouldn't happen!
-			System.err.println("We've been demanded a Move where we think none exists!");
-			try {
-				return game.getRandomMove(arg0)[playerNumber];
-			} catch (InterruptedException e) {}
-		}
-		int move=0;
-		for(int i=0; i<best.getMoves().length; i++) {
-			//System.out.println("Move in Array: "+best.getMoves()[i].toString());
-			if(best.getMoves()[i].getRole().equals(match.getRole())) {
-				//System.out.println("Found move for role "+match.getRole()+" at index "+i);
-				move = i;
-				break;
+			if(best == null) { // we didn't find anything.. (actually not possible)
+				return game.getRandomMove(arg0)[game.getRoleIndex(match.getRole())];
 			}
-		}
+		} catch (InterruptedException e) {}
 		
-		return best.getMoves()[move];
+		return best;
 	}
 
 }
