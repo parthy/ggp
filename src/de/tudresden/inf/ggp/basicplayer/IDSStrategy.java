@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.PriorityQueue;
 
 import org.eclipse.palamedes.gdl.core.model.IFluent;
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
@@ -13,11 +14,13 @@ import org.eclipse.palamedes.gdl.core.simulation.Match;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
 
 public class IDSStrategy extends AbstractStrategy {
-	private List<Node> queue = new ArrayList<Node>();
+	private PriorityQueue<Node> queue;
 	private List<Node> currentWay = new ArrayList<Node>();
 	private Map<Integer, IGameState> visitedStates = new HashMap<Integer, IGameState>();
 	private Map<Integer, List<IFluent>> visitedStates_playing = new HashMap<Integer, List<IFluent>>();
 	private Map<Integer, IGameState> unusefulStates = new HashMap<Integer, IGameState>();
+	public HashMap<IGameState, Integer> heuristic = new HashMap<IGameState, Integer>();
+	private IHeuristic heurCalc;
 	private boolean foundSolution = false;
 	private int currentDepthLimit;
 	private int nodesVisited;
@@ -31,7 +34,14 @@ public class IDSStrategy extends AbstractStrategy {
 		super.initMatch(initMatch);
 		// initiate solution search
 		game = initMatch.getGame();
+		
+		// set comparator
+		queue = new PriorityQueue<Node>(100, new HeuristicComparator(this));
 		queue.add(new Node(game.getTree().getRootNode()));
+		
+		// set heuristic
+		heurCalc = new DFSHeuristic(this);
+		
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 5000L;
 		IDS(1);
 		visitedStates.clear();
@@ -74,7 +84,7 @@ public class IDSStrategy extends AbstractStrategy {
 			System.err.println("unusefulStates:"+unusefulStates.size());
 			System.err.println("Now: "+System.currentTimeMillis()+", endTime: "+endTime);
     		while(!queue.isEmpty() && System.currentTimeMillis() < endTime) {
-    			node = queue.remove(0);
+    			node = queue.poll();
     			
     			// try to regenerate state information of the node
     			
@@ -105,7 +115,8 @@ public class IDSStrategy extends AbstractStrategy {
     							combMoves = allMoves.get(i);
     							if((!visitedStates.containsKey(game.getNextNode(node.getWrapped(), combMoves).getState().hashCode()))
 									&& !unusefulStates.containsKey(game.getNextNode(node.getWrapped(), combMoves).getState().hashCode())){
-    								queue.add(0, new Node(game.getNextNode(node.getWrapped(), combMoves)));
+    								heuristic.put(game.getNextNode(node.getWrapped(), combMoves).getState(), value)
+    								queue.add(new Node(game.getNextNode(node.getWrapped(), combMoves)));
 									noSuccesor = false;
     							}
     						} catch (InterruptedException e) {}

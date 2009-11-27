@@ -27,12 +27,15 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
  */
 public class TwoPlayerStrategy extends AbstractStrategy {
 	
-	//private PriorityQueue<Node> queue = new PriorityQueue<Node>();
-	private LinkedList<IGameNode> queue = new LinkedList<IGameNode>();
+	private PriorityQueue<IGameNode> queue;
+	//private LinkedList<IGameNode> queue = new LinkedList<IGameNode>();
 	private HashMap<Integer, Integer> visitedStates = new HashMap<Integer, Integer>();
 	private HashMap<Integer, Integer> values = new HashMap<Integer, Integer>();
+	public HashMap<IGameState, Integer> heuristic = new HashMap<IGameState, Integer>();
 	
 	private ArrayList<IGameNode> children = new ArrayList<IGameNode>();
+	
+	private IHeuristic heurCalc;
 	
 	private int currentDepthLimit;
 	private int nodesVisited;
@@ -46,7 +49,6 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	public void initMatch(Match initMatch) {
 		match = initMatch;
 		game = initMatch.getGame();
-		
 		currentDepthLimit = 12;
 		startTime = System.currentTimeMillis();
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 5000;
@@ -58,6 +60,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			IMove[] myMoves = allMoves[index];
 			if(myMoves.length <= 1) max=0;
 		} catch (InterruptedException e) {}
+		
+		// set comparator for priorityqueue
+		queue = new PriorityQueue<IGameNode>(100, new HeuristicComparator(this));
+		// set heuristic
+		heurCalc = new DFSHeuristic(this);
 		IDS();
 	}
 	
@@ -78,7 +85,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			
 			while(!queue.isEmpty() && System.currentTimeMillis() < endTime) {
 				// get next element from queue
-				currentNode = queue.remove(0);
+				currentNode = queue.poll();
 				//nodesVisited++;
 				//if(nodesVisited % 1000 == 0) System.out.println("visited: "+nodesVisited);
 				// regenerate node, if necessary
@@ -114,7 +121,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
     							if(foundDepth == null || foundDepth > currentNode.getDepth()) doIt = true;
     							//Node temp = new Node(game.getNextNode(currentNode, combMoves));
     							if(doIt){
-    								queue.add(0, game.getNextNode(currentNode, combMoves));
+    								heuristic.put(currentNode.getState(), heurCalc.calculateHeuristic(currentNode.getState()));
+    								queue.add(game.getNextNode(currentNode, combMoves));
     								expanded = true;
     							}
     							children.add(game.getNextNode(currentNode, combMoves));
