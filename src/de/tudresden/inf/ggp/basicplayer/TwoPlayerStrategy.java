@@ -193,17 +193,23 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				IGameNode child = game.getNextNode(node, move);
 				// should we maximize or minimize?
 				int newValue = fillValues(child);
-				if(max == 1) { // we are max player
-					if(node.getDepth()%2 == 0) { // maximize
-						if(newValue > value) value = newValue;
-					} else { // minimize
-						if(newValue < value || value == -1) value = newValue;
-					}
-				} else { // we are min player
-					if(node.getDepth()%2 == 0) { // minimize
-						if(newValue < value || value == -1) value = newValue;
-					} else { // maximize
-						if(newValue > value) value = newValue;
+				//if one of the childs has no value -> we cant tell which value this node has
+				if(newValue == -1){
+					value = -1;
+					break;
+				} else {
+					if(max == 1) { // we are max player
+						if(node.getDepth()%2 == 0) { // maximize
+							if(newValue > value) value = newValue;
+						} else { // minimize
+							if(newValue < value || value == -1) value = newValue;
+						}
+					} else { // we are min player
+						if(node.getDepth()%2 == 0) { // minimize
+							if(newValue < value || value == -1) value = newValue;
+						} else { // maximize
+							if(newValue > value) value = newValue;
+						}
 					}
 				}
 			}
@@ -226,32 +232,26 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	public IMove getMove(IGameNode arg0) {
 		// determine possible next states
 		fillValues(arg0);
-		IMove best = null; 
+		IGameNode best = null;
 		try {
-			int bestValue = -1;
+			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this));
 			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
-				System.out.println("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
-				System.out.println("Value: "+values.get(game.getNextNode(arg0, combMove).getState().hashCode()));
-				if(best == null) { 
-					best = combMove[game.getRoleIndex(match.getRole())];
-					if(values.get(game.getNextNode(arg0, combMove).getState().hashCode()) != null) {
-						bestValue = values.get(game.getNextNode(arg0, combMove).getState().hashCode());
-						System.out.println("New best value: "+bestValue);
-					}
-					continue; 
-				}
-				if(values.get(game.getNextNode(arg0, combMove).getState().hashCode()) != null && values.get(game.getNextNode(arg0, combMove).getState().hashCode()) > bestValue) {
-					best = combMove[game.getRoleIndex(match.getRole())];
-					bestValue = values.get(game.getNextNode(arg0, combMove).getState().hashCode());
-				}
+				System.out.print("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
+				System.out.println("   Value: "+values.get(game.getNextNode(arg0, combMove).getState().hashCode()));
+				childs.add(game.getNextNode(arg0, combMove));
 				//if((max == 1 && bestValue == 100) || (max == 0 && bestValue == 0)) break;
 			}
+			best = childs.peek();
 			if(best == null) { // we didn't find anything.. (actually not possible)
 				return game.getRandomMove(arg0)[game.getRoleIndex(match.getRole())];
 			}
 		} catch (InterruptedException e) {}
 		
-		return best;
+		return best.getMoves()[game.getRoleIndex(match.getRole())];
+	}
+
+	public HashMap<Integer, Integer> getValues(){
+		return values;
 	}
 
 }

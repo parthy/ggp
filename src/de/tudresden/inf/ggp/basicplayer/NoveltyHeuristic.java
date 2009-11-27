@@ -15,14 +15,9 @@ import org.eclipse.palamedes.gdl.core.simulation.IStrategy;
  * @author konrad
  */
 public class NoveltyHeuristic implements IHeuristic {
-	private IStrategy strategy;
-	
-	public NoveltyHeuristic(IStrategy strategy){
-		this.strategy = strategy;
-	}
 
 	//function not tested yet
-	public int calculateHeuristic(IGameNode node) {
+	public double calculateHeuristic(IGameNode node) {
 		int[] diffs = GameNode.getDiffCount(node.getState(), node.getParent().getState());
 		int sum = 0;
 		for(int i=0; i<diffs.length; i++){

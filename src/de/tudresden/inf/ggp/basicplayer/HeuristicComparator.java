@@ -6,19 +6,28 @@ import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.simulation.IStrategy;
 
 public class HeuristicComparator implements Comparator<IGameNode> {
-
-	private IStrategy strategy;
+	private IStrategy strat;
 	
-	public HeuristicComparator(IStrategy twoPlayerStrategy) {
-		this.strategy = twoPlayerStrategy;
+	public HeuristicComparator(IStrategy strat) {
+		this.strat = strat;
 	}
 
 	@Override
 	public int compare(IGameNode arg0, IGameNode arg1) {
+		//the decision for the heuristic falls in MainStrategy
+		Double value1 = strat.getHeuristicValue(arg0);
+		Double value2 = strat.getHeuristicValue(arg1);
+
+		return value1.compareTo(value2);
+		/*
+		 * hmm, keine ahnung warum du dies nach strategy unterscheiden willst
+		 * ich lass es mal drin
+		 * -- konrad
+		 *
 		if(this.strategy instanceof TwoPlayerStrategy) {
 			TwoPlayerStrategy strat = (TwoPlayerStrategy) strategy;
 			
-			if(strat.getHeuristicValue(arg0) == null && strat.getHeuristicValue(arg1) == null) return 0;
+			if(strat.heuristic.get(arg0.getState()) == null && strat.heuristic.get(arg1.getState()) == null) return 0;
 			if(strat.heuristic.get(arg0.getState()) == null) return 1;
 			if(strat.heuristic.get(arg1.getState()) == null) return -1;
 			
@@ -36,6 +45,6 @@ public class HeuristicComparator implements Comparator<IGameNode> {
 		} else {
 			return 0;
 		}
-	}
+*/	}
 
 }

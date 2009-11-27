@@ -1,4 +1,4 @@
-package de.tudresden.inf.ggp.basicplayer;
+/*package de.tudresden.inf.ggp.basicplayer;
 
 import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.simulation.IStrategy;
@@ -30,3 +30,4 @@ public class DFSHeuristic implements IHeuristic {
 	}
 
 }
+*/

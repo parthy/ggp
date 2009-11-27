@@ -17,10 +17,10 @@ import org.eclipse.palamedes.gdl.core.simulation.Match;
 public class MainStrategy implements IStrategy {
 
 	private IStrategy myStrategy;
+	private IHeuristic heuristic;
 
-	@Override
-	public IMove getMove(IGameNode arg0) {
-		return this.myStrategy.getMove(arg0);
+	public MainStrategy(IHeuristic heuristic){
+		this.heuristic = heuristic;
 	}
 
 	public void initMatch(Match initMatch) {
@@ -37,7 +37,16 @@ public class MainStrategy implements IStrategy {
 	}
 
 	public double getHeuristicValue(IGameNode arg0) {
-		return this.myStrategy.getHeuristicValue(arg0);
+		if(heuristic == null){
+			return 0;
+		} else {
+			return heuristic.calculateHeuristic(arg0);
+		}
+	}
+
+	@Override
+	public IMove getMove(IGameNode arg0) {
+		return this.myStrategy.getMove(arg0);
 	}
 
 	public void dispose() {

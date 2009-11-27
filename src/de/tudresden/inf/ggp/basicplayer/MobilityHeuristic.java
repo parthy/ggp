@@ -7,7 +7,8 @@ public class MobilityHeuristic implements IHeuristic {
 	private int roleIndex;
 	
 	@Override
-	public int calculateHeuristic(IGameNode node) {
+	public double calculateHeuristic(IGameNode node) {
+
 		int myMoves = node.getState().getLegalMoves()[roleIndex].length;
 		int movesOfTheOthers = 0;
 		for(int i=0; i<node.getState().getLegalMoves().length; i++) {

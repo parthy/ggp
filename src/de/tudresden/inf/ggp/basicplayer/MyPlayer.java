@@ -14,7 +14,7 @@ import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.SMonteCarlo;
 
 public final class MyPlayer extends Player {
-	private IStrategy strategy;
+	public static IStrategy strategy;
     /**
      * This method is called when a new match begins.
 	 *
@@ -53,7 +53,8 @@ public final class MyPlayer extends Player {
 
         
         /** XXX: If you implement another strategy here is the place to instantiate it */
-        strategy = new MainStrategy();
+		/** and if you wanna use a heuristic here is also the place to put it in */
+        strategy = new MainStrategy(new NoveltyHeuristic());
 
         System.out.println( "MyPlayer created the strategy "      +
                             strategy.getClass().getSimpleName() +
