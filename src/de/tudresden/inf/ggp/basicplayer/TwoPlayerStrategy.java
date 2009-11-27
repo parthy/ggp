@@ -159,6 +159,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				
 				//if(children.size() > 0) gameTree.put(currentNode, -1);
 			}
+			if(System.currentTimeMillis() > endTime){
+				System.err.println("stop search because of time");
+				return;
+			}
 			currentDepthLimit++;
 		}
 		System.out.println("Search finished, values: "+values.size());

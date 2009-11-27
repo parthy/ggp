@@ -18,7 +18,7 @@ public class HeuristicComparator implements Comparator<IGameNode> {
 		if(this.strategy instanceof TwoPlayerStrategy) {
 			TwoPlayerStrategy strat = (TwoPlayerStrategy) strategy;
 			
-			if(strat.heuristic.get(arg0.getState()) == null && strat.heuristic.get(arg1.getState()) == null) return 0;
+			if(strat.getHeuristicValue(arg0) == null && strat.getHeuristicValue(arg1) == null) return 0;
 			if(strat.heuristic.get(arg0.getState()) == null) return 1;
 			if(strat.heuristic.get(arg1.getState()) == null) return -1;
 			
