@@ -6,9 +6,7 @@
 package de.tudresden.inf.ggp.basicplayer;
 
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
-import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.utils.GameNode;
-import org.eclipse.palamedes.gdl.core.simulation.IStrategy;
 
 /**
  *
@@ -23,7 +21,8 @@ public class NoveltyHeuristic implements IHeuristic {
 		for(int i=0; i<diffs.length; i++){
 			sum+= diffs[i];
 		}
-		return sum;
+		//we return the lowest value when it differs the most
+		return sum*-1;
 	}
 
 

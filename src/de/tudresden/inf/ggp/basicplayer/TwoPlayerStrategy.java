@@ -46,6 +46,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	public void initMatch(Match initMatch) {
 		match = initMatch;
 		game = initMatch.getGame();
+		playerNumber = game.getRoleIndex(match.getRole());
 		
 		currentDepthLimit = 12;
 		startTime = System.currentTimeMillis();
@@ -57,11 +58,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			int index = game.getRoleIndex(role);
 			IMove[] myMoves = allMoves[index];
 			if(myMoves.length <= 1) max=0;
+			IDS();
 		} catch (InterruptedException e) {}
-		IDS();
 	}
 	
-	public void IDS() {
+	public void IDS() throws InterruptedException {
 		boolean flag = true;
 		while(flag) {
 			flag = false;
@@ -109,11 +110,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
     					for(int i=0; i<allMoves.size(); ++i) {
     						try {
     							combMoves = allMoves.get(i);
-    							boolean doIt = false;
     							Integer foundDepth = visitedStates.get(game.getNextNode(currentNode, combMoves).getState().hashCode());
-    							if(foundDepth == null || foundDepth > currentNode.getDepth()) doIt = true;
-    							//Node temp = new Node(game.getNextNode(currentNode, combMoves));
-    							if(doIt){
+    							if(foundDepth == null || foundDepth > currentNode.getDepth()){
+	    							//Node temp = new Node(game.getNextNode(currentNode, combMoves));
     								queue.add(0, game.getNextNode(currentNode, combMoves));
     								expanded = true;
     							}
@@ -128,34 +127,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				//currentNode.setChildren(children);
 				
 				// check if we get a value for the values hash
-				int value = -1;
-				boolean insert = true;
-				for(IGameNode child : children) {
-					if(child.getState() == null) {
-						try {
-							game.regenerateNode(child);
-						} catch (InterruptedException e2) {}
-					}
-					if(values.get(child.getState().hashCode()) == null || values.get(child.getState().hashCode()) == -1) {
-						insert = false;
-						break;
-					}
-					// should we maximize or minimize?
-					if(max == 1) { // we are max player
-						if(currentNode.getDepth()%2 == 0) { // maximize
-							if(values.get(child.getState().hashCode()) > value) value = values.get(child.getState().hashCode());
-						} else { // minimize
-							if(values.get(child.getState().hashCode()) < value || value == -1) value = values.get(child.getState().hashCode());
-						}
-					} else { // we are min player
-						if(currentNode.getDepth()%2 == 0) { // minimize
-							if(values.get(child.getState().hashCode()) < value || value == -1) value = values.get(child.getState().hashCode());
-						} else { // maximize
-							if(values.get(child.getState().hashCode()) > value) value = values.get(child.getState().hashCode());
-						}
-					}
+				if(currentNode.isTerminal()){
+					values.put(currentNode.getState().hashCode(), game.getGoalValues(currentNode)[playerNumber]);
+					makeValue(currentNode);
 				}
-				if(value != -1 && insert) values.put(currentNode.getState().hashCode(), value);
 				
 				//if(children.size() > 0) gameTree.put(currentNode, -1);
 			}
@@ -166,9 +141,57 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			currentDepthLimit++;
 		}
 		System.out.println("Search finished, values: "+values.size());
-		buildStrategy();
+		//buildStrategy();
 	}
-	
+
+	public void makeValue(IGameNode node) throws InterruptedException{
+		if(node == null)
+			return;
+		//we already have a value
+		if(values.get(node.getState().hashCode()) != null){
+			makeValue(node.getParent());
+			return;
+		}
+		children.clear();
+		List<IMove[]> allMoves = game.getCombinedMoves(node);
+		for(IMove[] move : allMoves)
+			children.add(game.getNextNode(node, move));
+		int value = -1;
+		for(IGameNode child : children) {
+			if(child.getState() == null) {
+				try {
+					game.regenerateNode(child);
+				} catch (InterruptedException e2) {}
+			}
+			if(values.get(child.getState().hashCode()) == null) {
+				return;
+			}
+			// should we maximize or minimize?
+			if(max == 1) { // we are max player
+				if(currentNode.getDepth()%2 == 0) { // maximize
+					if(values.get(child.getState().hashCode()) > value)
+						value = values.get(child.getState().hashCode());
+				} else { // minimize
+					if(values.get(child.getState().hashCode()) < value || value == -1)
+						value = values.get(child.getState().hashCode());
+				}
+			} else { // we are min player
+				if(currentNode.getDepth()%2 == 0) { // minimize
+					if(values.get(child.getState().hashCode()) < value || value == -1)
+						value = values.get(child.getState().hashCode());
+				} else { // maximize
+					if(values.get(child.getState().hashCode()) > value)
+						value = values.get(child.getState().hashCode());
+				}
+			}
+		}
+		if(value != -1){
+			values.put(currentNode.getState().hashCode(), value);
+			makeValue(node.getParent());
+		}
+	}
+
+	//not used anymore, work is done by makeValue
 	public void buildStrategy() {
 		// find possible moves in start node. if there's only one, it is likely that we are the min player.
 		System.out.println("We assume we are "+((max==0) ? "min" : "max")+" player.");
@@ -176,7 +199,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		fillValues(game.getTree().getRootNode());
 		System.out.println("Values: "+values.size());
 	}
-	
+
+	//not used anymore, work is done by makeValue
 	public int fillValues(IGameNode node) {
 		if(node.getState() == null) {
 			try {
@@ -195,8 +219,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				int newValue = fillValues(child);
 				//if one of the childs has no value -> we cant tell which value this node has
 				if(newValue == -1){
-					value = -1;
-					break;
+					//do not write anything in the hash
+					
 				} else {
 					if(max == 1) { // we are max player
 						if(node.getDepth()%2 == 0) { // maximize
@@ -231,7 +255,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	@Override
 	public IMove getMove(IGameNode arg0) {
 		// determine possible next states
-		fillValues(arg0);
+		//fillValues(arg0);
 		IGameNode best = null;
 		try {
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this));
