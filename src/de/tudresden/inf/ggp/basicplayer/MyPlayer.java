@@ -54,7 +54,7 @@ public final class MyPlayer extends Player {
         
         /** XXX: If you implement another strategy here is the place to instantiate it */
 		/** and if you wanna use a heuristic here is also the place to put it in */
-        strategy = new MainStrategy(new NoveltyHeuristic());
+        strategy = new MainStrategy(new MobilityHeuristic());
 
         System.out.println( "MyPlayer created the strategy "      +
                             strategy.getClass().getSimpleName() +

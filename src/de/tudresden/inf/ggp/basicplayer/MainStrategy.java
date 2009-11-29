@@ -25,7 +25,7 @@ public class MainStrategy implements IStrategy {
 
 	public void initMatch(Match initMatch) {
 		if(initMatch.getGame().getRoleCount() == 1){
-			this.myStrategy = new IDSStrategy();
+			this.myStrategy = new OnePlayerSearch();
 		} else {
 			if(initMatch.getGame().getRoleCount() == 2){
 				this.myStrategy = new TwoPlayerStrategy();
