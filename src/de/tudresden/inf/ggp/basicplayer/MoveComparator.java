@@ -8,6 +8,7 @@ package de.tudresden.inf.ggp.basicplayer;
 import java.util.Comparator;
 import java.util.HashMap;
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
+import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 
 /**
@@ -15,7 +16,7 @@ import org.eclipse.palamedes.gdl.core.simulation.Match;
  * @author konrad
  */
 public class MoveComparator implements Comparator<IGameNode>{
-	private HashMap<Integer, Integer> values;
+	private HashMap<IGameState, Integer> values;
 	private TwoPlayerStrategy strat;
 	private Match match;
 	
@@ -27,23 +28,25 @@ public class MoveComparator implements Comparator<IGameNode>{
 
 	public int compare(IGameNode node1, IGameNode node2) {
 		try {
-			match.getGame().regenerateNode(node1);
-			match.getGame().regenerateNode(node2);
+			if(node1.getState() == null)
+				match.getGame().regenerateNode(node1);
+			if(node2.getState() == null)
+				match.getGame().regenerateNode(node2);
 		} catch(InterruptedException e) {}
 		
 		//the pseudo-49 approach
 		int tmpValue1 = 0;
-		if(!values.containsKey(node1.getState().hashCode())){
+		if(!values.containsKey(node1.getState())){
 			//we dont have a value
 			tmpValue1 = 49;
 		} else {
-			tmpValue1 = values.get(node1.getState().hashCode());
+			tmpValue1 = values.get(node1.getState());
 		}
 		int tmpValue2 = 0;
-		if(!values.containsKey(node2.getState().hashCode())){
+		if(!values.containsKey(node2.getState())){
 			tmpValue2 = 49;
 		} else {
-			tmpValue2 = values.get(node2.getState().hashCode());
+			tmpValue2 = values.get(node2.getState());
 		}
 		//now we really compare
 		if(tmpValue1 < tmpValue2){

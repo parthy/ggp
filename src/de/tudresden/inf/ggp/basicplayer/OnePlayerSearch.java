@@ -108,6 +108,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 					}
 				}
 				while(!children.isEmpty()){
+					System.err.println("value "+MyPlayer.strategy.getHeuristicValue(children.peek()));
 					queue.add(0, children.poll());
 				}
     		}

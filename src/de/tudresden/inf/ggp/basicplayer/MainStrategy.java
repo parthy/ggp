@@ -25,7 +25,7 @@ public class MainStrategy implements IStrategy {
 		} else {
 			if(initMatch.getGame().getRoleCount() == 2){
 				this.myStrategy = new TwoPlayerStrategy();
-				this.heuristic = new MobilityHeuristic(initMatch);
+				this.heuristic = new NoveltyHeuristic();
 			} else {
 				throw new UnsupportedOperationException("i dont know how to play this game");
 			}
@@ -33,6 +33,7 @@ public class MainStrategy implements IStrategy {
 		myStrategy.initMatch(initMatch);
 	}
 
+	@Override
 	public double getHeuristicValue(IGameNode arg0) {
 		if(heuristic == null){
 			return 0;

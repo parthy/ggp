@@ -29,7 +29,7 @@ public class MobilityHeuristic implements IHeuristic {
 			}
 			
 			// substract count of own moves from count of opponents' moves. the value is the lowest when we dominate the most.
-			System.out.println("Heuristic value: "+(movesOfTheOthers-myMoves)+", for Move "+node.getMoves()[roleIndex].getMoveTerm());
+			//System.out.println("Heuristic value: "+(movesOfTheOthers-myMoves)+", for Move "+node.getMoves()[roleIndex].getMoveTerm());
 			return movesOfTheOthers-myMoves;
 		} catch (InterruptedException e) {}
 		
