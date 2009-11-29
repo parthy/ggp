@@ -58,7 +58,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			int index = game.getRoleIndex(role);
 			IMove[] myMoves = allMoves[index];
 			if(myMoves.length <= 1) max=0;
-			IDS();
+			//IDS();
 		} catch (InterruptedException e) {}
 	}
 	
@@ -256,12 +256,21 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	public IMove getMove(IGameNode arg0) {
 		// determine possible next states
 		//fillValues(arg0);
+		try {
+			game.regenerateNode(arg0);
+			if(game.getLegalMoves(arg0)[game.getRoleIndex(match.getRole())].length == 1) // we have only one possibility, anyway
+				return game.getRandomMove(arg0)[game.getRoleIndex(match.getRole())];
+		} catch(InterruptedException ex) {}
+		
 		IGameNode best = null;
 		try {
-			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this));
+			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this, match));
 			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
 				System.out.print("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
 				System.out.println("   Value: "+values.get(game.getNextNode(arg0, combMove).getState().hashCode()));
+				try {
+					game.regenerateNode(game.getNextNode(arg0, combMove));
+				} catch(InterruptedException ex) {}
 				childs.add(game.getNextNode(arg0, combMove));
 				//if((max == 1 && bestValue == 100) || (max == 0 && bestValue == 0)) break;
 			}

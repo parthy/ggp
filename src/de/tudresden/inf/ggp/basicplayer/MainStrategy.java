@@ -19,16 +19,13 @@ public class MainStrategy implements IStrategy {
 	private IStrategy myStrategy;
 	private IHeuristic heuristic;
 
-	public MainStrategy(IHeuristic heuristic){
-		this.heuristic = heuristic;
-	}
-
 	public void initMatch(Match initMatch) {
 		if(initMatch.getGame().getRoleCount() == 1){
 			this.myStrategy = new IDSStrategy();
 		} else {
 			if(initMatch.getGame().getRoleCount() == 2){
 				this.myStrategy = new TwoPlayerStrategy();
+				this.heuristic = new MobilityHeuristic(initMatch);
 			} else {
 				throw new UnsupportedOperationException("i dont know how to play this game");
 			}
@@ -44,6 +41,10 @@ public class MainStrategy implements IStrategy {
 		}
 	}
 
+	public void setHeuristic(IHeuristic heuristic){
+		this.heuristic = heuristic;
+	}
+	
 	@Override
 	public IMove getMove(IGameNode arg0) {
 		return this.myStrategy.getMove(arg0);

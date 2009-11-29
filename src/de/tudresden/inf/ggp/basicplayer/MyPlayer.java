@@ -54,7 +54,7 @@ public final class MyPlayer extends Player {
         
         /** XXX: If you implement another strategy here is the place to instantiate it */
 		/** and if you wanna use a heuristic here is also the place to put it in */
-        strategy = new MainStrategy(new NoveltyHeuristic());
+        strategy = new MainStrategy();
 
         System.out.println( "MyPlayer created the strategy "      +
                             strategy.getClass().getSimpleName() +
@@ -69,6 +69,7 @@ public final class MyPlayer extends Player {
                                    	 msg.getRole(),
                                    	 startClock,
                                    	 playClock );
+        
         System.out.println( "MyPlayer created the match." );
         System.out.println( "MyPlayer is prepared to start the game." );
         System.out.println("stats:"+runningGame.getStatistic());
