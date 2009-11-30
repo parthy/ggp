@@ -17,7 +17,7 @@
 	<classpath refid="classpath" />
 </manifestclasspath>
 
-<property name="main-class" value="de.tudresden.inf.ggp.basicplayer.MyPlayerServer" />
+<property name="main-class" value="player.MyPlayerServer" />
 
 <target name="clean">
 	<delete dir="${build.dir}"/>
