@@ -32,6 +32,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	private LinkedList<IGameNode> queue = new LinkedList<IGameNode>();
 	private HashMap<IGameState, Integer> visitedStates = new HashMap<IGameState, Integer>();
 	private HashMap<IGameState, Integer> values = new HashMap<IGameState, Integer>();
+	private HashMap<IGameState, int[]> maxNValues = new HashMap<IGameState, int[]>();
 	
 	private ArrayList<IGameNode> children = new ArrayList<IGameNode>();
 	
@@ -318,5 +319,61 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	public HashMap<IGameState, Integer> getValues(){
 		return values;
 	}
-
+	
+	/*
+	 * new method designed to play a game according to either random choose or some heuristic function
+	 * while doing this, we already populate the values hash with some values
+	 *  (goal -> goalValue, states before goal -> average goal value achieved from this state
+	 */
+	private void simulateGame() throws InterruptedException {
+		// first we just play a game
+		IGameNode currentNode = game.getTree().getRootNode();
+		int[] value;
+		while(true) {
+			// regenerate node, the usual crap
+			game.regenerateNode(currentNode);
+			
+			// game over?
+			if(currentNode.isTerminal()) { 
+				value = currentNode.getState().getGoalValues();
+				System.out.println("Played a game and got score "+value[playerNumber]);
+				break;
+			}
+			
+			// choose a move
+			currentNode = game.getNextNode(currentNode, getMoveForSimulation(currentNode));
+		}
+		
+		// since the game is over, we can now go all the way back and fiddle around with the goals
+		int[] existingValue = maxNValues.get(currentNode.getState());
+		
+		// if there is no value yet, we put it in
+		if(existingValue == null)
+			maxNValues.put(currentNode.getState(), value);
+		
+		// now we look at the parent of the goal state.
+		IGameNode node = currentNode;
+		while(node.getParent() != null) {
+			game.regenerateNode(node); // we are a bit paranoid with that, but what the hell.
+			node = node.getParent();
+			game.regenerateNode(node); // we are a bit paranoid with that, but what the hell.
+			int[] tempVal = maxNValues.get(node.getState());
+			if(tempVal == null) { // no value in there yet, so we just set the achieved goal value
+				maxNValues.put(node.getState(), value);
+			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
+				for(int i=0; i<value.length; i++) {
+					tempVal[i] = (tempVal[i]+value[i])/2;
+				}
+				maxNValues.put(node.getState(), tempVal);
+			}
+		}
+	}
+	
+	/*
+	 * helping function for game simulation: choose a move according to a heuristic
+	 * for now we just take a random move
+	 */
+	private IMove[] getMoveForSimulation(IGameNode currentNode) throws InterruptedException {
+		return game.getRandomMove(currentNode);
+	}
 }
