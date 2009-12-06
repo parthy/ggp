@@ -20,6 +20,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 	private List<IGameNode> queue = new ArrayList<IGameNode>();
 	private List<IGameNode> currentWay = new ArrayList<IGameNode>();
 	private Map<Integer, IGameState> visitedStates = new HashMap<Integer, IGameState>();
+	private HashMap<IGameState, HashMap<int[], Integer>> maxNValues = new HashMap<IGameState, HashMap<int[], Integer>>();
 	private boolean foundSolution = false;
 	private int nodesVisited;
 	private long endTime;
@@ -32,15 +33,19 @@ public class OnePlayerSearch extends AbstractStrategy {
 		// initiate solution search
 		game = initMatch.getGame();
 		queue.add(game.getTree().getRootNode());
-		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 5000L;
+		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000L;
 		try {
-			Search();
+			//Search();
+			while(System.currentTimeMillis() < endTime) {
+				simulateGame(game.getTree().getRootNode());
+			}
 		} catch (InterruptedException ex) {
 			Logger.getLogger(OnePlayerSearch.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		System.err.println("nodes visited: "+nodesVisited);
 		visitedStates.clear();
 		if(foundSolution) fillCurrentWay();
+		
 	}
 
     @Override
@@ -54,8 +59,16 @@ public class OnePlayerSearch extends AbstractStrategy {
 		else {// if no way is there, just do something
 			try {
 				// if no way is there, just do something
+				// first simulate a little
+				long end = System.currentTimeMillis() + match.getPlayTime()*1000 - 800;
+				try {
+					while(System.currentTimeMillis() < end)
+						simulateGame(node);
+				} catch(InterruptedException ex) {
+					
+				}
 				List<IMove[]> allMoves = game.getCombinedMoves(node);
-				PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new HeuristicComparator(this));
+				PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new SimulationComparator(maxNValues));
 				for(IMove[] move : allMoves) {
 					if(game.getNextNode(node, move).isTerminal()){
 						if(game.getGoalValues(game.getNextNode(node, move))[0] == 100){
@@ -134,4 +147,86 @@ public class OnePlayerSearch extends AbstractStrategy {
 		}
 	}
 
+	/*
+	 * new method designed to play a game according to either random choose or some heuristic function
+	 * while doing this, we already populate the values hash with some values
+	 *  (goal -> goalValue, states before goal -> average goal value achieved from this state
+	 */
+	private void simulateGame(IGameNode start) throws InterruptedException {
+		// first we just play a game
+		IGameNode currentNode = start;
+		int[] value;
+		while(true) {
+			// regenerate node, the usual crap
+			game.regenerateNode(currentNode);
+			
+			// game over?
+			if(currentNode.isTerminal()) { 
+				value = currentNode.getState().getGoalValues();
+				System.out.println("Played a game and got score "+value[playerNumber]);
+				break;
+			}
+			
+			// choose a move
+			currentNode = game.getNextNode(currentNode, getMoveForSimulation(currentNode));
+		}
+		
+		// since the game is over, we can now go all the way back and fiddle around with the goals
+		HashMap<int[], Integer> existingValue = maxNValues.get(currentNode.getState());
+		
+		//System.out.println("Existing Value in Hash: "+existingValue);
+		
+		// if there is no value yet, we put it in
+		if(existingValue == null) {
+			HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
+			temp.put(value, 1);
+			maxNValues.put(currentNode.getState(), temp);
+		}
+		// now we look at the parent of the goal state.
+		IGameNode node = currentNode;
+		while(node.getParent() != null) {
+			game.regenerateNode(node); // we are a bit paranoid with that, but what the hell.
+			node = node.getParent();
+			game.regenerateNode(node); // we are a bit paranoid with that, but what the hell.
+			HashMap<int[], Integer> entry = maxNValues.get(node.getState());
+			int[] tempVal = null;
+			if(entry != null) {
+				tempVal = (int[]) maxNValues.get(node.getState()).keySet().toArray()[0];
+			}
+			if(entry == null || tempVal == null) { // no value in there yet, so we just set the achieved goal value
+				HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
+				temp.put(value, 1);
+				maxNValues.put(node.getState(), temp);
+			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
+				Integer newCount = ((Integer) maxNValues.get(node.getState()).values().toArray()[0])+1;
+				for(int i=0; i<value.length; i++) {
+					tempVal[i] = ((newCount-1)*tempVal[i]+value[i])/newCount;
+				}
+				HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
+				temp.put(tempVal, newCount);
+				maxNValues.put(node.getState(), temp);
+			}
+		}
+	}
+	
+	/*
+	 * helping function for game simulation: choose a move according to a heuristic
+	 * for now we just take a random move
+	 */
+	private IMove[] getMoveForSimulation(IGameNode arg0) throws InterruptedException {
+		IGameNode best = null;
+		try {
+			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new HeuristicComparator(this));
+			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
+				childs.add(game.getNextNode(arg0, combMove));
+				//if((max == 1 && bestValue == 100) || (max == 0 && bestValue == 0)) break;
+			}
+			best = childs.peek();
+			if(best == null) { // we didn't find anything.. (actually not possible)
+				return game.getRandomMove(arg0);
+			}
+		} catch (InterruptedException e) {}
+		
+		return best.getMoves();
+	}
 }
