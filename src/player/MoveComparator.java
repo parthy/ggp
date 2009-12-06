@@ -18,13 +18,24 @@ import org.eclipse.palamedes.gdl.core.simulation.Match;
  */
 public class MoveComparator implements Comparator<IGameNode>{
 	private HashMap<IGameState, Integer> values;
+	private HashMap<IGameState, HashMap<int[], Integer>> simul;
 	private TwoPlayerStrategy strat;
 	private Match match;
+	private boolean useSimul = false;
 	
 	public MoveComparator(TwoPlayerStrategy strat, Match match){
 		this.strat = strat;
 		this.match = match;
 		this.values = strat.getValues();
+		this.simul = strat.getSimulationValues();
+	}
+	
+	public MoveComparator(TwoPlayerStrategy strat, Match match, boolean simul){
+		this.strat = strat;
+		this.match = match;
+		this.values = strat.getValues();
+		this.simul = strat.getSimulationValues();
+		this.useSimul = simul;
 	}
 
 	public int compare(IGameNode node1, IGameNode node2) {
@@ -34,6 +45,29 @@ public class MoveComparator implements Comparator<IGameNode>{
 			if(node2.getState() == null)
 				match.getGame().regenerateNode(node2);
 		} catch(InterruptedException e) {}
+		
+		// shall we use the simulation experience?
+		if(this.useSimul) {
+			if(this.simul.get(node1.getState()) != null && this.simul.get(node2.getState()) != null) {
+				HashMap<int[], Integer> val1 = this.simul.get(node1.getState());
+				HashMap<int[], Integer> val2 = this.simul.get(node2.getState());
+				if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] < ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
+					// val1 brings us worse score
+					System.out.println("val1 is worse than val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
+					return 1;
+				}
+				if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] > ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
+					// val1 brings us better score
+					System.out.println("val1 is better than val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
+					return -1;
+				}
+				if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] == ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
+					// the values bring us the same score -> equal
+					System.out.println("val1 is equal to val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
+					return 0;
+				}
+			}
+		}
 		
 		//the pseudo-49 approach
 		int tmpValue1 = 0;

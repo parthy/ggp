@@ -32,7 +32,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	private LinkedList<IGameNode> queue = new LinkedList<IGameNode>();
 	private HashMap<IGameState, Integer> visitedStates = new HashMap<IGameState, Integer>();
 	private HashMap<IGameState, Integer> values = new HashMap<IGameState, Integer>();
-	private HashMap<IGameState, int[]> maxNValues = new HashMap<IGameState, int[]>();
+	private HashMap<IGameState, HashMap<int[], Integer>> maxNValues = new HashMap<IGameState, HashMap<int[], Integer>>();
 	
 	private ArrayList<IGameNode> children = new ArrayList<IGameNode>();
 	
@@ -53,7 +53,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		
 		currentDepthLimit = 12;
 		startTime = System.currentTimeMillis();
-		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 5000;
+		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000;
 		try {
 			IGameNode root = game.getTree().getRootNode();
 			IMove[][] allMoves = game.getLegalMoves(root);
@@ -61,7 +61,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			int index = game.getRoleIndex(role);
 			IMove[] myMoves = allMoves[index];
 			if(myMoves.length <= 1) max=0;
-			DFS();
+			//DFS();
+			while(System.currentTimeMillis() < endTime) {
+				simulateGame();
+			}
 		} catch (InterruptedException e) {}
 	}
 	
@@ -300,7 +303,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		//fillValues(arg0);
 		IGameNode best = null;
 		try {
-			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this, match));
+			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this, match, true));
 			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
 				System.out.print("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
 				System.out.println("   Value: "+values.get(game.getNextNode(arg0, combMove).getState()));
@@ -318,6 +321,14 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
 	public HashMap<IGameState, Integer> getValues(){
 		return values;
+	}
+	
+	public HashMap<IGameState, HashMap<int[], Integer>> getSimulationValues() {
+		return maxNValues;
+	}
+	
+	public int getPlayerNumber() {
+		return playerNumber;
 	}
 	
 	/*
@@ -345,26 +356,39 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		}
 		
 		// since the game is over, we can now go all the way back and fiddle around with the goals
-		int[] existingValue = maxNValues.get(currentNode.getState());
+		HashMap<int[], Integer> existingValue = maxNValues.get(currentNode.getState());
+		
+		//System.out.println("Existing Value in Hash: "+existingValue);
 		
 		// if there is no value yet, we put it in
-		if(existingValue == null)
-			maxNValues.put(currentNode.getState(), value);
-		
+		if(existingValue == null) {
+			HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
+			temp.put(value, 1);
+			maxNValues.put(currentNode.getState(), temp);
+		}
 		// now we look at the parent of the goal state.
 		IGameNode node = currentNode;
 		while(node.getParent() != null) {
 			game.regenerateNode(node); // we are a bit paranoid with that, but what the hell.
 			node = node.getParent();
 			game.regenerateNode(node); // we are a bit paranoid with that, but what the hell.
-			int[] tempVal = maxNValues.get(node.getState());
-			if(tempVal == null) { // no value in there yet, so we just set the achieved goal value
-				maxNValues.put(node.getState(), value);
+			HashMap<int[], Integer> entry = maxNValues.get(node.getState());
+			int[] tempVal = null;
+			if(entry != null) {
+				tempVal = (int[]) maxNValues.get(node.getState()).keySet().toArray()[0];
+			}
+			if(entry == null || tempVal == null) { // no value in there yet, so we just set the achieved goal value
+				HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
+				temp.put(value, 1);
+				maxNValues.put(node.getState(), temp);
 			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
+				Integer newCount = ((Integer) maxNValues.get(node.getState()).values().toArray()[0])+1;
 				for(int i=0; i<value.length; i++) {
-					tempVal[i] = (tempVal[i]+value[i])/2;
+					tempVal[i] = ((newCount-1)*tempVal[i]+value[i])/newCount;
 				}
-				maxNValues.put(node.getState(), tempVal);
+				HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
+				temp.put(tempVal, newCount);
+				maxNValues.put(node.getState(), temp);
 			}
 		}
 	}
