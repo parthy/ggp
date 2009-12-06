@@ -65,6 +65,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			while(System.currentTimeMillis() < endTime) {
 				simulateGame();
 			}
+			System.out.println("While simulating, I got "+maxNValues.size()+" values.");
 		} catch (InterruptedException e) {}
 	}
 	
