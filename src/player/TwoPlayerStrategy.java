@@ -8,19 +8,15 @@ package player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.IMove;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 /**
  *
@@ -28,7 +24,6 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
  */
 public class TwoPlayerStrategy extends AbstractStrategy {
 	
-	//private PriorityQueue<Node> queue = new PriorityQueue<Node>();
 	private LinkedList<IGameNode> queue = new LinkedList<IGameNode>();
 	private HashMap<IGameState, Integer> visitedStates = new HashMap<IGameState, Integer>();
 	private HashMap<IGameState, Integer> values = new HashMap<IGameState, Integer>();
@@ -42,7 +37,6 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	
 	private IGameNode currentNode;
 	
-	private long startTime;
 	private long endTime;
 	private IGameNode node;
 	
@@ -52,7 +46,6 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		playerNumber = game.getRoleIndex(match.getRole());
 		
 		currentDepthLimit = 5;
-		startTime = System.currentTimeMillis();
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000;
 		try {
 			IGameNode root = game.getTree().getRootNode();
@@ -238,73 +231,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			makeValue(node.getParent());
 		}
 	}
-
-	//not used anymore, work is done by makeValue
-	public void buildStrategy() {
-		// find possible moves in start node. if there's only one, it is likely that we are the min player.
-		System.out.println("We assume we are "+((max==0) ? "min" : "max")+" player.");
-		// fill in the last few values starting from startnode
-		fillValues(game.getTree().getRootNode());
-		System.out.println("Values: "+values.size());
-	}
-
-	//not used anymore, work is done by makeValue
-	public int fillValues(IGameNode node) {
-		if(node.getState() == null) {
-			try {
-				game.regenerateNode(node);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		if(values.get(node.getState()) != null && values.get(node.getState()) != -1) return values.get(node.getState());
-		int value = -1;
-		try {
-			for(IMove[] move : game.getCombinedMoves(node)) {
-				IGameNode child = game.getNextNode(node, move);
-				// should we maximize or minimize?
-				int newValue = fillValues(child);
-				//if one of the childs has no value -> we cant tell which value this node has
-				if(newValue == -1){
-					//do not write anything in the hash
-					
-				} else {
-					if(max == 1) { // we are max player
-						if(node.getDepth()%2 == 0) { // maximize
-							if(newValue > value) value = newValue;
-						} else { // minimize
-							if(newValue < value || value == -1) value = newValue;
-						}
-					} else { // we are min player
-						if(node.getDepth()%2 == 0) { // minimize
-							if(newValue < value || value == -1) value = newValue;
-						} else { // maximize
-							if(newValue > value) value = newValue;
-						}
-					}
-				}
-			}
-		} catch (InterruptedException e) {}
-		if(node.getState() == null) {
-			try {
-				game.regenerateNode(node);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		if(node.getState() != null)
-			values.put(node.getState(), value);
-		return value;
-	}
-	
 	
 	@Override
 	public IMove getMove(IGameNode arg0) {
-		// determine possible next states
-		//fillValues(arg0);
-		
 		IGameNode best = null;
 		try {
 			// simulate a bit more, from here.
