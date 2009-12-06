@@ -343,9 +343,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	 * while doing this, we already populate the values hash with some values
 	 *  (goal -> goalValue, states before goal -> average goal value achieved from this state
 	 */
-	private void simulateGame(IGameNode node) throws InterruptedException {
+	private void simulateGame(IGameNode start) throws InterruptedException {
 		// first we just play a game
-		IGameNode currentNode = node;
+		IGameNode currentNode = start;
 		int[] value;
 		while(true) {
 			// regenerate node, the usual crap
