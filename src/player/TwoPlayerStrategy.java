@@ -302,8 +302,14 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	public IMove getMove(IGameNode arg0) {
 		// determine possible next states
 		//fillValues(arg0);
+		
 		IGameNode best = null;
 		try {
+			// simulate a bit more, from here.
+			long end = System.currentTimeMillis() + match.getPlayTime()*1000 - 500;
+			while(System.currentTimeMillis() < end) {
+				simulateGame(arg0);
+			}
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this, match, true));
 			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
 				System.out.print("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
@@ -337,9 +343,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	 * while doing this, we already populate the values hash with some values
 	 *  (goal -> goalValue, states before goal -> average goal value achieved from this state
 	 */
-	private void simulateGame() throws InterruptedException {
+	private void simulateGame(IGameNode node) throws InterruptedException {
 		// first we just play a game
-		IGameNode currentNode = game.getTree().getRootNode();
+		IGameNode currentNode = node;
 		int[] value;
 		while(true) {
 			// regenerate node, the usual crap

@@ -53,17 +53,17 @@ public class MoveComparator implements Comparator<IGameNode>{
 				HashMap<int[], Integer> val2 = this.simul.get(node2.getState());
 				if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] < ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
 					// val1 brings us worse score
-					System.out.println("val1 is worse than val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
+					//System.out.println("val1 is worse than val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
 					return 1;
 				}
 				if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] > ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
 					// val1 brings us better score
-					System.out.println("val1 is better than val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
+					//System.out.println("val1 is better than val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
 					return -1;
 				}
 				if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] == ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
 					// the values bring us the same score -> equal
-					System.out.println("val1 is equal to val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
+					//System.out.println("val1 is equal to val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
 					return 0;
 				}
 			}
