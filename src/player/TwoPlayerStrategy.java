@@ -61,11 +61,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			int index = game.getRoleIndex(role);
 			IMove[] myMoves = allMoves[index];
 			if(myMoves.length <= 1) max=0;
-			//DFS();
-			while(System.currentTimeMillis() < endTime) {
+			DFS();
+			/*while(System.currentTimeMillis() < endTime) {
 				simulateGame(root);
-			}
-			System.out.println("While simulating, I got "+maxNValues.size()+" values.");
+			}*/
+			//System.out.println("While simulating, I got "+maxNValues.size()+" values.");
 		} catch (InterruptedException e) {}
 	}
 	
@@ -306,7 +306,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		IGameNode best = null;
 		try {
 			// simulate a bit more, from here.
-			long end = System.currentTimeMillis() + match.getPlayTime()*1000 - 500;
+			long end = System.currentTimeMillis() + match.getPlayTime()*1000 - 800;
 			while(System.currentTimeMillis() < end) {
 				simulateGame(arg0);
 			}
