@@ -51,7 +51,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		game = initMatch.getGame();
 		playerNumber = game.getRoleIndex(match.getRole());
 		
-		currentDepthLimit = 12;
+		currentDepthLimit = 5;
 		startTime = System.currentTimeMillis();
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000;
 		try {
@@ -61,11 +61,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			int index = game.getRoleIndex(role);
 			IMove[] myMoves = allMoves[index];
 			if(myMoves.length <= 1) max=0;
-			DFS();
-			/*while(System.currentTimeMillis() < endTime) {
+			// new approach: search the game for half the prep time. if we didn't succeed by then, use the remaining time
+			// to simulate some matches.
+			IDS();
+			while(System.currentTimeMillis() < endTime) {
 				simulateGame(root);
-			}*/
-			//System.out.println("While simulating, I got "+maxNValues.size()+" values.");
+			}
+			System.out.println("While simulating, I got "+maxNValues.size()+" values.");
 		} catch (InterruptedException e) {}
 	}
 	
@@ -75,7 +77,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			flag = false;
 			
 			System.err.println("currentDepth"+currentDepthLimit);
-			System.err.println("Now: "+System.currentTimeMillis()+", endTime: "+endTime);
+			System.err.println("Now: "+System.currentTimeMillis()+", endTime: "+endTime/2);
 			System.err.println("Visited: "+nodesVisited);
 			
 			visitedStates.clear();
@@ -84,7 +86,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			currentNode = game.getTree().getRootNode();
 			queue.add(currentNode);
 			
-			while(!queue.isEmpty() && System.currentTimeMillis() < endTime) {
+			while(!queue.isEmpty() && System.currentTimeMillis() < endTime/2) {
 				// get next element from queue
 				currentNode = queue.remove(0);
 				//nodesVisited++;
@@ -135,7 +137,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				
 				//if(children.size() > 0) gameTree.put(currentNode, -1);
 			}
-			if(System.currentTimeMillis() > endTime){
+			if(System.currentTimeMillis() > endTime/2){
 				System.err.println("stop search because of time");
 				return;
 			}
@@ -402,9 +404,23 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	
 	/*
 	 * helping function for game simulation: choose a move according to a heuristic
-	 * for now we just take a random move
+	 * -- deprecated -- for now we just take a random move --
+	 * for now we play according to our recently simulated values and possible search values
 	 */
 	private IMove[] getMoveForSimulation(IGameNode currentNode) throws InterruptedException {
-		return game.getRandomMove(currentNode);
+		IGameNode best = null;
+		try {
+			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this, match, true));
+			for(IMove[] combMove : game.getCombinedMoves(currentNode)) {
+				childs.add(game.getNextNode(currentNode, combMove));
+				//if((max == 1 && bestValue == 100) || (max == 0 && bestValue == 0)) break;
+			}
+			best = childs.peek();
+			if(best == null) { // we didn't find anything.. (actually not possible)
+				return game.getRandomMove(currentNode);
+			}
+		} catch (InterruptedException e) {}
+		
+		return best.getMoves();
 	}
 }
