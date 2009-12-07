@@ -27,7 +27,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	private LinkedList<IGameNode> queue = new LinkedList<IGameNode>();
 	private HashMap<IGameState, Integer> visitedStates = new HashMap<IGameState, Integer>();
 	private HashMap<IGameState, Integer> values = new HashMap<IGameState, Integer>();
-	private HashMap<IGameState, HashMap<int[], Integer>> maxNValues = new HashMap<IGameState, HashMap<int[], Integer>>();
+	private HashMap<IGameState, HashMap<int[], Integer>> simulationValues = new HashMap<IGameState, HashMap<int[], Integer>>();
 	
 	private ArrayList<IGameNode> children = new ArrayList<IGameNode>();
 	
@@ -67,8 +67,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			while(System.currentTimeMillis() < endTime) {
 				simulateGame(root);
 			}
-			System.out.println("While simulating, I got "+maxNValues.size()+" values.");
-			System.out.println("Additionally, I found out the following for mobility: "+mobilityStatistics[0]+" pro, "+mobilityStatistics[1]+" con, "+mobilityStatistics[2]+" even.");
+			System.out.println("While simulating, I got "+simulationValues.size()+" values.");
+			System.out.println("Additionally, I found out the following for mobility: ("
+					+mobilityStatistics[0]+", "+mobilityStatistics[3]+") pro, ("
+					+mobilityStatistics[1]+", "+mobilityStatistics[4]+") con, ("
+					+mobilityStatistics[2]+", "+mobilityStatistics[5]+") even.");
 		} catch (InterruptedException e) {}
 	}
 	
@@ -241,7 +244,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		IGameNode best = null;
 		try {
 			// search a bit more, from the node arg0.
-			long end = System.currentTimeMillis() + match.getPlayTime()*1000 - 800;
+			long end = System.currentTimeMillis() + match.getPlayTime()*1000 - 1000;
 			currentDepthLimit = arg0.getDepth()+1;
 			arg0.setPreserve(true);
 			IDS(end, arg0);
@@ -250,7 +253,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				IGameNode next = game.getNextNode(arg0, combMove);
 				next.setPreserve(true);
 				System.out.print("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
-				System.out.println("   Value: ("+values.get(next.getState())+", "+maxNValues.get(next.getState())+")");
+				System.out.println("   Value: ("+values.get(next.getState())+", "+((int[]) (simulationValues.get(next.getState()).values().toArray()[0]))[playerNumber]+")");
 				childs.add(next);
 				//if((max == 1 && bestValue == 100) || (max == 0 && bestValue == 0)) break;
 			}
@@ -268,7 +271,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	}
 	
 	public HashMap<IGameState, HashMap<int[], Integer>> getSimulationValues() {
-		return maxNValues;
+		return simulationValues;
 	}
 	
 	public int getPlayerNumber() {
@@ -300,20 +303,20 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		}
 		
 		// since the game is over, we can now go all the way back and fiddle around with the goals
-		HashMap<int[], Integer> existingValue = maxNValues.get(currentNode.getState());
+		HashMap<int[], Integer> existingValue = simulationValues.get(currentNode.getState());
 		
 		// check if mobility or inverse mobility would good to apply
 		IMove[][] legals = game.getLegalMoves(currentNode.getParent());
-		if(legals[playerNumber].length > movesAtStart[0])
+		if(legals[playerNumber].length > movesAtStart[0] ^ value[playerNumber] < 50)
 		    mobilityStatistics[0]++;
-		else if(legals[playerNumber].length < movesAtStart[0])
+		else if(legals[playerNumber].length < movesAtStart[0] ^ value[playerNumber] >= 50)
 			mobilityStatistics[1]++;
 		else
 			mobilityStatistics[2]++;
 		
-		if(legals[(playerNumber+1)%2].length < movesAtStart[1])
+		if(legals[(playerNumber+1)%2].length < movesAtStart[1] ^ value[(playerNumber+1)%2] >= 50)
 			mobilityStatistics[3]++;
-		else if(legals[(playerNumber+1)%2].length > movesAtStart[1])
+		else if(legals[(playerNumber+1)%2].length > movesAtStart[1] ^ value[(playerNumber+1)%2] < 50)
 			mobilityStatistics[4]++;
 		else
 			mobilityStatistics[5]++;
@@ -323,39 +326,41 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		if(existingValue == null) {
 			HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
 			temp.put(value, 1);
-			maxNValues.put(currentNode.getState(), temp);
+			simulationValues.put(currentNode.getState(), temp);
 		}
 		// now we look at the parent of the goal state.
 		IGameNode node = currentNode;
 		while(node.getParent() != null) {
 			node = node.getParent();
-			HashMap<int[], Integer> entry = maxNValues.get(node.getState());
+			HashMap<int[], Integer> entry = simulationValues.get(node.getState());
 			int[] tempVal = null;
 			if(entry != null) {
-				tempVal = (int[]) maxNValues.get(node.getState()).keySet().toArray()[0];
+				tempVal = (int[]) simulationValues.get(node.getState()).keySet().toArray()[0];
 			}
 			if(entry == null || tempVal == null) { // no value in there yet, so we just set the achieved goal value
 				HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
 				temp.put(value, 1);
-				maxNValues.put(node.getState(), temp);
+				simulationValues.put(node.getState(), temp);
 			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
-				Integer newCount = ((Integer) maxNValues.get(node.getState()).values().toArray()[0])+1;
+				Integer newCount = ((Integer) simulationValues.get(node.getState()).values().toArray()[0])+1;
 				for(int i=0; i<value.length; i++) {
 					tempVal[i] = ((newCount-1)*tempVal[i]+value[i])/newCount;
 				}
 				HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
 				temp.put(tempVal, newCount);
-				maxNValues.put(node.getState(), temp);
+				simulationValues.put(node.getState(), temp);
 			}
 		}
 	}
 	
 	/*
 	 * helping function for game simulation: choose a move according to a heuristic
-	 * -- deprecated -- for now we just take a random move --
-	 * for now we play according to our recently simulated values and possible search values
+	 * for now we just take a random move
+	 * 
 	 */
 	private IMove[] getMoveForSimulation(IGameNode currentNode) throws InterruptedException {
+		return game.getRandomMove(currentNode);
+		/*
 		IGameNode best = null;
 		try {
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this, match, true));
@@ -365,10 +370,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			}
 			best = childs.peek();
 			if(best == null) { // we didn't find anything.. (actually not possible)
-				return game.getRandomMove(currentNode);
+				
 			}
 		} catch (InterruptedException e) {}
 		
-		return best.getMoves();
+		return best.getMoves();*/
 	}
 }
