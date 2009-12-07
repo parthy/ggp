@@ -253,7 +253,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				IGameNode next = game.getNextNode(arg0, combMove);
 				next.setPreserve(true);
 				System.out.print("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
-				System.out.println("   Value: ("+values.get(next.getState())+", "+((int[]) (simulationValues.get(next.getState()).keySet().toArray()[0]))[playerNumber]+")");
+				int simval = -1;
+				try {
+					simval = ((int[]) (simulationValues.get(next.getState()).keySet().toArray()[0]))[playerNumber];
+				} catch(NullPointerException ex) {}
+				System.out.println("   Value: ("+values.get(next.getState())+", "+simval+")");
 				childs.add(next);
 				//if((max == 1 && bestValue == 100) || (max == 0 && bestValue == 0)) break;
 			}
