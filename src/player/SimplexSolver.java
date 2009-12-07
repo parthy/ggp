@@ -60,7 +60,7 @@ public class SimplexSolver {
 		while(!isSolved(problem)){
 			System.out.println("======= next step ===========");
 			System.out.println(isSolved(problem));
-		
+
 			//set pivotX, pivotY, pivotValue
 			choosePivot(problem);
 			System.out.println("x: "+pivotX+" y: "+pivotY+" val: "+pivotVal);
@@ -161,7 +161,7 @@ public class SimplexSolver {
     private static void makeResult(LinkedList<LinkedList<Float>> problem) {
         movesI = new LinkedList<Float>();
         movesII = new LinkedList<Float>();
-        
+
         //fill
         for(int i=0; i<(problem.size()-1); i++){
             movesI.add(0f);
