@@ -43,6 +43,16 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	private int[] mobilityStatistics = new int[]{0,0,0,0,0,0}; // we count the pro, con and even results for both ourselves and the opponent for mobility while simulating
 	private int[] movesAtStart = new int[2];
 	
+	public static final int MOB_DISABLE_US = 1;
+	public static final int MOB_ENABLE_US = 2;
+	public static final int MOB_DISABLE_OPP = 4;
+	public static final int MOB_ENABLE_OPP = 8;
+	
+	public static final int MOB_MOBILITY = 6;
+	public static final int MOB_INVERSE = 9;
+	public static final int MOB_MOBILITY_TEAM = 10;
+	public static final int MOB_INV_MOB_TEAM = 5;
+	
 	public void initMatch(Match initMatch) {
 		match = initMatch;
 		game = initMatch.getGame();
@@ -379,5 +389,18 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		} catch (InterruptedException e) {}
 		
 		return best.getMoves();*/
+	}
+	
+	public int getMobilityVariant() {
+		int sum=0;
+		// if the pro's for one variant is overweighing the con's and even's, we can apply that one.
+		// conversely, if the con's overweigh the pro's and the even's we can apply the opposite.
+		
+		if(mobilityStatistics[0] > (mobilityStatistics[1]+mobilityStatistics[2])) sum += MOB_ENABLE_US;
+		if((mobilityStatistics[0]+mobilityStatistics[2]) < mobilityStatistics[1]) sum += MOB_DISABLE_US;
+		if(mobilityStatistics[3] > (mobilityStatistics[4]+mobilityStatistics[5])) sum += MOB_ENABLE_OPP;
+		if((mobilityStatistics[3]+mobilityStatistics[4]) < mobilityStatistics[5]) sum += MOB_DISABLE_OPP;
+		
+		return sum;
 	}
 }

@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
+import org.eclipse.palamedes.gdl.core.model.IMove;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 
 /**
@@ -62,16 +63,32 @@ public class MoveComparator implements Comparator<IGameNode>{
 					return -1;
 				}
 				if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] == ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
-					// the values bring us the same score -> equal
-					//System.out.println("val1 is equal to val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
-					return 0;
+					// the simulation values don't distinguish. try mobility approach
+					int mobility = strat.getMobilityVariant();
+					switch(mobility) {
+						case 0: return 0;
+						default: 
+							try {
+								return compareMobility(mobility, match.getGame().getLegalMoves(node1), match.getGame().getLegalMoves(node2));
+							} catch (InterruptedException e) {}
+					}
 				}
 			// the following covers the cases where values are not known. something is better than not known here.
 			} else if(this.simul.get(node1.getState()) == null && this.simul.get(node2.getState()) != null) {
 				return 1;
 			} else if(this.simul.get(node1.getState()) != null && this.simul.get(node2.getState()) == null ) {
 				return -1;
-			} else return 0;
+			} else {
+				// the simulation values don't distinguish. try mobility approach
+				int mobility = strat.getMobilityVariant();
+				switch(mobility) {
+					case 0: return 0;
+					default: 
+						try {
+							return compareMobility(mobility, match.getGame().getLegalMoves(node1), match.getGame().getLegalMoves(node2));
+						} catch (InterruptedException e) {}
+				}
+			}
 		}
 		
 		//the pseudo-49 approach
@@ -95,14 +112,14 @@ public class MoveComparator implements Comparator<IGameNode>{
 			if(tmpValue1 == tmpValue2){
 				//they have the same value
 				//here the heuristic decides
-				if(MyPlayer.strategy.getHeuristicValue(node1) < MyPlayer.strategy.getHeuristicValue(node2)){ // lower value means better node
-					return -1;
-				} else {
-					if(MyPlayer.strategy.getHeuristicValue(node1) == MyPlayer.strategy.getHeuristicValue(node2)){
-						return 0;
-					} else {
-						return 1;
-					}
+				// the values don't distinguish. try mobility approach
+				int mobility = strat.getMobilityVariant();
+				switch(mobility) {
+					case 0: return 0;
+					default: 
+						try {
+							return compareMobility(mobility, match.getGame().getLegalMoves(node1), match.getGame().getLegalMoves(node2));
+						} catch (InterruptedException e) {}
 				}
 			} else {
 				return -1;
@@ -110,4 +127,82 @@ public class MoveComparator implements Comparator<IGameNode>{
 		}
 	}
 	
+	
+	private int compareMobility(int mobilityVariant, IMove[][] allMoves1, IMove[][] allMoves2) {
+		switch(mobilityVariant) {
+		case TwoPlayerStrategy.MOB_DISABLE_OPP:
+			if(allMoves1[(strat.getPlayerNumber()+1)%2].length < allMoves2[(strat.getPlayerNumber()+1)%2].length)
+				return -1;
+			if(allMoves1[(strat.getPlayerNumber()+1)%2].length > allMoves2[(strat.getPlayerNumber()+1)%2].length)
+				return 1;
+			return 0;
+			
+		case TwoPlayerStrategy.MOB_DISABLE_US:
+			if(allMoves1[(strat.getPlayerNumber()+0)%2].length < allMoves2[(strat.getPlayerNumber()+0)%2].length)
+				return -1;
+			if(allMoves1[(strat.getPlayerNumber()+0)%2].length > allMoves2[(strat.getPlayerNumber()+0)%2].length)
+				return 1;
+			return 0;
+			
+		case TwoPlayerStrategy.MOB_ENABLE_OPP:
+			if(allMoves1[(strat.getPlayerNumber()+1)%2].length > allMoves2[(strat.getPlayerNumber()+1)%2].length)
+				return -1;
+			if(allMoves1[(strat.getPlayerNumber()+1)%2].length < allMoves2[(strat.getPlayerNumber()+1)%2].length)
+				return 1;
+			return 0;
+			
+		case TwoPlayerStrategy.MOB_ENABLE_US:
+			if(allMoves1[(strat.getPlayerNumber()+0)%2].length > allMoves2[(strat.getPlayerNumber()+0)%2].length)
+				return -1;
+			if(allMoves1[(strat.getPlayerNumber()+0)%2].length < allMoves2[(strat.getPlayerNumber()+0)%2].length)
+				return 1;
+			return 0;
+			
+		case TwoPlayerStrategy.MOB_MOBILITY:
+			if(allMoves1[(strat.getPlayerNumber()+0)%2].length > allMoves2[(strat.getPlayerNumber()+0)%2].length)
+				return -1;
+			if(allMoves1[(strat.getPlayerNumber()+0)%2].length < allMoves2[(strat.getPlayerNumber()+0)%2].length)
+				return 1;
+			if(allMoves1[(strat.getPlayerNumber()+1)%2].length < allMoves2[(strat.getPlayerNumber()+1)%2].length)
+				return -1;
+			if(allMoves1[(strat.getPlayerNumber()+1)%2].length > allMoves2[(strat.getPlayerNumber()+1)%2].length)
+				return 1;
+			return 0;
+			
+		case TwoPlayerStrategy.MOB_INVERSE:
+			if(allMoves1[(strat.getPlayerNumber()+0)%2].length < allMoves2[(strat.getPlayerNumber()+0)%2].length)
+				return -1;
+			if(allMoves1[(strat.getPlayerNumber()+0)%2].length > allMoves2[(strat.getPlayerNumber()+0)%2].length)
+				return 1;
+			if(allMoves1[(strat.getPlayerNumber()+1)%2].length > allMoves2[(strat.getPlayerNumber()+1)%2].length)
+				return -1;
+			if(allMoves1[(strat.getPlayerNumber()+1)%2].length < allMoves2[(strat.getPlayerNumber()+1)%2].length)
+				return 1;
+			return 0;
+		
+		case TwoPlayerStrategy.MOB_MOBILITY_TEAM:
+			if(allMoves1[(strat.getPlayerNumber()+0)%2].length > allMoves2[(strat.getPlayerNumber()+0)%2].length)
+				return -1;
+			if(allMoves1[(strat.getPlayerNumber()+0)%2].length < allMoves2[(strat.getPlayerNumber()+0)%2].length)
+				return 1;
+			if(allMoves1[(strat.getPlayerNumber()+1)%2].length > allMoves2[(strat.getPlayerNumber()+1)%2].length)
+				return -1;
+			if(allMoves1[(strat.getPlayerNumber()+1)%2].length < allMoves2[(strat.getPlayerNumber()+1)%2].length)
+				return 1;
+			return 0;
+			
+		case TwoPlayerStrategy.MOB_INV_MOB_TEAM:
+			if(allMoves1[(strat.getPlayerNumber()+0)%2].length < allMoves2[(strat.getPlayerNumber()+0)%2].length)
+				return -1;
+			if(allMoves1[(strat.getPlayerNumber()+0)%2].length > allMoves2[(strat.getPlayerNumber()+0)%2].length)
+				return 1;
+			if(allMoves1[(strat.getPlayerNumber()+1)%2].length < allMoves2[(strat.getPlayerNumber()+1)%2].length)
+				return -1;
+			if(allMoves1[(strat.getPlayerNumber()+1)%2].length > allMoves2[(strat.getPlayerNumber()+1)%2].length)
+				return 1;
+			return 0;
+			
+		default: return 0;
+		}
+	}
 }
