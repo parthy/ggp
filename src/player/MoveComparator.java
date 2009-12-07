@@ -46,8 +46,8 @@ public class MoveComparator implements Comparator<IGameNode>{
 				match.getGame().regenerateNode(node2);
 		} catch(InterruptedException e) {}
 		
-		// shall we use the simulation experience?
-		if(this.useSimul) {
+		// shall we use the simulation experience? (only if no real values are found)
+		if(this.useSimul && !values.containsKey(node1.getState()) && !values.containsKey(node2.getState())) { 
 			if(this.simul.get(node1.getState()) != null && this.simul.get(node2.getState()) != null) {
 				HashMap<int[], Integer> val1 = this.simul.get(node1.getState());
 				HashMap<int[], Integer> val2 = this.simul.get(node2.getState());

@@ -49,6 +49,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000;
 		try {
 			IGameNode root = game.getTree().getRootNode();
+			root.setPreserve(true); // we set the node to preserve so the stupid game tree won't forget about the state anymore.
 			IMove[][] allMoves = game.getLegalMoves(root);
 			String role = initMatch.getRole();
 			int index = game.getRoleIndex(role);
@@ -56,7 +57,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			if(myMoves.length <= 1) max=0;
 			// new approach: search the game for half the prep time. if we didn't succeed by then, use the remaining time
 			// to simulate some matches.
-			IDS();
+			IDS(endTime, root);
 			while(System.currentTimeMillis() < endTime) {
 				simulateGame(root);
 			}
@@ -64,31 +65,25 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		} catch (InterruptedException e) {}
 	}
 	
-	public void IDS() throws InterruptedException {
+	public void IDS(long endSearchTime, IGameNode start) throws InterruptedException {
 		boolean flag = true;
 		while(flag) {
 			flag = false;
 			
 			System.err.println("currentDepth"+currentDepthLimit);
-			System.err.println("Now: "+System.currentTimeMillis()+", endTime: "+endTime/2);
+			System.err.println("Now: "+System.currentTimeMillis()+", endTime: "+endSearchTime);
 			System.err.println("Visited: "+nodesVisited);
 			
 			visitedStates.clear();
 			queue.clear();
 			
-			currentNode = game.getTree().getRootNode();
-			queue.add(currentNode);
+			queue.add(start);
 			
-			while(!queue.isEmpty() && System.currentTimeMillis() < endTime/2) {
+			while(!queue.isEmpty() && System.currentTimeMillis() < endSearchTime) {
 				// get next element from queue
 				currentNode = queue.remove(0);
 				//nodesVisited++;
 				//if(nodesVisited % 1000 == 0) System.out.println("visited: "+nodesVisited);
-				// regenerate node, if necessary
-				if(currentNode.getState() == null)
-					try {
-						game.regenerateNode(currentNode);
-					} catch (InterruptedException e2) {}
 				
 				// leave tracing infos
 				visitedStates.put(currentNode.getState(), currentNode.getDepth()-1);
@@ -105,13 +100,15 @@ public class TwoPlayerStrategy extends AbstractStrategy {
     					for(int i=0; i<allMoves.size(); ++i) {
     						try {
     							combMoves = allMoves.get(i);
-    							Integer foundDepth = visitedStates.get(game.getNextNode(currentNode, combMoves).getState());
+    							IGameNode next = game.getNextNode(currentNode, combMoves);
+    							next.setPreserve(true);
+    							Integer foundDepth = visitedStates.get(next.getState());
+    							
     							if(foundDepth == null || foundDepth > currentNode.getDepth()){
-	    							//Node temp = new Node(game.getNextNode(currentNode, combMoves));
-    								queue.add(0, game.getNextNode(currentNode, combMoves));
+    								queue.add(0, next);
     								expanded = true;
     							}
-    							children.add(game.getNextNode(currentNode, combMoves));
+    							children.add(next);
     						} catch (InterruptedException e) {}
     					}
 					} catch (InterruptedException e1) {}
@@ -130,7 +127,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				
 				//if(children.size() > 0) gameTree.put(currentNode, -1);
 			}
-			if(System.currentTimeMillis() > endTime/2){
+			if(System.currentTimeMillis() > endSearchTime){
 				System.err.println("stop search because of time");
 				return;
 			}
@@ -236,16 +233,18 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	public IMove getMove(IGameNode arg0) {
 		IGameNode best = null;
 		try {
-			// simulate a bit more, from here.
+			// search a bit more, from the node arg0.
 			long end = System.currentTimeMillis() + match.getPlayTime()*1000 - 800;
-			while(System.currentTimeMillis() < end) {
-				simulateGame(arg0);
-			}
+			currentDepthLimit = arg0.getDepth()+1;
+			arg0.setPreserve(true);
+			IDS(end, arg0);
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this, match, true));
 			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
+				IGameNode next = game.getNextNode(arg0, combMove);
+				next.setPreserve(true);
 				System.out.print("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
-				System.out.println("   Value: "+values.get(game.getNextNode(arg0, combMove).getState()));
-				childs.add(game.getNextNode(arg0, combMove));
+				System.out.println("   Value: "+values.get(next.getState()));
+				childs.add(next);
 				//if((max == 1 && bestValue == 100) || (max == 0 && bestValue == 0)) break;
 			}
 			best = childs.peek();
@@ -277,10 +276,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	private void simulateGame(IGameNode start) throws InterruptedException {
 		// first we just play a game
 		IGameNode currentNode = start;
+		currentNode.setPreserve(true);
 		int[] value;
 		while(true) {
-			// regenerate node, the usual crap
-			game.regenerateNode(currentNode);
 			
 			// game over?
 			if(currentNode.isTerminal()) { 
@@ -291,6 +289,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			
 			// choose a move
 			currentNode = game.getNextNode(currentNode, getMoveForSimulation(currentNode));
+			currentNode.setPreserve(true);
 		}
 		
 		// since the game is over, we can now go all the way back and fiddle around with the goals
@@ -307,9 +306,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		// now we look at the parent of the goal state.
 		IGameNode node = currentNode;
 		while(node.getParent() != null) {
-			game.regenerateNode(node); // we are a bit paranoid with that, but what the hell.
 			node = node.getParent();
-			game.regenerateNode(node); // we are a bit paranoid with that, but what the hell.
 			HashMap<int[], Integer> entry = maxNValues.get(node.getState());
 			int[] tempVal = null;
 			if(entry != null) {
