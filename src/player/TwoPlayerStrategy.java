@@ -40,13 +40,16 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	private long endTime;
 	private IGameNode node;
 	
+	private int[] mobilityStatistics = new int[]{0,0,0,0,0,0}; // we count the pro, con and even results for both ourselves and the opponent for mobility while simulating
+	private int[] movesAtStart = new int[2];
+	
 	public void initMatch(Match initMatch) {
 		match = initMatch;
 		game = initMatch.getGame();
 		playerNumber = game.getRoleIndex(match.getRole());
 		
 		currentDepthLimit = 5;
-		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000;
+		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 800;
 		try {
 			IGameNode root = game.getTree().getRootNode();
 			root.setPreserve(true); // we set the node to preserve so the stupid game tree won't forget about the state anymore.
@@ -55,13 +58,17 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			int index = game.getRoleIndex(role);
 			IMove[] myMoves = allMoves[index];
 			if(myMoves.length <= 1) max=0;
+			movesAtStart[0] = myMoves.length;
+			movesAtStart[1] = allMoves[(index+1)%2].length;
+			
 			// new approach: search the game for half the prep time. if we didn't succeed by then, use the remaining time
 			// to simulate some matches.
-			IDS(endTime, root);
+			IDS(endTime-initMatch.getStartTime()*500, root);
 			while(System.currentTimeMillis() < endTime) {
 				simulateGame(root);
 			}
 			System.out.println("While simulating, I got "+maxNValues.size()+" values.");
+			System.out.println("Additionally, I found out the following for mobility: "+mobilityStatistics[0]+" pro, "+mobilityStatistics[1]+" con, "+mobilityStatistics[2]+" even.");
 		} catch (InterruptedException e) {}
 	}
 	
@@ -243,7 +250,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				IGameNode next = game.getNextNode(arg0, combMove);
 				next.setPreserve(true);
 				System.out.print("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
-				System.out.println("   Value: "+values.get(next.getState()));
+				System.out.println("   Value: ("+values.get(next.getState())+", "+maxNValues.get(next.getState())+")");
 				childs.add(next);
 				//if((max == 1 && bestValue == 100) || (max == 0 && bestValue == 0)) break;
 			}
@@ -295,6 +302,21 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		// since the game is over, we can now go all the way back and fiddle around with the goals
 		HashMap<int[], Integer> existingValue = maxNValues.get(currentNode.getState());
 		
+		// check if mobility or inverse mobility would good to apply
+		IMove[][] legals = game.getLegalMoves(currentNode.getParent());
+		if(legals[playerNumber].length > movesAtStart[0])
+		    mobilityStatistics[0]++;
+		else if(legals[playerNumber].length < movesAtStart[0])
+			mobilityStatistics[1]++;
+		else
+			mobilityStatistics[2]++;
+		
+		if(legals[(playerNumber+1)%2].length < movesAtStart[1])
+			mobilityStatistics[3]++;
+		else if(legals[(playerNumber+1)%2].length > movesAtStart[1])
+			mobilityStatistics[4]++;
+		else
+			mobilityStatistics[5]++;
 		//System.out.println("Existing Value in Hash: "+existingValue);
 		
 		// if there is no value yet, we put it in
