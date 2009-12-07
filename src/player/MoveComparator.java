@@ -119,7 +119,7 @@ public class MoveComparator implements Comparator<IGameNode>{
 					default: 
 						try {
 							return compareMobility(mobility, match.getGame().getLegalMoves(node1), match.getGame().getLegalMoves(node2));
-						} catch (InterruptedException e) {}
+						} catch (InterruptedException e) {return 0;}
 				}
 			} else {
 				return -1;
