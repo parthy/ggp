@@ -342,7 +342,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				temp.put(value, 1);
 				simulationValues.put(node.getState(), temp);
 			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
-				Integer newCount = ((Integer) simulationValues.get(node.getState()).values().toArray()[0])+1;
+				Integer newCount = ((Integer) simulationValues.get(node.getState()).keySet().toArray()[0])+1;
 				for(int i=0; i<value.length; i++) {
 					tempVal[i] = ((newCount-1)*tempVal[i]+value[i])/newCount;
 				}
