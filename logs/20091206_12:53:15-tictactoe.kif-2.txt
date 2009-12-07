@@ -1,0 +1,2082 @@
+INFO(12:53:16.037): match:TTT_NO_SIM30
+INFO(12:53:16.052): game:tictactoe
+INFO(12:53:16.052): starting game with startclock=10, playclock=10
+INFO(12:53:16.052): step:1
+INFO(12:53:16.055): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:53:16.055): role: XPLAYER => player: local(Random)
+INFO(12:53:16.058): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:53:16.058): Sending start messages ...
+INFO(12:53:16.062): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:16.079): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:16.081): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:53:24.662): reply from MyPlayer: READY after 8600ms
+INFO(12:53:25.174): Sending play messages ...
+INFO(12:53:25.175): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:25.176): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:25.177): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:53:25.190): reply from MyPlayer: NOOP after 15ms
+INFO(12:53:25.191): moves: ((MARK 1 1) NOOP)
+INFO(12:53:25.196): step:2
+INFO(12:53:25.197): current state:((CELL 1 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:53:25.704): Sending play messages ...
+INFO(12:53:25.709): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:25.710): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:25.710): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 1) NOOP))"
+INFO(12:53:25.748): reply from MyPlayer: (MARK 1 2) after 39ms
+INFO(12:53:25.749): moves: (NOOP (MARK 1 2))
+INFO(12:53:25.753): step:3
+INFO(12:53:25.753): current state:((CELL 1 2 O) (CELL 1 1 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:53:26.259): Sending play messages ...
+INFO(12:53:26.264): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:26.264): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:26.265): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:53:26.271): reply from MyPlayer: NOOP after 7ms
+INFO(12:53:26.272): moves: ((MARK 3 3) NOOP)
+INFO(12:53:26.274): step:4
+INFO(12:53:26.275): current state:((CELL 3 3 X) (CELL 1 2 O) (CELL 1 1 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:53:26.779): Sending play messages ...
+INFO(12:53:26.780): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:26.781): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:26.782): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:53:26.794): reply from MyPlayer: (MARK 1 3) after 14ms
+INFO(12:53:26.795): moves: (NOOP (MARK 1 3))
+INFO(12:53:26.799): step:5
+INFO(12:53:26.800): current state:((CELL 1 3 O) (CELL 3 3 X) (CELL 1 2 O) (CELL 1 1 X) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:53:27.303): Sending play messages ...
+INFO(12:53:27.306): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:27.307): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:27.310): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:53:27.317): reply from MyPlayer: NOOP after 11ms
+INFO(12:53:27.317): moves: ((MARK 3 2) NOOP)
+INFO(12:53:27.320): step:6
+INFO(12:53:27.321): current state:((CELL 3 2 X) (CELL 1 3 O) (CELL 3 3 X) (CELL 1 2 O) (CELL 1 1 X) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(12:53:27.825): Sending play messages ...
+INFO(12:53:27.832): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:27.833): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:27.833): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 2) NOOP))"
+INFO(12:53:27.846): reply from MyPlayer: (MARK 2 1) after 14ms
+INFO(12:53:27.848): moves: (NOOP (MARK 2 1))
+INFO(12:53:27.851): step:7
+INFO(12:53:27.851): current state:((CELL 2 1 O) (CELL 3 2 X) (CELL 1 3 O) (CELL 3 3 X) (CELL 1 2 O) (CELL 1 1 X) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(12:53:28.354): Sending play messages ...
+INFO(12:53:28.357): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:28.358): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:28.359): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 2 1)))"
+INFO(12:53:28.364): reply from MyPlayer: NOOP after 7ms
+INFO(12:53:28.365): moves: ((MARK 3 1) NOOP)
+INFO(12:53:28.368): step:8
+INFO(12:53:28.368): current state:((CELL 3 1 X) (CELL 2 1 O) (CELL 3 2 X) (CELL 1 3 O) (CELL 3 3 X) (CELL 1 2 O) (CELL 1 1 X) (CELL 2 2 B) (CELL 2 3 B) (CONTROL OPLAYER) )
+INFO(12:53:28.376): Sending stop messages ...
+INFO(12:53:28.377): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:28.377): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:28.379): message to MyPlayer sent: "(STOP TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:53:28.380): Game over! results: 100 0 
+INFO(12:53:28.380): runtimes (in ms): 43 8707 
+INFO(12:53:28.380): Done.
+INFO(12:53:28.576): match:TTT_NO_SIM30
+INFO(12:53:28.578): game:tictactoe
+INFO(12:53:28.578): starting game with startclock=10, playclock=10
+INFO(12:53:28.578): step:1
+INFO(12:53:28.580): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:53:28.581): role: XPLAYER => player: local(Random)
+INFO(12:53:28.583): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:53:28.583): Sending start messages ...
+INFO(12:53:28.585): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:28.591): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:28.592): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:53:36.625): reply from MyPlayer: READY after 8040ms
+INFO(12:53:37.137): Sending play messages ...
+INFO(12:53:37.139): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:37.139): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:37.140): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:53:37.151): reply from MyPlayer: NOOP after 13ms
+INFO(12:53:37.152): moves: ((MARK 3 2) NOOP)
+INFO(12:53:37.157): step:2
+INFO(12:53:37.157): current state:((CELL 3 2 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:53:37.662): Sending play messages ...
+INFO(12:53:37.668): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:37.669): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:37.670): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 2) NOOP))"
+INFO(12:53:37.691): reply from MyPlayer: (MARK 1 1) after 22ms
+INFO(12:53:37.692): moves: (NOOP (MARK 1 1))
+INFO(12:53:37.694): step:3
+INFO(12:53:37.694): current state:((CELL 1 1 O) (CELL 3 2 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:53:38.200): Sending play messages ...
+INFO(12:53:38.203): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:38.204): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:38.204): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:53:38.211): reply from MyPlayer: NOOP after 8ms
+INFO(12:53:38.212): moves: ((MARK 1 2) NOOP)
+INFO(12:53:38.214): step:4
+INFO(12:53:38.214): current state:((CELL 1 2 X) (CELL 1 1 O) (CELL 3 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:53:38.718): Sending play messages ...
+INFO(12:53:38.722): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:38.723): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:38.723): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 2) NOOP))"
+INFO(12:53:38.730): reply from MyPlayer: (MARK 2 2) after 8ms
+INFO(12:53:38.731): moves: (NOOP (MARK 2 2))
+INFO(12:53:38.733): step:5
+INFO(12:53:38.734): current state:((CELL 2 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 3 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:53:39.239): Sending play messages ...
+INFO(12:53:39.242): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:39.242): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:39.246): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 2 2)))"
+INFO(12:53:39.253): reply from MyPlayer: NOOP after 11ms
+INFO(12:53:39.254): moves: ((MARK 3 1) NOOP)
+INFO(12:53:39.256): step:6
+INFO(12:53:39.256): current state:((CELL 3 1 X) (CELL 2 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 3 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:53:39.761): Sending play messages ...
+INFO(12:53:39.762): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:39.763): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:39.764): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:53:39.777): reply from MyPlayer: (MARK 3 3) after 15ms
+INFO(12:53:39.780): moves: (NOOP (MARK 3 3))
+INFO(12:53:39.782): step:7
+INFO(12:53:39.782): current state:((CELL 3 3 O) (CELL 3 1 X) (CELL 2 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 3 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CONTROL XPLAYER) )
+INFO(12:53:39.790): Sending stop messages ...
+INFO(12:53:39.791): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:39.792): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:39.792): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 3 3)))"
+INFO(12:53:39.795): Game over! results: 0 100 
+INFO(12:53:39.796): runtimes (in ms): 38 8117 
+INFO(12:53:39.796): Done.
+INFO(12:53:39.999): match:TTT_NO_SIM30
+INFO(12:53:40.000): game:tictactoe
+INFO(12:53:40.001): starting game with startclock=10, playclock=10
+INFO(12:53:40.001): step:1
+INFO(12:53:40.003): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:53:40.004): role: XPLAYER => player: local(Random)
+INFO(12:53:40.006): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:53:40.006): Sending start messages ...
+INFO(12:53:40.011): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:40.016): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:40.017): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:53:48.050): reply from MyPlayer: READY after 8039ms
+INFO(12:53:48.564): Sending play messages ...
+INFO(12:53:48.566): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:48.567): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:48.567): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:53:48.577): reply from MyPlayer: NOOP after 11ms
+INFO(12:53:48.579): moves: ((MARK 1 2) NOOP)
+INFO(12:53:48.583): step:2
+INFO(12:53:48.583): current state:((CELL 1 2 X) (CELL 1 1 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:53:49.088): Sending play messages ...
+INFO(12:53:49.100): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:49.101): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:49.102): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 2) NOOP))"
+INFO(12:53:49.113): reply from MyPlayer: (MARK 1 1) after 13ms
+INFO(12:53:49.115): moves: (NOOP (MARK 1 1))
+INFO(12:53:49.117): step:3
+INFO(12:53:49.117): current state:((CELL 1 1 O) (CELL 1 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:53:49.623): Sending play messages ...
+INFO(12:53:49.626): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:49.627): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:49.627): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:53:49.640): reply from MyPlayer: NOOP after 14ms
+INFO(12:53:49.640): moves: ((MARK 3 1) NOOP)
+INFO(12:53:49.642): step:4
+INFO(12:53:49.643): current state:((CELL 3 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:53:50.148): Sending play messages ...
+INFO(12:53:50.149): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:50.150): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:50.150): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:53:50.160): reply from MyPlayer: (MARK 2 2) after 11ms
+INFO(12:53:50.161): moves: (NOOP (MARK 2 2))
+INFO(12:53:50.165): step:5
+INFO(12:53:50.166): current state:((CELL 2 2 O) (CELL 3 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:53:50.669): Sending play messages ...
+INFO(12:53:50.671): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:50.672): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:50.673): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 2 2)))"
+INFO(12:53:50.679): reply from MyPlayer: NOOP after 8ms
+INFO(12:53:50.680): moves: ((MARK 3 2) NOOP)
+INFO(12:53:50.686): step:6
+INFO(12:53:50.687): current state:((CELL 3 2 X) (CELL 2 2 O) (CELL 3 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:53:51.191): Sending play messages ...
+INFO(12:53:51.195): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:51.196): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:51.198): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 2) NOOP))"
+INFO(12:53:51.204): reply from MyPlayer: (MARK 3 3) after 9ms
+INFO(12:53:51.205): moves: (NOOP (MARK 3 3))
+INFO(12:53:51.207): step:7
+INFO(12:53:51.207): current state:((CELL 3 3 O) (CELL 3 2 X) (CELL 2 2 O) (CELL 3 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CONTROL XPLAYER) )
+INFO(12:53:51.215): Sending stop messages ...
+INFO(12:53:51.216): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:51.216): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:51.217): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 3 3)))"
+INFO(12:53:51.220): Game over! results: 0 100 
+INFO(12:53:51.220): runtimes (in ms): 38 8105 
+INFO(12:53:51.220): Done.
+INFO(12:53:51.424): match:TTT_NO_SIM30
+INFO(12:53:51.425): game:tictactoe
+INFO(12:53:51.425): starting game with startclock=10, playclock=10
+INFO(12:53:51.425): step:1
+INFO(12:53:51.428): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:53:51.428): role: XPLAYER => player: local(Random)
+INFO(12:53:51.430): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:53:51.430): Sending start messages ...
+INFO(12:53:51.435): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:51.440): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:51.441): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:53:59.470): reply from MyPlayer: READY after 8034ms
+INFO(12:53:59.983): Sending play messages ...
+INFO(12:53:59.984): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:59.985): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:53:59.986): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:53:59.997): reply from MyPlayer: NOOP after 13ms
+INFO(12:53:59.998): moves: ((MARK 2 2) NOOP)
+INFO(12:54:00.003): step:2
+INFO(12:54:00.004): current state:((CELL 2 2 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:00.509): Sending play messages ...
+INFO(12:54:00.519): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:00.520): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:00.520): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 2) NOOP))"
+INFO(12:54:00.548): reply from MyPlayer: (MARK 1 1) after 29ms
+INFO(12:54:00.551): moves: (NOOP (MARK 1 1))
+INFO(12:54:00.554): step:3
+INFO(12:54:00.556): current state:((CELL 1 1 O) (CELL 2 2 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:01.061): Sending play messages ...
+INFO(12:54:01.064): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:01.065): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:01.066): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:54:01.078): reply from MyPlayer: NOOP after 14ms
+INFO(12:54:01.079): moves: ((MARK 1 2) NOOP)
+INFO(12:54:01.081): step:4
+INFO(12:54:01.082): current state:((CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:01.586): Sending play messages ...
+INFO(12:54:01.588): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:01.590): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:01.592): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 2) NOOP))"
+INFO(12:54:01.599): reply from MyPlayer: (MARK 3 2) after 11ms
+INFO(12:54:01.600): moves: (NOOP (MARK 3 2))
+INFO(12:54:01.602): step:5
+INFO(12:54:01.605): current state:((CELL 3 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:02.108): Sending play messages ...
+INFO(12:54:02.109): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:02.113): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:02.113): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 3 2)))"
+INFO(12:54:02.120): reply from MyPlayer: NOOP after 11ms
+INFO(12:54:02.120): moves: ((MARK 3 1) NOOP)
+INFO(12:54:02.123): step:6
+INFO(12:54:02.124): current state:((CELL 3 1 X) (CELL 3 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:02.630): Sending play messages ...
+INFO(12:54:02.632): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:02.633): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:02.636): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:54:02.639): reply from MyPlayer: (MARK 1 3) after 7ms
+INFO(12:54:02.641): moves: (NOOP (MARK 1 3))
+INFO(12:54:02.643): step:7
+INFO(12:54:02.643): current state:((CELL 1 3 O) (CELL 3 1 X) (CELL 3 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:03.146): Sending play messages ...
+INFO(12:54:03.150): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:03.150): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:03.151): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:54:03.157): reply from MyPlayer: NOOP after 7ms
+INFO(12:54:03.158): moves: ((MARK 2 3) NOOP)
+INFO(12:54:03.160): step:8
+INFO(12:54:03.160): current state:((CELL 2 3 X) (CELL 1 3 O) (CELL 3 1 X) (CELL 3 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 2 1 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:03.664): Sending play messages ...
+INFO(12:54:03.666): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:03.669): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:03.669): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 3) NOOP))"
+INFO(12:54:03.673): reply from MyPlayer: (MARK 2 1) after 7ms
+INFO(12:54:03.674): moves: (NOOP (MARK 2 1))
+INFO(12:54:03.676): step:9
+INFO(12:54:03.677): current state:((CELL 2 1 O) (CELL 2 3 X) (CELL 1 3 O) (CELL 3 1 X) (CELL 3 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:04.179): Sending play messages ...
+INFO(12:54:04.189): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:04.190): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:04.190): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 2 1)))"
+INFO(12:54:04.194): reply from MyPlayer: NOOP after 5ms
+INFO(12:54:04.195): moves: ((MARK 3 3) NOOP)
+INFO(12:54:04.197): step:10
+INFO(12:54:04.197): current state:((CELL 3 3 X) (CELL 2 1 O) (CELL 2 3 X) (CELL 1 3 O) (CELL 3 1 X) (CELL 3 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CONTROL OPLAYER) )
+INFO(12:54:04.206): Sending stop messages ...
+INFO(12:54:04.207): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:04.207): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:04.208): message to MyPlayer sent: "(STOP TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:54:04.212): Game over! results: 50 50 
+INFO(12:54:04.212): runtimes (in ms): 53 8138 
+INFO(12:54:04.212): Done.
+INFO(12:54:04.432): match:TTT_NO_SIM30
+INFO(12:54:04.433): game:tictactoe
+INFO(12:54:04.434): starting game with startclock=10, playclock=10
+INFO(12:54:04.434): step:1
+INFO(12:54:04.436): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:04.437): role: XPLAYER => player: local(Random)
+INFO(12:54:04.439): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:54:04.439): Sending start messages ...
+INFO(12:54:04.442): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:04.449): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:04.450): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:54:12.480): reply from MyPlayer: READY after 8038ms
+INFO(12:54:12.991): Sending play messages ...
+INFO(12:54:12.993): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:12.994): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:12.995): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:54:13.006): reply from MyPlayer: NOOP after 13ms
+INFO(12:54:13.009): moves: ((MARK 2 2) NOOP)
+INFO(12:54:13.014): step:2
+INFO(12:54:13.014): current state:((CELL 2 2 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:13.519): Sending play messages ...
+INFO(12:54:13.535): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:13.536): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:13.536): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 2) NOOP))"
+INFO(12:54:13.555): reply from MyPlayer: (MARK 1 1) after 20ms
+INFO(12:54:13.556): moves: (NOOP (MARK 1 1))
+INFO(12:54:13.558): step:3
+INFO(12:54:13.559): current state:((CELL 1 1 O) (CELL 2 2 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:14.064): Sending play messages ...
+INFO(12:54:14.067): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:14.068): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:14.068): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:54:14.074): reply from MyPlayer: NOOP after 7ms
+INFO(12:54:14.075): moves: ((MARK 1 3) NOOP)
+INFO(12:54:14.077): step:4
+INFO(12:54:14.078): current state:((CELL 1 3 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:14.582): Sending play messages ...
+INFO(12:54:14.583): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:14.584): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:14.584): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 3) NOOP))"
+INFO(12:54:14.594): reply from MyPlayer: (MARK 3 1) after 11ms
+INFO(12:54:14.595): moves: (NOOP (MARK 3 1))
+INFO(12:54:14.597): step:5
+INFO(12:54:14.598): current state:((CELL 3 1 O) (CELL 1 3 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:15.101): Sending play messages ...
+INFO(12:54:15.104): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:15.106): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:15.107): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 3 1)))"
+INFO(12:54:15.113): reply from MyPlayer: NOOP after 9ms
+INFO(12:54:15.114): moves: ((MARK 2 3) NOOP)
+INFO(12:54:15.116): step:6
+INFO(12:54:15.117): current state:((CELL 2 3 X) (CELL 3 1 O) (CELL 1 3 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 1 2 B) (CELL 2 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:15.620): Sending play messages ...
+INFO(12:54:15.623): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:15.625): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:15.628): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 3) NOOP))"
+INFO(12:54:15.635): reply from MyPlayer: (MARK 2 1) after 12ms
+INFO(12:54:15.636): moves: (NOOP (MARK 2 1))
+INFO(12:54:15.637): step:7
+INFO(12:54:15.638): current state:((CELL 2 1 O) (CELL 2 3 X) (CELL 3 1 O) (CELL 1 3 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 1 2 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:15.646): Sending stop messages ...
+INFO(12:54:15.647): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:15.647): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:15.648): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 2 1)))"
+INFO(12:54:15.652): Game over! results: 0 100 
+INFO(12:54:15.652): runtimes (in ms): 38 8110 
+INFO(12:54:15.652): Done.
+INFO(12:54:15.859): match:TTT_NO_SIM30
+INFO(12:54:15.860): game:tictactoe
+INFO(12:54:15.861): starting game with startclock=10, playclock=10
+INFO(12:54:15.861): step:1
+INFO(12:54:15.863): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:15.864): role: XPLAYER => player: local(Random)
+INFO(12:54:15.866): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:54:15.866): Sending start messages ...
+INFO(12:54:15.870): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:15.875): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:15.876): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:54:23.916): reply from MyPlayer: READY after 8046ms
+INFO(12:54:24.425): Sending play messages ...
+INFO(12:54:24.427): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:24.428): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:24.429): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:54:24.439): reply from MyPlayer: NOOP after 11ms
+INFO(12:54:24.440): moves: ((MARK 3 1) NOOP)
+INFO(12:54:24.444): step:2
+INFO(12:54:24.445): current state:((CELL 3 1 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:24.950): Sending play messages ...
+INFO(12:54:24.956): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:24.957): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:24.957): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:54:24.977): reply from MyPlayer: (MARK 1 1) after 24ms
+INFO(12:54:24.978): moves: (NOOP (MARK 1 1))
+INFO(12:54:24.981): step:3
+INFO(12:54:24.981): current state:((CELL 1 1 O) (CELL 3 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:25.487): Sending play messages ...
+INFO(12:54:25.490): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:25.491): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:25.491): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:54:25.498): reply from MyPlayer: NOOP after 8ms
+INFO(12:54:25.499): moves: ((MARK 3 2) NOOP)
+INFO(12:54:25.501): step:4
+INFO(12:54:25.502): current state:((CELL 3 2 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:26.006): Sending play messages ...
+INFO(12:54:26.007): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:26.008): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:26.008): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 2) NOOP))"
+INFO(12:54:26.018): reply from MyPlayer: (MARK 1 2) after 11ms
+INFO(12:54:26.019): moves: (NOOP (MARK 1 2))
+INFO(12:54:26.022): step:5
+INFO(12:54:26.022): current state:((CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:26.526): Sending play messages ...
+INFO(12:54:26.527): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:26.528): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:26.528): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:54:26.534): reply from MyPlayer: NOOP after 7ms
+INFO(12:54:26.535): moves: ((MARK 3 3) NOOP)
+INFO(12:54:26.543): step:6
+INFO(12:54:26.543): current state:((CELL 3 3 X) (CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CONTROL OPLAYER) )
+INFO(12:54:26.567): Sending stop messages ...
+INFO(12:54:26.569): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:26.570): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:26.570): message to MyPlayer sent: "(STOP TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:54:26.573): Game over! results: 100 0 
+INFO(12:54:26.573): runtimes (in ms): 36 8107 
+INFO(12:54:26.574): Done.
+INFO(12:54:26.777): match:TTT_NO_SIM30
+INFO(12:54:26.778): game:tictactoe
+INFO(12:54:26.779): starting game with startclock=10, playclock=10
+INFO(12:54:26.779): step:1
+INFO(12:54:26.781): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:26.782): role: XPLAYER => player: local(Random)
+INFO(12:54:26.784): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:54:26.784): Sending start messages ...
+INFO(12:54:26.788): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:26.793): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:26.794): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:54:34.823): reply from MyPlayer: READY after 8035ms
+INFO(12:54:35.336): Sending play messages ...
+INFO(12:54:35.342): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:35.343): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:35.344): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:54:35.349): reply from MyPlayer: NOOP after 7ms
+INFO(12:54:35.351): moves: ((MARK 3 1) NOOP)
+INFO(12:54:35.356): step:2
+INFO(12:54:35.356): current state:((CELL 3 1 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:35.861): Sending play messages ...
+INFO(12:54:35.868): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:35.870): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:35.873): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:54:35.895): reply from MyPlayer: (MARK 1 1) after 27ms
+INFO(12:54:35.896): moves: (NOOP (MARK 1 1))
+INFO(12:54:35.899): step:3
+INFO(12:54:35.899): current state:((CELL 1 1 O) (CELL 3 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:36.404): Sending play messages ...
+INFO(12:54:36.407): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:36.408): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:36.408): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:54:36.415): reply from MyPlayer: NOOP after 8ms
+INFO(12:54:36.415): moves: ((MARK 1 2) NOOP)
+INFO(12:54:36.417): step:4
+INFO(12:54:36.418): current state:((CELL 1 2 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:36.922): Sending play messages ...
+INFO(12:54:36.927): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:36.927): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:36.928): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 2) NOOP))"
+INFO(12:54:36.934): reply from MyPlayer: (MARK 2 2) after 7ms
+INFO(12:54:36.935): moves: (NOOP (MARK 2 2))
+INFO(12:54:36.939): step:5
+INFO(12:54:36.939): current state:((CELL 2 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:37.443): Sending play messages ...
+INFO(12:54:37.445): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:37.445): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:37.446): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 2 2)))"
+INFO(12:54:37.453): reply from MyPlayer: NOOP after 8ms
+INFO(12:54:37.454): moves: ((MARK 2 1) NOOP)
+INFO(12:54:37.460): step:6
+INFO(12:54:37.460): current state:((CELL 2 1 X) (CELL 2 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 3 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:37.965): Sending play messages ...
+INFO(12:54:37.969): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:37.969): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:37.970): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 1) NOOP))"
+INFO(12:54:37.977): reply from MyPlayer: (MARK 3 3) after 8ms
+INFO(12:54:37.978): moves: (NOOP (MARK 3 3))
+INFO(12:54:37.979): step:7
+INFO(12:54:37.980): current state:((CELL 3 3 O) (CELL 2 1 X) (CELL 2 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 3 B) (CELL 2 3 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:54:37.988): Sending stop messages ...
+INFO(12:54:37.989): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:37.991): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:37.992): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 3 3)))"
+INFO(12:54:37.994): Game over! results: 0 100 
+INFO(12:54:37.994): runtimes (in ms): 33 8100 
+INFO(12:54:37.994): Done.
+INFO(12:54:38.203): match:TTT_NO_SIM30
+INFO(12:54:38.204): game:tictactoe
+INFO(12:54:38.204): starting game with startclock=10, playclock=10
+INFO(12:54:38.204): step:1
+INFO(12:54:38.207): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:38.207): role: XPLAYER => player: local(Random)
+INFO(12:54:38.209): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:54:38.210): Sending start messages ...
+INFO(12:54:38.215): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:38.220): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:38.221): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:54:46.250): reply from MyPlayer: READY after 8035ms
+INFO(12:54:46.759): Sending play messages ...
+INFO(12:54:46.762): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:46.763): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:46.763): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:54:46.778): reply from MyPlayer: NOOP after 16ms
+INFO(12:54:46.780): moves: ((MARK 3 2) NOOP)
+INFO(12:54:46.784): step:2
+INFO(12:54:46.784): current state:((CELL 3 2 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:47.289): Sending play messages ...
+INFO(12:54:47.295): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:47.296): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:47.297): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 2) NOOP))"
+INFO(12:54:47.316): reply from MyPlayer: (MARK 1 1) after 21ms
+INFO(12:54:47.317): moves: (NOOP (MARK 1 1))
+INFO(12:54:47.320): step:3
+INFO(12:54:47.321): current state:((CELL 1 1 O) (CELL 3 2 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:47.826): Sending play messages ...
+INFO(12:54:47.829): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:47.831): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:47.831): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:54:47.839): reply from MyPlayer: NOOP after 10ms
+INFO(12:54:47.840): moves: ((MARK 2 2) NOOP)
+INFO(12:54:47.842): step:4
+INFO(12:54:47.843): current state:((CELL 2 2 X) (CELL 1 1 O) (CELL 3 2 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:48.347): Sending play messages ...
+INFO(12:54:48.352): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:48.353): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:48.353): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 2) NOOP))"
+INFO(12:54:48.360): reply from MyPlayer: (MARK 1 2) after 8ms
+INFO(12:54:48.361): moves: (NOOP (MARK 1 2))
+INFO(12:54:48.362): step:5
+INFO(12:54:48.363): current state:((CELL 1 2 O) (CELL 2 2 X) (CELL 1 1 O) (CELL 3 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:48.868): Sending play messages ...
+INFO(12:54:48.871): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:48.871): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:48.874): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:54:48.879): reply from MyPlayer: NOOP after 8ms
+INFO(12:54:48.879): moves: ((MARK 3 3) NOOP)
+INFO(12:54:48.885): step:6
+INFO(12:54:48.885): current state:((CELL 3 3 X) (CELL 1 2 O) (CELL 2 2 X) (CELL 1 1 O) (CELL 3 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(12:54:49.389): Sending play messages ...
+INFO(12:54:49.397): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:49.398): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:49.398): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:54:49.404): reply from MyPlayer: (MARK 1 3) after 7ms
+INFO(12:54:49.406): moves: (NOOP (MARK 1 3))
+INFO(12:54:49.410): step:7
+INFO(12:54:49.411): current state:((CELL 1 3 O) (CELL 3 3 X) (CELL 1 2 O) (CELL 2 2 X) (CELL 1 1 O) (CELL 3 2 X) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(12:54:49.418): Sending stop messages ...
+INFO(12:54:49.419): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:49.421): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:49.421): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:54:49.423): Game over! results: 0 100 
+INFO(12:54:49.423): runtimes (in ms): 34 8105 
+INFO(12:54:49.424): Done.
+INFO(12:54:49.626): match:TTT_NO_SIM30
+INFO(12:54:49.628): game:tictactoe
+INFO(12:54:49.628): starting game with startclock=10, playclock=10
+INFO(12:54:49.628): step:1
+INFO(12:54:49.630): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:49.631): role: XPLAYER => player: local(Random)
+INFO(12:54:49.633): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:54:49.633): Sending start messages ...
+INFO(12:54:49.637): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:49.643): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:49.644): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:54:57.673): reply from MyPlayer: READY after 8036ms
+INFO(12:54:58.185): Sending play messages ...
+INFO(12:54:58.187): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:58.188): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:58.189): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:54:58.198): reply from MyPlayer: NOOP after 11ms
+INFO(12:54:58.199): moves: ((MARK 2 1) NOOP)
+INFO(12:54:58.204): step:2
+INFO(12:54:58.204): current state:((CELL 2 1 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:58.709): Sending play messages ...
+INFO(12:54:58.712): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:58.716): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:58.716): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 1) NOOP))"
+INFO(12:54:58.732): reply from MyPlayer: (MARK 1 1) after 20ms
+INFO(12:54:58.733): moves: (NOOP (MARK 1 1))
+INFO(12:54:58.737): step:3
+INFO(12:54:58.737): current state:((CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:54:59.243): Sending play messages ...
+INFO(12:54:59.247): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:59.248): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:59.249): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:54:59.262): reply from MyPlayer: NOOP after 15ms
+INFO(12:54:59.263): moves: ((MARK 2 2) NOOP)
+INFO(12:54:59.265): step:4
+INFO(12:54:59.265): current state:((CELL 2 2 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:54:59.773): Sending play messages ...
+INFO(12:54:59.778): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:59.779): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:54:59.779): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 2) NOOP))"
+INFO(12:54:59.786): reply from MyPlayer: (MARK 1 3) after 8ms
+INFO(12:54:59.787): moves: (NOOP (MARK 1 3))
+INFO(12:54:59.790): step:5
+INFO(12:54:59.791): current state:((CELL 1 3 O) (CELL 2 2 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:55:00.294): Sending play messages ...
+INFO(12:55:00.296): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:00.299): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:00.301): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:55:00.305): reply from MyPlayer: NOOP after 9ms
+INFO(12:55:00.305): moves: ((MARK 3 3) NOOP)
+INFO(12:55:00.310): step:6
+INFO(12:55:00.310): current state:((CELL 3 3 X) (CELL 1 3 O) (CELL 2 2 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:55:00.815): Sending play messages ...
+INFO(12:55:00.818): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:00.819): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:00.821): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:55:00.827): reply from MyPlayer: (MARK 1 2) after 9ms
+INFO(12:55:00.828): moves: (NOOP (MARK 1 2))
+INFO(12:55:00.829): step:7
+INFO(12:55:00.830): current state:((CELL 1 2 O) (CELL 3 3 X) (CELL 1 3 O) (CELL 2 2 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:55:00.838): Sending stop messages ...
+INFO(12:55:00.839): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:00.840): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:00.840): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:55:00.844): Game over! results: 0 100 
+INFO(12:55:00.844): runtimes (in ms): 37 8108 
+INFO(12:55:00.844): Done.
+INFO(12:55:01.051): match:TTT_NO_SIM30
+INFO(12:55:01.052): game:tictactoe
+INFO(12:55:01.052): starting game with startclock=10, playclock=10
+INFO(12:55:01.052): step:1
+INFO(12:55:01.054): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:55:01.055): role: XPLAYER => player: local(Random)
+INFO(12:55:01.057): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:55:01.057): Sending start messages ...
+INFO(12:55:01.061): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:01.066): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:01.067): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:55:09.099): reply from MyPlayer: READY after 8037ms
+INFO(12:55:09.610): Sending play messages ...
+INFO(12:55:09.612): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:09.613): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:09.614): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:55:09.622): reply from MyPlayer: NOOP after 10ms
+INFO(12:55:09.624): moves: ((MARK 1 3) NOOP)
+INFO(12:55:09.628): step:2
+INFO(12:55:09.629): current state:((CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:55:10.134): Sending play messages ...
+INFO(12:55:10.143): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:10.148): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:10.148): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 3) NOOP))"
+INFO(12:55:10.162): reply from MyPlayer: (MARK 2 2) after 19ms
+INFO(12:55:10.163): moves: (NOOP (MARK 2 2))
+INFO(12:55:10.167): step:3
+INFO(12:55:10.167): current state:((CELL 2 2 O) (CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:55:10.673): Sending play messages ...
+INFO(12:55:10.674): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:10.676): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:10.681): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 2 2)))"
+INFO(12:55:10.687): reply from MyPlayer: NOOP after 13ms
+INFO(12:55:10.688): moves: ((MARK 3 2) NOOP)
+INFO(12:55:10.690): step:4
+INFO(12:55:10.691): current state:((CELL 3 2 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:55:11.198): Sending play messages ...
+INFO(12:55:11.201): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:11.202): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:11.204): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 2) NOOP))"
+INFO(12:55:11.209): reply from MyPlayer: (MARK 2 1) after 8ms
+INFO(12:55:11.210): moves: (NOOP (MARK 2 1))
+INFO(12:55:11.212): step:5
+INFO(12:55:11.213): current state:((CELL 2 1 O) (CELL 3 2 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:55:11.717): Sending play messages ...
+INFO(12:55:11.720): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:11.720): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:11.721): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 2 1)))"
+INFO(12:55:11.728): reply from MyPlayer: NOOP after 8ms
+INFO(12:55:11.728): moves: ((MARK 3 3) NOOP)
+INFO(12:55:11.731): step:6
+INFO(12:55:11.731): current state:((CELL 3 3 X) (CELL 2 1 O) (CELL 3 2 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(12:55:12.235): Sending play messages ...
+INFO(12:55:12.237): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:12.239): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:12.240): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:55:12.244): reply from MyPlayer: (MARK 2 3) after 7ms
+INFO(12:55:12.245): moves: (NOOP (MARK 2 3))
+INFO(12:55:12.248): step:7
+INFO(12:55:12.248): current state:((CELL 2 3 O) (CELL 3 3 X) (CELL 2 1 O) (CELL 3 2 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(12:55:12.256): Sending stop messages ...
+INFO(12:55:12.257): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:12.258): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:12.259): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 2 3)))"
+INFO(12:55:12.262): Game over! results: 0 100 
+INFO(12:55:12.262): runtimes (in ms): 36 8102 
+INFO(12:55:12.262): Done.
+INFO(12:55:12.480): match:TTT_NO_SIM30
+INFO(12:55:12.481): game:tictactoe
+INFO(12:55:12.481): starting game with startclock=10, playclock=10
+INFO(12:55:12.481): step:1
+INFO(12:55:12.484): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:55:12.484): role: XPLAYER => player: local(Random)
+INFO(12:55:12.486): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:55:12.486): Sending start messages ...
+INFO(12:55:12.491): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:12.496): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:12.497): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:55:20.534): reply from MyPlayer: READY after 8043ms
+INFO(12:55:21.044): Sending play messages ...
+INFO(12:55:21.047): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:21.047): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:21.048): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:55:21.057): reply from MyPlayer: NOOP after 10ms
+INFO(12:55:21.059): moves: ((MARK 2 1) NOOP)
+INFO(12:55:21.063): step:2
+INFO(12:55:21.063): current state:((CELL 2 1 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:55:21.568): Sending play messages ...
+INFO(12:55:21.571): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:21.572): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:21.573): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 1) NOOP))"
+INFO(12:55:21.588): reply from MyPlayer: (MARK 1 1) after 17ms
+INFO(12:55:21.589): moves: (NOOP (MARK 1 1))
+INFO(12:55:21.592): step:3
+INFO(12:55:21.592): current state:((CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:55:22.098): Sending play messages ...
+INFO(12:55:22.102): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:22.103): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:22.104): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:55:22.111): reply from MyPlayer: NOOP after 9ms
+INFO(12:55:22.111): moves: ((MARK 2 2) NOOP)
+INFO(12:55:22.113): step:4
+INFO(12:55:22.113): current state:((CELL 2 2 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:55:22.618): Sending play messages ...
+INFO(12:55:22.625): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:22.626): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:22.626): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 2) NOOP))"
+INFO(12:55:22.633): reply from MyPlayer: (MARK 1 3) after 8ms
+INFO(12:55:22.634): moves: (NOOP (MARK 1 3))
+INFO(12:55:22.637): step:5
+INFO(12:55:22.637): current state:((CELL 1 3 O) (CELL 2 2 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:55:23.141): Sending play messages ...
+INFO(12:55:23.144): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:23.144): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:23.149): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:55:23.155): reply from MyPlayer: NOOP after 11ms
+INFO(12:55:23.156): moves: ((MARK 3 3) NOOP)
+INFO(12:55:23.162): step:6
+INFO(12:55:23.163): current state:((CELL 3 3 X) (CELL 1 3 O) (CELL 2 2 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:55:23.667): Sending play messages ...
+INFO(12:55:23.670): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:23.673): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:23.673): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:55:23.680): reply from MyPlayer: (MARK 1 2) after 10ms
+INFO(12:55:23.681): moves: (NOOP (MARK 1 2))
+INFO(12:55:23.683): step:7
+INFO(12:55:23.683): current state:((CELL 1 2 O) (CELL 3 3 X) (CELL 1 3 O) (CELL 2 2 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:55:23.691): Sending stop messages ...
+INFO(12:55:23.692): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:23.692): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:23.693): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:55:23.697): Game over! results: 0 100 
+INFO(12:55:23.697): runtimes (in ms): 29 8108 
+INFO(12:55:23.697): Done.
+INFO(12:55:23.905): match:TTT_NO_SIM30
+INFO(12:55:23.906): game:tictactoe
+INFO(12:55:23.906): starting game with startclock=10, playclock=10
+INFO(12:55:23.906): step:1
+INFO(12:55:23.908): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:55:23.909): role: XPLAYER => player: local(Random)
+INFO(12:55:23.911): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:55:23.911): Sending start messages ...
+INFO(12:55:23.916): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:23.921): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:23.922): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:55:31.952): reply from MyPlayer: READY after 8036ms
+INFO(12:55:32.464): Sending play messages ...
+INFO(12:55:32.466): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:32.467): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:32.468): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:55:32.477): reply from MyPlayer: NOOP after 11ms
+INFO(12:55:32.478): moves: ((MARK 1 2) NOOP)
+INFO(12:55:32.483): step:2
+INFO(12:55:32.483): current state:((CELL 1 2 X) (CELL 1 1 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:55:32.988): Sending play messages ...
+INFO(12:55:32.995): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:32.996): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:33.006): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 2) NOOP))"
+INFO(12:55:33.013): reply from MyPlayer: (MARK 1 1) after 18ms
+INFO(12:55:33.014): moves: (NOOP (MARK 1 1))
+INFO(12:55:33.018): step:3
+INFO(12:55:33.020): current state:((CELL 1 1 O) (CELL 1 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:55:33.526): Sending play messages ...
+INFO(12:55:33.529): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:33.530): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:33.531): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:55:33.543): reply from MyPlayer: NOOP after 14ms
+INFO(12:55:33.544): moves: ((MARK 3 1) NOOP)
+INFO(12:55:33.547): step:4
+INFO(12:55:33.547): current state:((CELL 3 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:55:34.054): Sending play messages ...
+INFO(12:55:34.059): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:34.063): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:34.063): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:55:34.070): reply from MyPlayer: (MARK 2 2) after 11ms
+INFO(12:55:34.071): moves: (NOOP (MARK 2 2))
+INFO(12:55:34.074): step:5
+INFO(12:55:34.074): current state:((CELL 2 2 O) (CELL 3 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:55:34.577): Sending play messages ...
+INFO(12:55:34.578): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:34.579): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:34.579): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 2 2)))"
+INFO(12:55:34.585): reply from MyPlayer: NOOP after 7ms
+INFO(12:55:34.586): moves: ((MARK 2 1) NOOP)
+INFO(12:55:34.588): step:6
+INFO(12:55:34.589): current state:((CELL 2 1 X) (CELL 2 2 O) (CELL 3 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 1 3 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:55:35.093): Sending play messages ...
+INFO(12:55:35.096): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:35.097): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:35.099): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 1) NOOP))"
+INFO(12:55:35.103): reply from MyPlayer: (MARK 3 3) after 7ms
+INFO(12:55:35.104): moves: (NOOP (MARK 3 3))
+INFO(12:55:35.106): step:7
+INFO(12:55:35.106): current state:((CELL 3 3 O) (CELL 2 1 X) (CELL 2 2 O) (CELL 3 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 1 3 B) (CELL 2 3 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:55:35.115): Sending stop messages ...
+INFO(12:55:35.116): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:35.116): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:35.117): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 3 3)))"
+INFO(12:55:35.121): Game over! results: 0 100 
+INFO(12:55:35.121): runtimes (in ms): 37 8104 
+INFO(12:55:35.121): Done.
+INFO(12:55:35.329): match:TTT_NO_SIM30
+INFO(12:55:35.330): game:tictactoe
+INFO(12:55:35.330): starting game with startclock=10, playclock=10
+INFO(12:55:35.330): step:1
+INFO(12:55:35.332): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:55:35.333): role: XPLAYER => player: local(Random)
+INFO(12:55:35.335): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:55:35.335): Sending start messages ...
+INFO(12:55:35.340): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:35.345): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:35.346): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:55:43.377): reply from MyPlayer: READY after 8037ms
+INFO(12:55:43.886): Sending play messages ...
+INFO(12:55:43.888): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:43.889): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:43.890): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:55:43.899): reply from MyPlayer: NOOP after 11ms
+INFO(12:55:43.901): moves: ((MARK 2 1) NOOP)
+INFO(12:55:43.905): step:2
+INFO(12:55:43.906): current state:((CELL 2 1 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:55:44.412): Sending play messages ...
+INFO(12:55:44.417): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:44.419): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:44.426): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 1) NOOP))"
+INFO(12:55:44.434): reply from MyPlayer: (MARK 1 1) after 17ms
+INFO(12:55:44.435): moves: (NOOP (MARK 1 1))
+INFO(12:55:44.437): step:3
+INFO(12:55:44.438): current state:((CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:55:44.943): Sending play messages ...
+INFO(12:55:44.946): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:44.947): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:44.947): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:55:44.955): reply from MyPlayer: NOOP after 9ms
+INFO(12:55:44.956): moves: ((MARK 3 3) NOOP)
+INFO(12:55:44.958): step:4
+INFO(12:55:44.958): current state:((CELL 3 3 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:55:45.462): Sending play messages ...
+INFO(12:55:45.469): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:45.470): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:45.472): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:55:45.479): reply from MyPlayer: (MARK 1 3) after 10ms
+INFO(12:55:45.480): moves: (NOOP (MARK 1 3))
+INFO(12:55:45.484): step:5
+INFO(12:55:45.484): current state:((CELL 1 3 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:55:45.987): Sending play messages ...
+INFO(12:55:45.990): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:45.990): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:45.991): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:55:45.998): reply from MyPlayer: NOOP after 8ms
+INFO(12:55:45.999): moves: ((MARK 2 2) NOOP)
+INFO(12:55:46.002): step:6
+INFO(12:55:46.002): current state:((CELL 2 2 X) (CELL 1 3 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:55:46.507): Sending play messages ...
+INFO(12:55:46.510): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:46.513): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:46.514): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 2) NOOP))"
+INFO(12:55:46.519): reply from MyPlayer: (MARK 1 2) after 9ms
+INFO(12:55:46.521): moves: (NOOP (MARK 1 2))
+INFO(12:55:46.523): step:7
+INFO(12:55:46.523): current state:((CELL 1 2 O) (CELL 2 2 X) (CELL 1 3 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:55:46.532): Sending stop messages ...
+INFO(12:55:46.533): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:46.534): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:46.534): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:55:46.537): Game over! results: 0 100 
+INFO(12:55:46.538): runtimes (in ms): 37 8101 
+INFO(12:55:46.538): Done.
+INFO(12:55:46.752): match:TTT_NO_SIM30
+INFO(12:55:46.753): game:tictactoe
+INFO(12:55:46.753): starting game with startclock=10, playclock=10
+INFO(12:55:46.753): step:1
+INFO(12:55:46.756): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:55:46.756): role: XPLAYER => player: local(Random)
+INFO(12:55:46.758): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:55:46.758): Sending start messages ...
+INFO(12:55:46.763): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:46.768): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:46.769): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:55:54.798): reply from MyPlayer: READY after 8035ms
+INFO(12:55:55.307): Sending play messages ...
+INFO(12:55:55.309): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:55.310): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:55.311): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:55:55.320): reply from MyPlayer: NOOP after 11ms
+INFO(12:55:55.322): moves: ((MARK 3 3) NOOP)
+INFO(12:55:55.326): step:2
+INFO(12:55:55.327): current state:((CELL 3 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:55:55.830): Sending play messages ...
+INFO(12:55:55.833): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:55.837): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:55.837): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:55:55.859): reply from MyPlayer: (MARK 1 1) after 26ms
+INFO(12:55:55.861): moves: (NOOP (MARK 1 1))
+INFO(12:55:55.864): step:3
+INFO(12:55:55.865): current state:((CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:55:56.370): Sending play messages ...
+INFO(12:55:56.374): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:56.375): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:56.376): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:55:56.381): reply from MyPlayer: NOOP after 7ms
+INFO(12:55:56.382): moves: ((MARK 2 1) NOOP)
+INFO(12:55:56.384): step:4
+INFO(12:55:56.385): current state:((CELL 2 1 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:55:56.891): Sending play messages ...
+INFO(12:55:56.894): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:56.897): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:56.898): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 1) NOOP))"
+INFO(12:55:56.905): reply from MyPlayer: (MARK 1 3) after 11ms
+INFO(12:55:56.906): moves: (NOOP (MARK 1 3))
+INFO(12:55:56.909): step:5
+INFO(12:55:56.909): current state:((CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:55:57.413): Sending play messages ...
+INFO(12:55:57.416): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:57.416): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:57.421): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:55:57.424): reply from MyPlayer: NOOP after 8ms
+INFO(12:55:57.426): moves: ((MARK 3 2) NOOP)
+INFO(12:55:57.428): step:6
+INFO(12:55:57.428): current state:((CELL 3 2 X) (CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(12:55:57.933): Sending play messages ...
+INFO(12:55:57.936): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:57.937): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:57.938): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 2) NOOP))"
+INFO(12:55:57.944): reply from MyPlayer: (MARK 1 2) after 8ms
+INFO(12:55:57.946): moves: (NOOP (MARK 1 2))
+INFO(12:55:57.948): step:7
+INFO(12:55:57.948): current state:((CELL 1 2 O) (CELL 3 2 X) (CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(12:55:57.957): Sending stop messages ...
+INFO(12:55:57.958): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:57.959): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:57.959): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:55:57.962): Game over! results: 0 100 
+INFO(12:55:57.962): runtimes (in ms): 38 8106 
+INFO(12:55:57.963): Done.
+INFO(12:55:58.177): match:TTT_NO_SIM30
+INFO(12:55:58.178): game:tictactoe
+INFO(12:55:58.178): starting game with startclock=10, playclock=10
+INFO(12:55:58.178): step:1
+INFO(12:55:58.180): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:55:58.181): role: XPLAYER => player: local(Random)
+INFO(12:55:58.183): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:55:58.183): Sending start messages ...
+INFO(12:55:58.188): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:58.193): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:55:58.194): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:56:06.233): reply from MyPlayer: READY after 8045ms
+INFO(12:56:06.744): Sending play messages ...
+INFO(12:56:06.746): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:06.747): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:06.748): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:56:06.757): reply from MyPlayer: NOOP after 11ms
+INFO(12:56:06.758): moves: ((MARK 2 3) NOOP)
+INFO(12:56:06.763): step:2
+INFO(12:56:06.763): current state:((CELL 2 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:56:07.267): Sending play messages ...
+INFO(12:56:07.276): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:07.279): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:07.280): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 3) NOOP))"
+INFO(12:56:07.295): reply from MyPlayer: (MARK 1 1) after 19ms
+INFO(12:56:07.296): moves: (NOOP (MARK 1 1))
+INFO(12:56:07.299): step:3
+INFO(12:56:07.299): current state:((CELL 1 1 O) (CELL 2 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:56:07.805): Sending play messages ...
+INFO(12:56:07.809): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:07.810): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:07.811): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:56:07.818): reply from MyPlayer: NOOP after 9ms
+INFO(12:56:07.819): moves: ((MARK 3 1) NOOP)
+INFO(12:56:07.821): step:4
+INFO(12:56:07.821): current state:((CELL 3 1 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:56:08.326): Sending play messages ...
+INFO(12:56:08.329): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:08.330): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:08.332): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:56:08.336): reply from MyPlayer: (MARK 1 2) after 7ms
+INFO(12:56:08.338): moves: (NOOP (MARK 1 2))
+INFO(12:56:08.340): step:5
+INFO(12:56:08.341): current state:((CELL 1 2 O) (CELL 3 1 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:56:08.845): Sending play messages ...
+INFO(12:56:08.848): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:08.848): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:08.853): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:56:08.863): reply from MyPlayer: NOOP after 15ms
+INFO(12:56:08.864): moves: ((MARK 2 2) NOOP)
+INFO(12:56:08.867): step:6
+INFO(12:56:08.867): current state:((CELL 2 2 X) (CELL 1 2 O) (CELL 3 1 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:56:09.371): Sending play messages ...
+INFO(12:56:09.372): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:09.376): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:09.377): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 2) NOOP))"
+INFO(12:56:09.381): reply from MyPlayer: (MARK 1 3) after 9ms
+INFO(12:56:09.382): moves: (NOOP (MARK 1 3))
+INFO(12:56:09.384): step:7
+INFO(12:56:09.385): current state:((CELL 1 3 O) (CELL 2 2 X) (CELL 1 2 O) (CELL 3 1 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 2 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:56:09.393): Sending stop messages ...
+INFO(12:56:09.394): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:09.395): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:09.396): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:56:09.399): Game over! results: 0 100 
+INFO(12:56:09.399): runtimes (in ms): 33 8115 
+INFO(12:56:09.399): Done.
+INFO(12:56:09.606): match:TTT_NO_SIM30
+INFO(12:56:09.607): game:tictactoe
+INFO(12:56:09.607): starting game with startclock=10, playclock=10
+INFO(12:56:09.607): step:1
+INFO(12:56:09.610): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:56:09.610): role: XPLAYER => player: local(Random)
+INFO(12:56:09.612): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:56:09.613): Sending start messages ...
+INFO(12:56:09.616): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:09.622): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:09.623): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:56:17.654): reply from MyPlayer: READY after 8038ms
+INFO(12:56:18.166): Sending play messages ...
+INFO(12:56:18.170): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:18.171): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:18.172): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:56:18.178): reply from MyPlayer: NOOP after 8ms
+INFO(12:56:18.179): moves: ((MARK 3 3) NOOP)
+INFO(12:56:18.183): step:2
+INFO(12:56:18.183): current state:((CELL 3 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:56:18.688): Sending play messages ...
+INFO(12:56:18.694): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:18.697): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:18.701): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:56:18.723): reply from MyPlayer: (MARK 1 1) after 29ms
+INFO(12:56:18.724): moves: (NOOP (MARK 1 1))
+INFO(12:56:18.727): step:3
+INFO(12:56:18.727): current state:((CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:56:19.233): Sending play messages ...
+INFO(12:56:19.236): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:19.237): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:19.238): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:56:19.249): reply from MyPlayer: NOOP after 13ms
+INFO(12:56:19.250): moves: ((MARK 2 2) NOOP)
+INFO(12:56:19.252): step:4
+INFO(12:56:19.252): current state:((CELL 2 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:56:19.756): Sending play messages ...
+INFO(12:56:19.760): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:19.761): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:19.765): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 2) NOOP))"
+INFO(12:56:19.772): reply from MyPlayer: (MARK 1 2) after 12ms
+INFO(12:56:19.773): moves: (NOOP (MARK 1 2))
+INFO(12:56:19.775): step:5
+INFO(12:56:19.776): current state:((CELL 1 2 O) (CELL 2 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:56:20.281): Sending play messages ...
+INFO(12:56:20.282): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:20.283): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:20.283): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:56:20.289): reply from MyPlayer: NOOP after 7ms
+INFO(12:56:20.289): moves: ((MARK 3 2) NOOP)
+INFO(12:56:20.294): step:6
+INFO(12:56:20.295): current state:((CELL 3 2 X) (CELL 1 2 O) (CELL 2 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(12:56:20.802): Sending play messages ...
+INFO(12:56:20.806): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:20.807): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:20.813): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 2) NOOP))"
+INFO(12:56:20.817): reply from MyPlayer: (MARK 1 3) after 11ms
+INFO(12:56:20.818): moves: (NOOP (MARK 1 3))
+INFO(12:56:20.821): step:7
+INFO(12:56:20.822): current state:((CELL 1 3 O) (CELL 3 2 X) (CELL 1 2 O) (CELL 2 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(12:56:20.830): Sending stop messages ...
+INFO(12:56:20.831): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:20.831): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:20.832): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:56:20.836): Game over! results: 0 100 
+INFO(12:56:20.836): runtimes (in ms): 36 8118 
+INFO(12:56:20.836): Done.
+INFO(12:56:21.031): match:TTT_NO_SIM30
+INFO(12:56:21.032): game:tictactoe
+INFO(12:56:21.032): starting game with startclock=10, playclock=10
+INFO(12:56:21.032): step:1
+INFO(12:56:21.035): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:56:21.035): role: XPLAYER => player: local(Random)
+INFO(12:56:21.037): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:56:21.038): Sending start messages ...
+INFO(12:56:21.042): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:21.048): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:21.049): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:56:29.081): reply from MyPlayer: READY after 8039ms
+INFO(12:56:29.592): Sending play messages ...
+INFO(12:56:29.594): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:29.595): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:29.596): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:56:29.610): reply from MyPlayer: NOOP after 16ms
+INFO(12:56:29.612): moves: ((MARK 1 3) NOOP)
+INFO(12:56:29.616): step:2
+INFO(12:56:29.617): current state:((CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:56:30.122): Sending play messages ...
+INFO(12:56:30.128): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:30.129): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:30.129): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 3) NOOP))"
+INFO(12:56:30.145): reply from MyPlayer: (MARK 2 2) after 20ms
+INFO(12:56:30.146): moves: (NOOP (MARK 2 2))
+INFO(12:56:30.149): step:3
+INFO(12:56:30.149): current state:((CELL 2 2 O) (CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:56:30.655): Sending play messages ...
+INFO(12:56:30.659): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:30.660): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:30.661): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 2 2)))"
+INFO(12:56:30.672): reply from MyPlayer: NOOP after 13ms
+INFO(12:56:30.673): moves: ((MARK 1 2) NOOP)
+INFO(12:56:30.675): step:4
+INFO(12:56:30.675): current state:((CELL 1 2 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 1 1 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:56:31.183): Sending play messages ...
+INFO(12:56:31.187): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:31.188): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:31.188): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 2) NOOP))"
+INFO(12:56:31.194): reply from MyPlayer: (MARK 1 1) after 7ms
+INFO(12:56:31.195): moves: (NOOP (MARK 1 1))
+INFO(12:56:31.197): step:5
+INFO(12:56:31.197): current state:((CELL 1 1 O) (CELL 1 2 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:56:31.702): Sending play messages ...
+INFO(12:56:31.705): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:31.705): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:31.706): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:56:31.713): reply from MyPlayer: NOOP after 7ms
+INFO(12:56:31.713): moves: ((MARK 2 1) NOOP)
+INFO(12:56:31.715): step:6
+INFO(12:56:31.716): current state:((CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:56:32.220): Sending play messages ...
+INFO(12:56:32.223): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:32.225): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:32.225): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 1) NOOP))"
+INFO(12:56:32.231): reply from MyPlayer: (MARK 3 3) after 8ms
+INFO(12:56:32.233): moves: (NOOP (MARK 3 3))
+INFO(12:56:32.234): step:7
+INFO(12:56:32.235): current state:((CELL 3 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:56:32.243): Sending stop messages ...
+INFO(12:56:32.244): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:32.245): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:32.245): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 3 3)))"
+INFO(12:56:32.248): Game over! results: 0 100 
+INFO(12:56:32.249): runtimes (in ms): 33 8110 
+INFO(12:56:32.249): Done.
+INFO(12:56:32.457): match:TTT_NO_SIM30
+INFO(12:56:32.458): game:tictactoe
+INFO(12:56:32.458): starting game with startclock=10, playclock=10
+INFO(12:56:32.459): step:1
+INFO(12:56:32.461): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:56:32.461): role: XPLAYER => player: local(Random)
+INFO(12:56:32.464): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:56:32.464): Sending start messages ...
+INFO(12:56:32.469): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:32.474): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:32.475): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:56:40.504): reply from MyPlayer: READY after 8035ms
+INFO(12:56:41.014): Sending play messages ...
+INFO(12:56:41.021): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:41.022): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:41.023): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:56:41.031): reply from MyPlayer: NOOP after 10ms
+INFO(12:56:41.032): moves: ((MARK 3 1) NOOP)
+INFO(12:56:41.036): step:2
+INFO(12:56:41.037): current state:((CELL 3 1 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:56:41.541): Sending play messages ...
+INFO(12:56:41.553): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:41.554): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:41.554): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:56:41.572): reply from MyPlayer: (MARK 1 1) after 19ms
+INFO(12:56:41.573): moves: (NOOP (MARK 1 1))
+INFO(12:56:41.576): step:3
+INFO(12:56:41.577): current state:((CELL 1 1 O) (CELL 3 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:56:42.082): Sending play messages ...
+INFO(12:56:42.085): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:42.086): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:42.086): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:56:42.093): reply from MyPlayer: NOOP after 7ms
+INFO(12:56:42.093): moves: ((MARK 3 3) NOOP)
+INFO(12:56:42.096): step:4
+INFO(12:56:42.096): current state:((CELL 3 3 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:56:42.602): Sending play messages ...
+INFO(12:56:42.607): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:42.607): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:42.608): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:56:42.615): reply from MyPlayer: (MARK 1 2) after 8ms
+INFO(12:56:42.615): moves: (NOOP (MARK 1 2))
+INFO(12:56:42.619): step:5
+INFO(12:56:42.619): current state:((CELL 1 2 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:56:43.122): Sending play messages ...
+INFO(12:56:43.125): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:43.125): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:43.129): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:56:43.138): reply from MyPlayer: NOOP after 13ms
+INFO(12:56:43.139): moves: ((MARK 2 3) NOOP)
+INFO(12:56:43.145): step:6
+INFO(12:56:43.145): current state:((CELL 2 3 X) (CELL 1 2 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:56:43.649): Sending play messages ...
+INFO(12:56:43.651): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:43.655): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:43.656): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 3) NOOP))"
+INFO(12:56:43.692): reply from MyPlayer: (MARK 1 3) after 41ms
+INFO(12:56:43.693): moves: (NOOP (MARK 1 3))
+INFO(12:56:43.696): step:7
+INFO(12:56:43.696): current state:((CELL 1 3 O) (CELL 2 3 X) (CELL 1 2 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:56:43.704): Sending stop messages ...
+INFO(12:56:43.705): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:43.705): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:43.706): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:56:43.709): Game over! results: 0 100 
+INFO(12:56:43.709): runtimes (in ms): 40 8133 
+INFO(12:56:43.709): Done.
+INFO(12:56:43.932): match:TTT_NO_SIM30
+INFO(12:56:43.933): game:tictactoe
+INFO(12:56:43.933): starting game with startclock=10, playclock=10
+INFO(12:56:43.933): step:1
+INFO(12:56:43.936): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:56:43.936): role: XPLAYER => player: local(Random)
+INFO(12:56:43.938): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:56:43.939): Sending start messages ...
+INFO(12:56:43.942): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:43.948): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:43.949): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:56:51.988): reply from MyPlayer: READY after 8046ms
+INFO(12:56:52.497): Sending play messages ...
+INFO(12:56:52.499): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:52.500): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:52.501): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:56:52.510): reply from MyPlayer: NOOP after 11ms
+INFO(12:56:52.511): moves: ((MARK 2 2) NOOP)
+INFO(12:56:52.516): step:2
+INFO(12:56:52.516): current state:((CELL 2 2 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:56:53.021): Sending play messages ...
+INFO(12:56:53.023): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:53.027): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:53.045): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 2) NOOP))"
+INFO(12:56:53.050): reply from MyPlayer: (MARK 1 1) after 27ms
+INFO(12:56:53.053): moves: (NOOP (MARK 1 1))
+INFO(12:56:53.056): step:3
+INFO(12:56:53.057): current state:((CELL 1 1 O) (CELL 2 2 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:56:53.563): Sending play messages ...
+INFO(12:56:53.566): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:53.568): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:53.568): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:56:53.577): reply from MyPlayer: NOOP after 11ms
+INFO(12:56:53.579): moves: ((MARK 1 2) NOOP)
+INFO(12:56:53.581): step:4
+INFO(12:56:53.582): current state:((CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:56:54.088): Sending play messages ...
+INFO(12:56:54.092): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:54.096): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:54.096): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 2) NOOP))"
+INFO(12:56:54.104): reply from MyPlayer: (MARK 3 2) after 12ms
+INFO(12:56:54.104): moves: (NOOP (MARK 3 2))
+INFO(12:56:54.106): step:5
+INFO(12:56:54.107): current state:((CELL 3 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:56:54.611): Sending play messages ...
+INFO(12:56:54.614): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:54.615): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:54.615): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 3 2)))"
+INFO(12:56:54.621): reply from MyPlayer: NOOP after 7ms
+INFO(12:56:54.622): moves: ((MARK 3 3) NOOP)
+INFO(12:56:54.625): step:6
+INFO(12:56:54.625): current state:((CELL 3 3 X) (CELL 3 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(12:56:55.128): Sending play messages ...
+INFO(12:56:55.129): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:55.130): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:55.130): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:56:55.138): reply from MyPlayer: (MARK 1 3) after 9ms
+INFO(12:56:55.140): moves: (NOOP (MARK 1 3))
+INFO(12:56:55.142): step:7
+INFO(12:56:55.143): current state:((CELL 1 3 O) (CELL 3 3 X) (CELL 3 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(12:56:55.646): Sending play messages ...
+INFO(12:56:55.650): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:55.650): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:55.651): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:56:55.657): reply from MyPlayer: NOOP after 8ms
+INFO(12:56:55.658): moves: ((MARK 3 1) NOOP)
+INFO(12:56:55.659): step:8
+INFO(12:56:55.659): current state:((CELL 3 1 X) (CELL 1 3 O) (CELL 3 3 X) (CELL 3 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 2 1 B) (CELL 2 3 B) (CONTROL OPLAYER) )
+INFO(12:56:56.162): Sending play messages ...
+INFO(12:56:56.166): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:56.167): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:56.167): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:56:56.171): reply from MyPlayer: (MARK 2 1) after 4ms
+INFO(12:56:56.171): moves: (NOOP (MARK 2 1))
+INFO(12:56:56.173): step:9
+INFO(12:56:56.174): current state:((CELL 2 1 O) (CELL 3 1 X) (CELL 1 3 O) (CELL 3 3 X) (CELL 3 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 2 3 B) (CONTROL XPLAYER) )
+INFO(12:56:56.676): Sending play messages ...
+INFO(12:56:56.682): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:56.683): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:56.683): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 2 1)))"
+INFO(12:56:56.692): reply from MyPlayer: NOOP after 9ms
+INFO(12:56:56.692): moves: ((MARK 2 3) NOOP)
+INFO(12:56:56.694): step:10
+INFO(12:56:56.694): current state:((CELL 2 3 X) (CELL 2 1 O) (CELL 3 1 X) (CELL 1 3 O) (CELL 3 3 X) (CELL 3 2 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CONTROL OPLAYER) )
+INFO(12:56:56.705): Sending stop messages ...
+INFO(12:56:56.706): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:56.706): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:56.707): message to MyPlayer sent: "(STOP TTT_NO_SIM30 ((MARK 2 3) NOOP))"
+INFO(12:56:56.709): Game over! results: 50 50 
+INFO(12:56:56.709): runtimes (in ms): 65 8144 
+INFO(12:56:56.709): Done.
+INFO(12:56:56.938): match:TTT_NO_SIM30
+INFO(12:56:56.939): game:tictactoe
+INFO(12:56:56.940): starting game with startclock=10, playclock=10
+INFO(12:56:56.940): step:1
+INFO(12:56:56.942): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:56:56.943): role: XPLAYER => player: local(Random)
+INFO(12:56:56.945): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:56:56.945): Sending start messages ...
+INFO(12:56:56.950): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:56.955): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:56:56.956): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:57:04.990): reply from MyPlayer: READY after 8040ms
+INFO(12:57:05.502): Sending play messages ...
+INFO(12:57:05.504): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:05.505): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:05.505): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:57:05.515): reply from MyPlayer: NOOP after 11ms
+INFO(12:57:05.517): moves: ((MARK 2 3) NOOP)
+INFO(12:57:05.521): step:2
+INFO(12:57:05.521): current state:((CELL 2 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:57:06.026): Sending play messages ...
+INFO(12:57:06.035): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:06.037): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:06.038): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 3) NOOP))"
+INFO(12:57:06.053): reply from MyPlayer: (MARK 1 1) after 18ms
+INFO(12:57:06.054): moves: (NOOP (MARK 1 1))
+INFO(12:57:06.056): step:3
+INFO(12:57:06.057): current state:((CELL 1 1 O) (CELL 2 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:57:06.563): Sending play messages ...
+INFO(12:57:06.566): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:06.575): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:06.577): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:57:06.582): reply from MyPlayer: NOOP after 16ms
+INFO(12:57:06.582): moves: ((MARK 3 3) NOOP)
+INFO(12:57:06.584): step:4
+INFO(12:57:06.585): current state:((CELL 3 3 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:57:07.089): Sending play messages ...
+INFO(12:57:07.090): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:07.091): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:07.091): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:57:07.100): reply from MyPlayer: (MARK 1 2) after 10ms
+INFO(12:57:07.101): moves: (NOOP (MARK 1 2))
+INFO(12:57:07.103): step:5
+INFO(12:57:07.104): current state:((CELL 1 2 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:57:07.607): Sending play messages ...
+INFO(12:57:07.610): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:07.611): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:07.612): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:57:07.619): reply from MyPlayer: NOOP after 9ms
+INFO(12:57:07.620): moves: ((MARK 3 2) NOOP)
+INFO(12:57:07.623): step:6
+INFO(12:57:07.623): current state:((CELL 3 2 X) (CELL 1 2 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(12:57:08.126): Sending play messages ...
+INFO(12:57:08.138): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:08.139): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:08.139): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 2) NOOP))"
+INFO(12:57:08.144): reply from MyPlayer: (MARK 1 3) after 6ms
+INFO(12:57:08.146): moves: (NOOP (MARK 1 3))
+INFO(12:57:08.148): step:7
+INFO(12:57:08.148): current state:((CELL 1 3 O) (CELL 3 2 X) (CELL 1 2 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(12:57:08.157): Sending stop messages ...
+INFO(12:57:08.158): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:08.158): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:08.159): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:57:08.162): Game over! results: 0 100 
+INFO(12:57:08.162): runtimes (in ms): 31 8110 
+INFO(12:57:08.162): Done.
+INFO(12:57:08.361): match:TTT_NO_SIM30
+INFO(12:57:08.363): game:tictactoe
+INFO(12:57:08.363): starting game with startclock=10, playclock=10
+INFO(12:57:08.363): step:1
+INFO(12:57:08.365): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:57:08.366): role: XPLAYER => player: local(Random)
+INFO(12:57:08.368): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:57:08.368): Sending start messages ...
+INFO(12:57:08.374): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:08.379): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:08.380): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:57:16.407): reply from MyPlayer: READY after 8033ms
+INFO(12:57:16.921): Sending play messages ...
+INFO(12:57:16.923): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:16.924): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:16.924): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:57:16.933): reply from MyPlayer: NOOP after 10ms
+INFO(12:57:16.935): moves: ((MARK 3 3) NOOP)
+INFO(12:57:16.939): step:2
+INFO(12:57:16.940): current state:((CELL 3 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:57:17.444): Sending play messages ...
+INFO(12:57:17.457): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:17.458): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:17.458): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:57:17.481): reply from MyPlayer: (MARK 1 1) after 24ms
+INFO(12:57:17.482): moves: (NOOP (MARK 1 1))
+INFO(12:57:17.486): step:3
+INFO(12:57:17.486): current state:((CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:57:17.992): Sending play messages ...
+INFO(12:57:17.996): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:17.997): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:17.997): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:57:18.003): reply from MyPlayer: NOOP after 7ms
+INFO(12:57:18.004): moves: ((MARK 3 2) NOOP)
+INFO(12:57:18.006): step:4
+INFO(12:57:18.006): current state:((CELL 3 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(12:57:18.511): Sending play messages ...
+INFO(12:57:18.517): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:18.518): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:18.518): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 2) NOOP))"
+INFO(12:57:18.525): reply from MyPlayer: (MARK 1 2) after 8ms
+INFO(12:57:18.526): moves: (NOOP (MARK 1 2))
+INFO(12:57:18.528): step:5
+INFO(12:57:18.528): current state:((CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(12:57:19.032): Sending play messages ...
+INFO(12:57:19.036): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:19.036): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:19.037): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:57:19.043): reply from MyPlayer: NOOP after 7ms
+INFO(12:57:19.044): moves: ((MARK 2 2) NOOP)
+INFO(12:57:19.047): step:6
+INFO(12:57:19.047): current state:((CELL 2 2 X) (CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(12:57:19.549): Sending play messages ...
+INFO(12:57:19.552): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:19.554): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:19.554): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 2) NOOP))"
+INFO(12:57:19.565): reply from MyPlayer: (MARK 1 3) after 13ms
+INFO(12:57:19.567): moves: (NOOP (MARK 1 3))
+INFO(12:57:19.569): step:7
+INFO(12:57:19.570): current state:((CELL 1 3 O) (CELL 2 2 X) (CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(12:57:19.578): Sending stop messages ...
+INFO(12:57:19.579): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:19.580): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:19.580): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:57:19.583): Game over! results: 0 100 
+INFO(12:57:19.583): runtimes (in ms): 31 8102 
+INFO(12:57:19.583): Done.
+INFO(12:57:19.788): match:TTT_NO_SIM30
+INFO(12:57:19.789): game:tictactoe
+INFO(12:57:19.789): starting game with startclock=10, playclock=10
+INFO(12:57:19.789): step:1
+INFO(12:57:19.791): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:57:19.792): role: XPLAYER => player: local(Random)
+INFO(12:57:19.794): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:57:19.794): Sending start messages ...
+INFO(12:57:19.800): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:19.805): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:19.806): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:57:27.836): reply from MyPlayer: READY after 8036ms
+INFO(12:57:28.346): Sending play messages ...
+INFO(12:57:28.348): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:28.349): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:28.350): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:57:28.359): reply from MyPlayer: NOOP after 11ms
+INFO(12:57:28.360): moves: ((MARK 3 1) NOOP)
+INFO(12:57:28.365): step:2
+INFO(12:57:28.365): current state:((CELL 3 1 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:57:28.870): Sending play messages ...
+INFO(12:57:28.877): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:28.880): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:28.885): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:57:28.898): reply from MyPlayer: (MARK 1 1) after 21ms
+INFO(12:57:28.899): moves: (NOOP (MARK 1 1))
+INFO(12:57:28.902): step:3
+INFO(12:57:28.902): current state:((CELL 1 1 O) (CELL 3 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:57:29.410): Sending play messages ...
+INFO(12:57:29.414): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:29.415): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:29.415): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:57:29.421): reply from MyPlayer: NOOP after 7ms
+INFO(12:57:29.422): moves: ((MARK 3 3) NOOP)
+INFO(12:57:29.424): step:4
+INFO(12:57:29.424): current state:((CELL 3 3 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:57:29.929): Sending play messages ...
+INFO(12:57:29.935): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:29.936): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:29.936): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:57:29.943): reply from MyPlayer: (MARK 1 2) after 8ms
+INFO(12:57:29.944): moves: (NOOP (MARK 1 2))
+INFO(12:57:29.947): step:5
+INFO(12:57:29.947): current state:((CELL 1 2 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:57:30.449): Sending play messages ...
+INFO(12:57:30.452): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:30.453): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:30.457): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:57:30.463): reply from MyPlayer: NOOP after 11ms
+INFO(12:57:30.463): moves: ((MARK 2 2) NOOP)
+INFO(12:57:30.466): step:6
+INFO(12:57:30.466): current state:((CELL 2 2 X) (CELL 1 2 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:57:30.970): Sending play messages ...
+INFO(12:57:30.973): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:30.976): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:30.977): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 2) NOOP))"
+INFO(12:57:30.987): reply from MyPlayer: (MARK 1 3) after 14ms
+INFO(12:57:30.989): moves: (NOOP (MARK 1 3))
+INFO(12:57:30.991): step:7
+INFO(12:57:30.991): current state:((CELL 1 3 O) (CELL 2 2 X) (CELL 1 2 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:57:31.001): Sending stop messages ...
+INFO(12:57:31.006): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:31.012): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:31.013): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:57:31.015): Game over! results: 0 100 
+INFO(12:57:31.015): runtimes (in ms): 38 8108 
+INFO(12:57:31.015): Done.
+INFO(12:57:31.213): match:TTT_NO_SIM30
+INFO(12:57:31.214): game:tictactoe
+INFO(12:57:31.214): starting game with startclock=10, playclock=10
+INFO(12:57:31.214): step:1
+INFO(12:57:31.217): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:57:31.217): role: XPLAYER => player: local(Random)
+INFO(12:57:31.219): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:57:31.219): Sending start messages ...
+INFO(12:57:31.225): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:31.230): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:31.231): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:57:39.263): reply from MyPlayer: READY after 8038ms
+INFO(12:57:39.774): Sending play messages ...
+INFO(12:57:39.776): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:39.777): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:39.777): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:57:39.786): reply from MyPlayer: NOOP after 10ms
+INFO(12:57:39.788): moves: ((MARK 3 2) NOOP)
+INFO(12:57:39.792): step:2
+INFO(12:57:39.793): current state:((CELL 3 2 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:57:40.298): Sending play messages ...
+INFO(12:57:40.301): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:40.304): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:40.305): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 2) NOOP))"
+INFO(12:57:40.325): reply from MyPlayer: (MARK 1 1) after 24ms
+INFO(12:57:40.327): moves: (NOOP (MARK 1 1))
+INFO(12:57:40.331): step:3
+INFO(12:57:40.333): current state:((CELL 1 1 O) (CELL 3 2 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:57:40.839): Sending play messages ...
+INFO(12:57:40.842): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:40.843): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:40.843): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:57:40.850): reply from MyPlayer: NOOP after 8ms
+INFO(12:57:40.852): moves: ((MARK 2 1) NOOP)
+INFO(12:57:40.854): step:4
+INFO(12:57:40.854): current state:((CELL 2 1 X) (CELL 1 1 O) (CELL 3 2 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:57:41.361): Sending play messages ...
+INFO(12:57:41.365): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:41.366): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:41.366): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 1) NOOP))"
+INFO(12:57:41.371): reply from MyPlayer: (MARK 1 3) after 6ms
+INFO(12:57:41.372): moves: (NOOP (MARK 1 3))
+INFO(12:57:41.375): step:5
+INFO(12:57:41.375): current state:((CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 3 2 X) (CELL 1 2 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:57:41.878): Sending play messages ...
+INFO(12:57:41.881): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:41.883): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:41.884): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:57:41.889): reply from MyPlayer: NOOP after 8ms
+INFO(12:57:41.890): moves: ((MARK 3 3) NOOP)
+INFO(12:57:41.892): step:6
+INFO(12:57:41.893): current state:((CELL 3 3 X) (CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 3 2 X) (CELL 1 2 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(12:57:42.396): Sending play messages ...
+INFO(12:57:42.399): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:42.403): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:42.406): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:57:42.410): reply from MyPlayer: (MARK 1 2) after 11ms
+INFO(12:57:42.412): moves: (NOOP (MARK 1 2))
+INFO(12:57:42.414): step:7
+INFO(12:57:42.415): current state:((CELL 1 2 O) (CELL 3 3 X) (CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 3 2 X) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(12:57:42.423): Sending stop messages ...
+INFO(12:57:42.424): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:42.424): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:42.425): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:57:42.433): Game over! results: 0 100 
+INFO(12:57:42.433): runtimes (in ms): 40 8105 
+INFO(12:57:42.433): Done.
+INFO(12:57:42.638): match:TTT_NO_SIM30
+INFO(12:57:42.639): game:tictactoe
+INFO(12:57:42.639): starting game with startclock=10, playclock=10
+INFO(12:57:42.640): step:1
+INFO(12:57:42.642): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:57:42.642): role: XPLAYER => player: local(Random)
+INFO(12:57:42.645): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:57:42.645): Sending start messages ...
+INFO(12:57:42.647): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:42.652): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:42.654): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:57:50.684): reply from MyPlayer: READY after 8037ms
+INFO(12:57:51.197): Sending play messages ...
+INFO(12:57:51.199): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:51.204): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:51.205): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:57:51.214): reply from MyPlayer: NOOP after 15ms
+INFO(12:57:51.216): moves: ((MARK 1 3) NOOP)
+INFO(12:57:51.221): step:2
+INFO(12:57:51.221): current state:((CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:57:51.727): Sending play messages ...
+INFO(12:57:51.730): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:51.731): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:51.732): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 3) NOOP))"
+INFO(12:57:51.747): reply from MyPlayer: (MARK 2 2) after 17ms
+INFO(12:57:51.749): moves: (NOOP (MARK 2 2))
+INFO(12:57:51.752): step:3
+INFO(12:57:51.752): current state:((CELL 2 2 O) (CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:57:52.261): Sending play messages ...
+INFO(12:57:52.264): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:52.265): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:52.265): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 2 2)))"
+INFO(12:57:52.276): reply from MyPlayer: NOOP after 12ms
+INFO(12:57:52.277): moves: ((MARK 3 1) NOOP)
+INFO(12:57:52.279): step:4
+INFO(12:57:52.279): current state:((CELL 3 1 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:57:52.784): Sending play messages ...
+INFO(12:57:52.789): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:52.790): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:52.791): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:57:52.798): reply from MyPlayer: (MARK 1 2) after 9ms
+INFO(12:57:52.799): moves: (NOOP (MARK 1 2))
+INFO(12:57:52.802): step:5
+INFO(12:57:52.802): current state:((CELL 1 2 O) (CELL 3 1 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 1 1 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:57:53.306): Sending play messages ...
+INFO(12:57:53.310): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:53.310): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:53.314): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:57:53.320): reply from MyPlayer: NOOP after 10ms
+INFO(12:57:53.321): moves: ((MARK 2 1) NOOP)
+INFO(12:57:53.324): step:6
+INFO(12:57:53.325): current state:((CELL 2 1 X) (CELL 1 2 O) (CELL 3 1 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 1 1 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:57:53.831): Sending play messages ...
+INFO(12:57:53.832): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:53.833): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:53.834): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 1) NOOP))"
+INFO(12:57:53.842): reply from MyPlayer: (MARK 1 1) after 10ms
+INFO(12:57:53.842): moves: (NOOP (MARK 1 1))
+INFO(12:57:53.847): step:7
+INFO(12:57:53.848): current state:((CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 O) (CELL 3 1 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:57:54.350): Sending play messages ...
+INFO(12:57:54.355): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:54.356): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:54.359): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:57:54.368): reply from MyPlayer: NOOP after 13ms
+INFO(12:57:54.369): moves: ((MARK 2 3) NOOP)
+INFO(12:57:54.370): step:8
+INFO(12:57:54.371): current state:((CELL 2 3 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 O) (CELL 3 1 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:57:54.874): Sending play messages ...
+INFO(12:57:54.875): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:54.878): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:54.878): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 3) NOOP))"
+INFO(12:57:54.884): reply from MyPlayer: (MARK 3 2) after 9ms
+INFO(12:57:54.884): moves: (NOOP (MARK 3 2))
+INFO(12:57:54.888): step:9
+INFO(12:57:54.888): current state:((CELL 3 2 O) (CELL 2 3 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 O) (CELL 3 1 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:57:54.899): Sending stop messages ...
+INFO(12:57:54.899): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:54.900): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:54.901): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 3 2)))"
+INFO(12:57:54.903): Game over! results: 0 100 
+INFO(12:57:54.903): runtimes (in ms): 51 8132 
+INFO(12:57:54.903): Done.
+INFO(12:57:55.141): match:TTT_NO_SIM30
+INFO(12:57:55.143): game:tictactoe
+INFO(12:57:55.143): starting game with startclock=10, playclock=10
+INFO(12:57:55.143): step:1
+INFO(12:57:55.145): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:57:55.146): role: XPLAYER => player: local(Random)
+INFO(12:57:55.148): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:57:55.148): Sending start messages ...
+INFO(12:57:55.154): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:55.158): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:57:55.160): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:58:03.190): reply from MyPlayer: READY after 8036ms
+INFO(12:58:03.700): Sending play messages ...
+INFO(12:58:03.702): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:03.703): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:03.703): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:58:03.719): reply from MyPlayer: NOOP after 17ms
+INFO(12:58:03.720): moves: ((MARK 3 1) NOOP)
+INFO(12:58:03.725): step:2
+INFO(12:58:03.725): current state:((CELL 3 1 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:58:04.230): Sending play messages ...
+INFO(12:58:04.234): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:04.238): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:04.249): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:58:04.259): reply from MyPlayer: (MARK 1 1) after 25ms
+INFO(12:58:04.261): moves: (NOOP (MARK 1 1))
+INFO(12:58:04.263): step:3
+INFO(12:58:04.263): current state:((CELL 1 1 O) (CELL 3 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:58:04.768): Sending play messages ...
+INFO(12:58:04.771): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:04.772): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:04.773): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:58:04.779): reply from MyPlayer: NOOP after 8ms
+INFO(12:58:04.780): moves: ((MARK 1 3) NOOP)
+INFO(12:58:04.782): step:4
+INFO(12:58:04.782): current state:((CELL 1 3 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:58:05.286): Sending play messages ...
+INFO(12:58:05.288): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:05.288): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:05.289): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 3) NOOP))"
+INFO(12:58:05.298): reply from MyPlayer: (MARK 1 2) after 9ms
+INFO(12:58:05.299): moves: (NOOP (MARK 1 2))
+INFO(12:58:05.303): step:5
+INFO(12:58:05.303): current state:((CELL 1 2 O) (CELL 1 3 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:58:05.805): Sending play messages ...
+INFO(12:58:05.808): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:05.809): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:05.814): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:58:05.817): reply from MyPlayer: NOOP after 9ms
+INFO(12:58:05.822): moves: ((MARK 2 2) NOOP)
+INFO(12:58:05.825): step:6
+INFO(12:58:05.825): current state:((CELL 2 2 X) (CELL 1 2 O) (CELL 1 3 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:58:05.837): Sending stop messages ...
+INFO(12:58:05.839): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:05.841): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:05.841): message to MyPlayer sent: "(STOP TTT_NO_SIM30 ((MARK 2 2) NOOP))"
+INFO(12:58:05.843): Game over! results: 100 0 
+INFO(12:58:05.844): runtimes (in ms): 30 8104 
+INFO(12:58:05.844): Done.
+INFO(12:58:06.057): match:TTT_NO_SIM30
+INFO(12:58:06.058): game:tictactoe
+INFO(12:58:06.058): starting game with startclock=10, playclock=10
+INFO(12:58:06.059): step:1
+INFO(12:58:06.061): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:58:06.061): role: XPLAYER => player: local(Random)
+INFO(12:58:06.064): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:58:06.064): Sending start messages ...
+INFO(12:58:06.069): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:06.073): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:06.075): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:58:14.104): reply from MyPlayer: READY after 8036ms
+INFO(12:58:14.615): Sending play messages ...
+INFO(12:58:14.617): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:14.618): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:14.618): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:58:14.628): reply from MyPlayer: NOOP after 11ms
+INFO(12:58:14.629): moves: ((MARK 1 3) NOOP)
+INFO(12:58:14.634): step:2
+INFO(12:58:14.634): current state:((CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:58:15.139): Sending play messages ...
+INFO(12:58:15.143): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:15.144): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:15.144): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 3) NOOP))"
+INFO(12:58:15.161): reply from MyPlayer: (MARK 2 2) after 18ms
+INFO(12:58:15.163): moves: (NOOP (MARK 2 2))
+INFO(12:58:15.166): step:3
+INFO(12:58:15.166): current state:((CELL 2 2 O) (CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:58:15.675): Sending play messages ...
+INFO(12:58:15.677): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:15.678): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:15.678): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 2 2)))"
+INFO(12:58:15.689): reply from MyPlayer: NOOP after 12ms
+INFO(12:58:15.690): moves: ((MARK 2 3) NOOP)
+INFO(12:58:15.692): step:4
+INFO(12:58:15.692): current state:((CELL 2 3 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 2 1 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:58:16.198): Sending play messages ...
+INFO(12:58:16.200): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:16.201): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:16.201): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 3) NOOP))"
+INFO(12:58:16.216): reply from MyPlayer: (MARK 3 3) after 15ms
+INFO(12:58:16.217): moves: (NOOP (MARK 3 3))
+INFO(12:58:16.220): step:5
+INFO(12:58:16.221): current state:((CELL 3 3 O) (CELL 2 3 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 2 1 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:58:16.727): Sending play messages ...
+INFO(12:58:16.731): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:16.731): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:16.735): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 3 3)))"
+INFO(12:58:16.741): reply from MyPlayer: NOOP after 11ms
+INFO(12:58:16.742): moves: ((MARK 1 1) NOOP)
+INFO(12:58:16.745): step:6
+INFO(12:58:16.745): current state:((CELL 1 1 X) (CELL 3 3 O) (CELL 2 3 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 1 2 B) (CELL 2 1 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:58:17.254): Sending play messages ...
+INFO(12:58:17.257): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:17.258): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:17.258): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 1) NOOP))"
+INFO(12:58:17.264): reply from MyPlayer: (MARK 1 2) after 7ms
+INFO(12:58:17.265): moves: (NOOP (MARK 1 2))
+INFO(12:58:17.268): step:7
+INFO(12:58:17.269): current state:((CELL 1 2 O) (CELL 1 1 X) (CELL 3 3 O) (CELL 2 3 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 2 1 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:58:17.772): Sending play messages ...
+INFO(12:58:17.773): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:17.774): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:17.775): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:58:17.782): reply from MyPlayer: NOOP after 9ms
+INFO(12:58:17.783): moves: ((MARK 2 1) NOOP)
+INFO(12:58:17.784): step:8
+INFO(12:58:17.785): current state:((CELL 2 1 X) (CELL 1 2 O) (CELL 1 1 X) (CELL 3 3 O) (CELL 2 3 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:58:18.288): Sending play messages ...
+INFO(12:58:18.291): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:18.292): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:18.292): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 1) NOOP))"
+INFO(12:58:18.297): reply from MyPlayer: (MARK 3 2) after 6ms
+INFO(12:58:18.298): moves: (NOOP (MARK 3 2))
+INFO(12:58:18.300): step:9
+INFO(12:58:18.300): current state:((CELL 3 2 O) (CELL 2 1 X) (CELL 1 2 O) (CELL 1 1 X) (CELL 3 3 O) (CELL 2 3 X) (CELL 2 2 O) (CELL 1 3 X) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(12:58:18.310): Sending stop messages ...
+INFO(12:58:18.311): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:18.312): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:18.314): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 3 2)))"
+INFO(12:58:18.317): Game over! results: 0 100 
+INFO(12:58:18.318): runtimes (in ms): 41 8125 
+INFO(12:58:18.318): Done.
+INFO(12:58:18.554): match:TTT_NO_SIM30
+INFO(12:58:18.555): game:tictactoe
+INFO(12:58:18.556): starting game with startclock=10, playclock=10
+INFO(12:58:18.556): step:1
+INFO(12:58:18.558): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:58:18.559): role: XPLAYER => player: local(Random)
+INFO(12:58:18.561): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:58:18.561): Sending start messages ...
+INFO(12:58:18.567): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:18.572): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:18.573): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:58:26.605): reply from MyPlayer: READY after 8038ms
+INFO(12:58:27.118): Sending play messages ...
+INFO(12:58:27.123): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:27.124): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:27.124): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:58:27.131): reply from MyPlayer: NOOP after 8ms
+INFO(12:58:27.133): moves: ((MARK 3 1) NOOP)
+INFO(12:58:27.137): step:2
+INFO(12:58:27.138): current state:((CELL 3 1 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:58:27.642): Sending play messages ...
+INFO(12:58:27.648): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:27.650): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:27.654): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:58:27.669): reply from MyPlayer: (MARK 1 1) after 21ms
+INFO(12:58:27.670): moves: (NOOP (MARK 1 1))
+INFO(12:58:27.672): step:3
+INFO(12:58:27.672): current state:((CELL 1 1 O) (CELL 3 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:58:28.177): Sending play messages ...
+INFO(12:58:28.181): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:28.182): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:28.182): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:58:28.195): reply from MyPlayer: NOOP after 14ms
+INFO(12:58:28.196): moves: ((MARK 3 2) NOOP)
+INFO(12:58:28.198): step:4
+INFO(12:58:28.198): current state:((CELL 3 2 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:58:28.702): Sending play messages ...
+INFO(12:58:28.710): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:28.710): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:28.710): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 2) NOOP))"
+INFO(12:58:28.716): reply from MyPlayer: (MARK 1 2) after 7ms
+INFO(12:58:28.717): moves: (NOOP (MARK 1 2))
+INFO(12:58:28.721): step:5
+INFO(12:58:28.721): current state:((CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:58:29.223): Sending play messages ...
+INFO(12:58:29.226): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:29.227): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:29.228): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:58:29.235): reply from MyPlayer: NOOP after 9ms
+INFO(12:58:29.236): moves: ((MARK 3 3) NOOP)
+INFO(12:58:29.239): step:6
+INFO(12:58:29.239): current state:((CELL 3 3 X) (CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CONTROL OPLAYER) )
+INFO(12:58:29.250): Sending stop messages ...
+INFO(12:58:29.252): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:29.253): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:29.254): message to MyPlayer sent: "(STOP TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:58:29.256): Game over! results: 100 0 
+INFO(12:58:29.257): runtimes (in ms): 27 8097 
+INFO(12:58:29.257): Done.
+INFO(12:58:29.471): match:TTT_NO_SIM30
+INFO(12:58:29.472): game:tictactoe
+INFO(12:58:29.472): starting game with startclock=10, playclock=10
+INFO(12:58:29.473): step:1
+INFO(12:58:29.475): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:58:29.475): role: XPLAYER => player: local(Random)
+INFO(12:58:29.478): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:58:29.478): Sending start messages ...
+INFO(12:58:29.483): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:29.488): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:29.489): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:58:37.523): reply from MyPlayer: READY after 8041ms
+INFO(12:58:38.032): Sending play messages ...
+INFO(12:58:38.034): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:38.035): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:38.036): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:58:38.045): reply from MyPlayer: NOOP after 11ms
+INFO(12:58:38.047): moves: ((MARK 2 2) NOOP)
+INFO(12:58:38.051): step:2
+INFO(12:58:38.052): current state:((CELL 2 2 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:58:38.557): Sending play messages ...
+INFO(12:58:38.558): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:38.568): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:38.568): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 2) NOOP))"
+INFO(12:58:38.585): reply from MyPlayer: (MARK 1 1) after 27ms
+INFO(12:58:38.586): moves: (NOOP (MARK 1 1))
+INFO(12:58:38.590): step:3
+INFO(12:58:38.590): current state:((CELL 1 1 O) (CELL 2 2 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:58:39.097): Sending play messages ...
+INFO(12:58:39.101): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:39.102): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:39.102): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:58:39.110): reply from MyPlayer: NOOP after 9ms
+INFO(12:58:39.111): moves: ((MARK 3 2) NOOP)
+INFO(12:58:39.113): step:4
+INFO(12:58:39.113): current state:((CELL 3 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:58:39.617): Sending play messages ...
+INFO(12:58:39.622): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:39.623): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:39.623): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 2) NOOP))"
+INFO(12:58:39.630): reply from MyPlayer: (MARK 1 2) after 8ms
+INFO(12:58:39.631): moves: (NOOP (MARK 1 2))
+INFO(12:58:39.632): step:5
+INFO(12:58:39.633): current state:((CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:58:40.137): Sending play messages ...
+INFO(12:58:40.140): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:40.141): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:40.145): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:58:40.156): reply from MyPlayer: NOOP after 16ms
+INFO(12:58:40.157): moves: ((MARK 3 1) NOOP)
+INFO(12:58:40.159): step:6
+INFO(12:58:40.160): current state:((CELL 3 1 X) (CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:58:40.666): Sending play messages ...
+INFO(12:58:40.670): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:40.671): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:40.672): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:58:40.677): reply from MyPlayer: (MARK 1 3) after 7ms
+INFO(12:58:40.678): moves: (NOOP (MARK 1 3))
+INFO(12:58:40.681): step:7
+INFO(12:58:40.681): current state:((CELL 1 3 O) (CELL 3 1 X) (CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:58:40.689): Sending stop messages ...
+INFO(12:58:40.690): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:40.692): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:40.692): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:58:40.695): Game over! results: 0 100 
+INFO(12:58:40.695): runtimes (in ms): 30 8119 
+INFO(12:58:40.695): Done.
+INFO(12:58:40.901): match:TTT_NO_SIM30
+INFO(12:58:40.903): game:tictactoe
+INFO(12:58:40.903): starting game with startclock=10, playclock=10
+INFO(12:58:40.903): step:1
+INFO(12:58:40.905): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:58:40.906): role: XPLAYER => player: local(Random)
+INFO(12:58:40.908): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:58:40.908): Sending start messages ...
+INFO(12:58:40.912): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:40.917): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:40.918): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:58:48.947): reply from MyPlayer: READY after 8035ms
+INFO(12:58:49.456): Sending play messages ...
+INFO(12:58:49.458): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:49.459): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:49.460): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:58:49.469): reply from MyPlayer: NOOP after 11ms
+INFO(12:58:49.470): moves: ((MARK 3 3) NOOP)
+INFO(12:58:49.475): step:2
+INFO(12:58:49.475): current state:((CELL 3 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:58:49.980): Sending play messages ...
+INFO(12:58:49.984): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:49.990): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:49.990): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 3) NOOP))"
+INFO(12:58:50.009): reply from MyPlayer: (MARK 1 1) after 25ms
+INFO(12:58:50.010): moves: (NOOP (MARK 1 1))
+INFO(12:58:50.014): step:3
+INFO(12:58:50.014): current state:((CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:58:50.520): Sending play messages ...
+INFO(12:58:50.524): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:50.524): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:50.526): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:58:50.531): reply from MyPlayer: NOOP after 7ms
+INFO(12:58:50.532): moves: ((MARK 2 3) NOOP)
+INFO(12:58:50.534): step:4
+INFO(12:58:50.535): current state:((CELL 2 3 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(12:58:51.038): Sending play messages ...
+INFO(12:58:51.041): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:51.042): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:51.045): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 3) NOOP))"
+INFO(12:58:51.049): reply from MyPlayer: (MARK 1 2) after 8ms
+INFO(12:58:51.050): moves: (NOOP (MARK 1 2))
+INFO(12:58:51.054): step:5
+INFO(12:58:51.054): current state:((CELL 1 2 O) (CELL 2 3 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(12:58:51.557): Sending play messages ...
+INFO(12:58:51.560): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:51.561): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:51.562): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:58:51.568): reply from MyPlayer: NOOP after 8ms
+INFO(12:58:51.569): moves: ((MARK 3 2) NOOP)
+INFO(12:58:51.571): step:6
+INFO(12:58:51.571): current state:((CELL 3 2 X) (CELL 1 2 O) (CELL 2 3 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(12:58:52.075): Sending play messages ...
+INFO(12:58:52.084): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:52.085): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:52.085): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 2) NOOP))"
+INFO(12:58:52.091): reply from MyPlayer: (MARK 1 3) after 7ms
+INFO(12:58:52.092): moves: (NOOP (MARK 1 3))
+INFO(12:58:52.097): step:7
+INFO(12:58:52.097): current state:((CELL 1 3 O) (CELL 3 2 X) (CELL 1 2 O) (CELL 2 3 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(12:58:52.105): Sending stop messages ...
+INFO(12:58:52.106): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:52.108): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:52.112): message to MyPlayer sent: "(STOP TTT_NO_SIM30 (NOOP (MARK 1 3)))"
+INFO(12:58:52.112): Game over! results: 0 100 
+INFO(12:58:52.113): runtimes (in ms): 35 8101 
+INFO(12:58:52.113): Done.
+INFO(12:58:52.330): match:TTT_NO_SIM30
+INFO(12:58:52.331): game:tictactoe
+INFO(12:58:52.331): starting game with startclock=10, playclock=10
+INFO(12:58:52.331): step:1
+INFO(12:58:52.334): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:58:52.334): role: XPLAYER => player: local(Random)
+INFO(12:58:52.336): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(12:58:52.337): Sending start messages ...
+INFO(12:58:52.339): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:52.344): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:58:52.346): message to MyPlayer sent: "(START TTT_NO_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(12:59:00.384): reply from MyPlayer: READY after 8045ms
+INFO(12:59:00.895): Sending play messages ...
+INFO(12:59:00.897): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:00.898): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:00.898): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 NIL)"
+INFO(12:59:00.908): reply from MyPlayer: NOOP after 11ms
+INFO(12:59:00.909): moves: ((MARK 2 3) NOOP)
+INFO(12:59:00.914): step:2
+INFO(12:59:00.914): current state:((CELL 2 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:59:01.419): Sending play messages ...
+INFO(12:59:01.421): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:01.425): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:01.425): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 2 3) NOOP))"
+INFO(12:59:01.455): reply from MyPlayer: (MARK 1 1) after 34ms
+INFO(12:59:01.457): moves: (NOOP (MARK 1 1))
+INFO(12:59:01.461): step:3
+INFO(12:59:01.463): current state:((CELL 1 1 O) (CELL 2 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:59:01.969): Sending play messages ...
+INFO(12:59:01.972): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:01.974): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:01.974): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 1)))"
+INFO(12:59:01.981): reply from MyPlayer: NOOP after 9ms
+INFO(12:59:01.982): moves: ((MARK 1 3) NOOP)
+INFO(12:59:01.984): step:4
+INFO(12:59:01.985): current state:((CELL 1 3 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:59:02.489): Sending play messages ...
+INFO(12:59:02.497): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:02.497): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:02.498): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 1 3) NOOP))"
+INFO(12:59:02.504): reply from MyPlayer: (MARK 1 2) after 7ms
+INFO(12:59:02.505): moves: (NOOP (MARK 1 2))
+INFO(12:59:02.508): step:5
+INFO(12:59:02.508): current state:((CELL 1 2 O) (CELL 1 3 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:59:03.011): Sending play messages ...
+INFO(12:59:03.014): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:03.015): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:03.016): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 1 2)))"
+INFO(12:59:03.022): reply from MyPlayer: NOOP after 8ms
+INFO(12:59:03.023): moves: ((MARK 3 1) NOOP)
+INFO(12:59:03.026): step:6
+INFO(12:59:03.026): current state:((CELL 3 1 X) (CELL 1 2 O) (CELL 1 3 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:59:03.529): Sending play messages ...
+INFO(12:59:03.537): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:03.538): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:03.539): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 ((MARK 3 1) NOOP))"
+INFO(12:59:03.545): reply from MyPlayer: (MARK 2 1) after 8ms
+INFO(12:59:03.546): moves: (NOOP (MARK 2 1))
+INFO(12:59:03.548): step:7
+INFO(12:59:03.548): current state:((CELL 2 1 O) (CELL 3 1 X) (CELL 1 2 O) (CELL 1 3 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 2 2 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(12:59:04.050): Sending play messages ...
+INFO(12:59:04.054): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:04.055): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:04.055): message to MyPlayer sent: "(PLAY TTT_NO_SIM30 (NOOP (MARK 2 1)))"
+INFO(12:59:04.060): reply from MyPlayer: NOOP after 6ms
+INFO(12:59:04.061): moves: ((MARK 2 2) NOOP)
+INFO(12:59:04.064): step:8
+INFO(12:59:04.064): current state:((CELL 2 2 X) (CELL 2 1 O) (CELL 3 1 X) (CELL 1 2 O) (CELL 1 3 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(12:59:04.072): Sending stop messages ...
+INFO(12:59:04.073): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:04.074): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(12:59:04.074): message to MyPlayer sent: "(STOP TTT_NO_SIM30 ((MARK 2 2) NOOP))"
+INFO(12:59:04.077): Game over! results: 100 0 
+INFO(12:59:04.078): runtimes (in ms): 47 8128 
+INFO(12:59:04.078): Done.

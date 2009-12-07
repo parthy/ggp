@@ -1,0 +1,857 @@
+INFO(13:40:10.525): match:TTT_SIM30
+INFO(13:40:10.526): game:tictactoe
+INFO(13:40:10.526): starting game with startclock=10, playclock=10
+INFO(13:40:10.526): step:1
+INFO(13:40:10.529): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:10.529): role: XPLAYER => player: local(Random)
+INFO(13:40:10.531): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:10.532): Sending start messages ...
+INFO(13:40:10.536): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(13:40:10.542): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(13:40:10.543): message to MyPlayer sent: "(START TTT_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(13:40:13.009): match:TTT_SIM30
+INFO(13:40:13.010): game:tictactoe
+INFO(13:40:13.010): starting game with startclock=10, playclock=10
+INFO(13:40:13.011): step:1
+INFO(13:40:13.013): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:13.013): role: XPLAYER => player: local(Random)
+INFO(13:40:13.016): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:13.016): Sending start messages ...
+INFO(13:40:13.018): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(13:40:13.024): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(13:40:13.025): message to MyPlayer sent: "(START TTT_SIM30 OPLAYER ((ROLE XPLAYER) (ROLE OPLAYER) (INIT (CELL 1 1 B)) (INIT (CELL 1 2 B)) (INIT (CELL 1 3 B)) (INIT (CELL 2 1 B)) (INIT (CELL 2 2 B)) (INIT (CELL 2 3 B)) (INIT (CELL 3 1 B)) (INIT (CELL 3 2 B)) (INIT (CELL 3 3 B)) (INIT (CONTROL XPLAYER)) (<= (NEXT (CELL ?M ?N X)) (DOES XPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N O)) (DOES OPLAYER (MARK ?M ?N)) (TRUE (CELL ?M ?N B))) (<= (NEXT (CELL ?M ?N ?W)) (TRUE (CELL ?M ?N ?W)) (DISTINCT ?W B)) (<= (NEXT (CELL ?M ?N B)) (DOES ?W (MARK ?J ?K)) (TRUE (CELL ?M ?N B)) (OR (DISTINCT ?M ?J) (DISTINCT ?N ?K))) (<= (NEXT (CONTROL XPLAYER)) (TRUE (CONTROL OPLAYER))) (<= (NEXT (CONTROL OPLAYER)) (TRUE (CONTROL XPLAYER))) (<= (ROW ?M ?X) (TRUE (CELL ?M 1 ?X)) (TRUE (CELL ?M 2 ?X)) (TRUE (CELL ?M 3 ?X))) (<= (COLUMN ?N ?X) (TRUE (CELL 1 ?N ?X)) (TRUE (CELL 2 ?N ?X)) (TRUE (CELL 3 ?N ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 1 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 3 ?X))) (<= (DIAGONAL ?X) (TRUE (CELL 1 3 ?X)) (TRUE (CELL 2 2 ?X)) (TRUE (CELL 3 1 ?X))) (<= (LINE ?X) (ROW ?M ?X)) (<= (LINE ?X) (COLUMN ?M ?X)) (<= (LINE ?X) (DIAGONAL ?X)) (<= OPEN (TRUE (CELL ?M ?N B))) (<= (LEGAL ?W (MARK ?X ?Y)) (TRUE (CELL ?X ?Y B)) (TRUE (CONTROL ?W))) (<= (LEGAL XPLAYER NOOP) (TRUE (CONTROL OPLAYER))) (<= (LEGAL OPLAYER NOOP) (TRUE (CONTROL XPLAYER))) (<= (GOAL XPLAYER 100) (LINE X)) (<= (GOAL XPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL XPLAYER 0) (LINE O)) (<= (GOAL OPLAYER 100) (LINE O)) (<= (GOAL OPLAYER 50) (NOT (LINE X)) (NOT (LINE O)) (NOT OPEN)) (<= (GOAL OPLAYER 0) (LINE X)) (<= TERMINAL (LINE X)) (<= TERMINAL (LINE O)) (<= TERMINAL (NOT OPEN)) ) 10 10)"
+INFO(13:40:14.857): reply from MyPlayer: null after 1839ms
+INFO(13:40:15.369): Sending play messages ...
+INFO(13:40:15.374): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:15.376): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:15.376): reply from MyPlayer: null after 2ms
+SEVERE(13:40:15.377): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 1
+INFO(13:40:15.379): moves: ((MARK 1 1) NOOP)
+INFO(13:40:15.383): step:2
+INFO(13:40:15.383): current state:((CELL 1 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:15.894): Sending play messages ...
+INFO(13:40:15.897): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:15.898): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:15.898): reply from MyPlayer: null after 1ms
+SEVERE(13:40:15.903): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 2
+INFO(13:40:15.904): moves: (NOOP (MARK 1 2))
+INFO(13:40:15.907): step:3
+INFO(13:40:15.907): current state:((CELL 1 2 O) (CELL 1 1 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:16.426): match:TTT_SIM30
+INFO(13:40:16.427): game:tictactoe
+INFO(13:40:16.427): starting game with startclock=10, playclock=10
+INFO(13:40:16.428): step:1
+INFO(13:40:16.430): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:16.430): role: XPLAYER => player: local(Random)
+INFO(13:40:16.433): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:16.433): Sending start messages ...
+INFO(13:40:16.437): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:16.443): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:16.444): reply from MyPlayer: null after 7ms
+INFO(13:40:16.954): Sending play messages ...
+INFO(13:40:16.958): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:16.959): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:16.959): reply from MyPlayer: null after 1ms
+SEVERE(13:40:16.963): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 1
+INFO(13:40:16.965): moves: ((MARK 2 1) NOOP)
+INFO(13:40:16.969): step:2
+INFO(13:40:16.970): current state:((CELL 2 1 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:17.476): Sending play messages ...
+INFO(13:40:17.479): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:17.480): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:17.480): reply from MyPlayer: null after 1ms
+SEVERE(13:40:17.484): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 2
+INFO(13:40:17.486): moves: (NOOP (MARK 1 1))
+INFO(13:40:17.489): step:3
+INFO(13:40:17.489): current state:((CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:17.995): Sending play messages ...
+INFO(13:40:17.998): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:17.999): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:17.999): reply from MyPlayer: null after 1ms
+SEVERE(13:40:18.000): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 3
+INFO(13:40:18.000): moves: ((MARK 3 3) NOOP)
+INFO(13:40:18.002): step:4
+INFO(13:40:18.002): current state:((CELL 3 3 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(13:40:18.506): Sending play messages ...
+INFO(13:40:18.510): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:18.511): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:18.511): reply from MyPlayer: null after 1ms
+SEVERE(13:40:18.512): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 4
+INFO(13:40:18.512): moves: (NOOP (MARK 1 2))
+INFO(13:40:18.515): step:5
+INFO(13:40:18.516): current state:((CELL 1 2 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(13:40:19.019): Sending play messages ...
+INFO(13:40:19.024): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:19.025): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:19.025): reply from MyPlayer: null after 1ms
+SEVERE(13:40:19.026): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 5
+INFO(13:40:19.027): moves: ((MARK 2 3) NOOP)
+INFO(13:40:19.030): step:6
+INFO(13:40:19.030): current state:((CELL 2 3 X) (CELL 1 2 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 1 3 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(13:40:19.533): Sending play messages ...
+INFO(13:40:19.535): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:19.536): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:19.537): reply from MyPlayer: null after 2ms
+SEVERE(13:40:19.537): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 6
+INFO(13:40:19.538): moves: (NOOP (MARK 1 3))
+INFO(13:40:19.540): step:7
+INFO(13:40:19.540): current state:((CELL 1 3 O) (CELL 2 3 X) (CELL 1 2 O) (CELL 3 3 X) (CELL 1 1 O) (CELL 2 1 X) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(13:40:19.549): Sending stop messages ...
+INFO(13:40:19.550): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:19.551): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:19.551): Game over! results: 0 100 
+INFO(13:40:19.552): runtimes (in ms): 35 14 
+INFO(13:40:19.552): Done.
+INFO(13:40:19.796): match:TTT_SIM30
+INFO(13:40:19.797): game:tictactoe
+INFO(13:40:19.797): starting game with startclock=10, playclock=10
+INFO(13:40:19.797): step:1
+INFO(13:40:19.799): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:19.800): role: XPLAYER => player: local(Random)
+INFO(13:40:19.802): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:19.802): Sending start messages ...
+INFO(13:40:19.807): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:19.813): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:19.814): reply from MyPlayer: null after 6ms
+INFO(13:40:20.324): Sending play messages ...
+INFO(13:40:20.329): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:20.329): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:20.330): reply from MyPlayer: null after 1ms
+SEVERE(13:40:20.333): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 1
+INFO(13:40:20.335): moves: ((MARK 2 3) NOOP)
+INFO(13:40:20.340): step:2
+INFO(13:40:20.340): current state:((CELL 2 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:20.846): Sending play messages ...
+INFO(13:40:20.850): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:20.851): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:20.851): reply from MyPlayer: null after 1ms
+SEVERE(13:40:20.855): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 2
+INFO(13:40:20.857): moves: (NOOP (MARK 1 1))
+INFO(13:40:20.860): step:3
+INFO(13:40:20.860): current state:((CELL 1 1 O) (CELL 2 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:21.367): Sending play messages ...
+INFO(13:40:21.371): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:21.371): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:21.371): reply from MyPlayer: null after 0ms
+SEVERE(13:40:21.372): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 3
+INFO(13:40:21.373): moves: ((MARK 3 2) NOOP)
+INFO(13:40:21.375): step:4
+INFO(13:40:21.375): current state:((CELL 3 2 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:21.881): Sending play messages ...
+INFO(13:40:21.885): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:21.886): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:21.886): reply from MyPlayer: null after 1ms
+SEVERE(13:40:21.887): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 4
+INFO(13:40:21.887): moves: (NOOP (MARK 1 2))
+INFO(13:40:21.889): step:5
+INFO(13:40:21.890): current state:((CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:22.393): Sending play messages ...
+INFO(13:40:22.396): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:22.396): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:22.396): reply from MyPlayer: null after 0ms
+SEVERE(13:40:22.397): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 5
+INFO(13:40:22.398): moves: ((MARK 3 3) NOOP)
+INFO(13:40:22.402): step:6
+INFO(13:40:22.402): current state:((CELL 3 3 X) (CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(13:40:23.060): match:TTT_SIM30
+INFO(13:40:23.061): game:tictactoe
+INFO(13:40:23.061): starting game with startclock=10, playclock=10
+INFO(13:40:23.061): step:1
+INFO(13:40:23.063): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:23.064): role: XPLAYER => player: local(Random)
+INFO(13:40:23.066): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:23.066): Sending start messages ...
+INFO(13:40:23.070): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:23.077): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:23.077): reply from MyPlayer: null after 7ms
+INFO(13:40:24.037): match:TTT_SIM30
+INFO(13:40:24.038): game:tictactoe
+INFO(13:40:24.038): starting game with startclock=10, playclock=10
+INFO(13:40:24.038): step:1
+INFO(13:40:24.041): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:24.041): role: XPLAYER => player: local(Random)
+INFO(13:40:24.043): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:24.043): Sending start messages ...
+INFO(13:40:24.049): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:24.055): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:24.055): reply from MyPlayer: null after 6ms
+INFO(13:40:24.566): Sending play messages ...
+INFO(13:40:24.573): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:24.574): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:24.574): reply from MyPlayer: null after 1ms
+SEVERE(13:40:24.575): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 1
+INFO(13:40:24.577): moves: ((MARK 3 3) NOOP)
+INFO(13:40:24.581): step:2
+INFO(13:40:24.581): current state:((CELL 3 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(13:40:25.086): Sending play messages ...
+INFO(13:40:25.091): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:25.092): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:25.092): reply from MyPlayer: null after 1ms
+SEVERE(13:40:25.096): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 2
+INFO(13:40:25.098): moves: (NOOP (MARK 1 1))
+INFO(13:40:25.101): step:3
+INFO(13:40:25.101): current state:((CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(13:40:25.607): Sending play messages ...
+INFO(13:40:25.611): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:25.611): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:25.612): reply from MyPlayer: null after 1ms
+SEVERE(13:40:25.612): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 3
+INFO(13:40:25.613): moves: ((MARK 3 2) NOOP)
+INFO(13:40:25.615): step:4
+INFO(13:40:25.615): current state:((CELL 3 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(13:40:26.119): Sending play messages ...
+INFO(13:40:26.124): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:26.124): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:26.124): reply from MyPlayer: null after 1ms
+SEVERE(13:40:26.125): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 4
+INFO(13:40:26.126): moves: (NOOP (MARK 1 2))
+INFO(13:40:26.128): step:5
+INFO(13:40:26.128): current state:((CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(13:40:26.632): Sending play messages ...
+INFO(13:40:26.635): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:26.636): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:26.636): reply from MyPlayer: null after 1ms
+SEVERE(13:40:26.636): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 5
+INFO(13:40:26.639): moves: ((MARK 3 1) NOOP)
+INFO(13:40:26.642): step:6
+INFO(13:40:26.643): current state:((CELL 3 1 X) (CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CONTROL OPLAYER) )
+INFO(13:40:26.655): Sending stop messages ...
+INFO(13:40:26.657): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:26.658): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:26.658): Game over! results: 100 0 
+INFO(13:40:26.658): runtimes (in ms): 27 11 
+INFO(13:40:26.658): Done.
+INFO(13:40:26.900): match:TTT_SIM30
+INFO(13:40:26.901): game:tictactoe
+INFO(13:40:26.901): starting game with startclock=10, playclock=10
+INFO(13:40:26.901): step:1
+INFO(13:40:26.903): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:26.904): role: XPLAYER => player: local(Random)
+INFO(13:40:26.906): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:26.906): Sending start messages ...
+INFO(13:40:26.910): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:26.917): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:26.917): reply from MyPlayer: null after 7ms
+INFO(13:40:27.427): Sending play messages ...
+INFO(13:40:27.428): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:27.434): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:27.434): reply from MyPlayer: null after 6ms
+SEVERE(13:40:27.438): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 1
+INFO(13:40:27.440): moves: ((MARK 3 3) NOOP)
+INFO(13:40:27.445): step:2
+INFO(13:40:27.445): current state:((CELL 3 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(13:40:27.951): Sending play messages ...
+INFO(13:40:27.953): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:27.957): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:27.957): reply from MyPlayer: null after 4ms
+SEVERE(13:40:27.961): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 2
+INFO(13:40:27.963): moves: (NOOP (MARK 1 1))
+INFO(13:40:27.965): step:3
+INFO(13:40:27.966): current state:((CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(13:40:28.472): Sending play messages ...
+INFO(13:40:28.475): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:28.476): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:28.476): reply from MyPlayer: null after 1ms
+SEVERE(13:40:28.477): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 3
+INFO(13:40:28.478): moves: ((MARK 2 1) NOOP)
+INFO(13:40:28.480): step:4
+INFO(13:40:28.480): current state:((CELL 2 1 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(13:40:28.986): Sending play messages ...
+INFO(13:40:28.990): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:28.990): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:28.991): reply from MyPlayer: null after 1ms
+SEVERE(13:40:28.991): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 4
+INFO(13:40:28.992): moves: (NOOP (MARK 1 2))
+INFO(13:40:28.994): step:5
+INFO(13:40:28.994): current state:((CELL 1 2 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(13:40:29.497): Sending play messages ...
+INFO(13:40:29.501): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:29.502): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:29.502): reply from MyPlayer: null after 1ms
+SEVERE(13:40:29.503): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 5
+INFO(13:40:29.504): moves: ((MARK 2 2) NOOP)
+INFO(13:40:29.506): step:6
+INFO(13:40:29.507): current state:((CELL 2 2 X) (CELL 1 2 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(13:40:30.010): Sending play messages ...
+INFO(13:40:30.014): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:30.015): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:30.015): reply from MyPlayer: null after 1ms
+SEVERE(13:40:30.015): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 6
+INFO(13:40:30.016): moves: (NOOP (MARK 1 3))
+INFO(13:40:30.018): step:7
+INFO(13:40:30.018): current state:((CELL 1 3 O) (CELL 2 2 X) (CELL 1 2 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(13:40:30.027): Sending stop messages ...
+INFO(13:40:30.028): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:30.028): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:30.029): Game over! results: 0 100 
+INFO(13:40:30.029): runtimes (in ms): 36 21 
+INFO(13:40:30.029): Done.
+INFO(13:40:30.266): match:TTT_SIM30
+INFO(13:40:30.268): game:tictactoe
+INFO(13:40:30.268): starting game with startclock=10, playclock=10
+INFO(13:40:30.268): step:1
+INFO(13:40:30.270): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:30.271): role: XPLAYER => player: local(Random)
+INFO(13:40:30.273): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:30.273): Sending start messages ...
+INFO(13:40:30.278): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:30.284): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:30.284): reply from MyPlayer: null after 6ms
+INFO(13:40:30.796): Sending play messages ...
+INFO(13:40:30.801): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:30.801): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:30.802): reply from MyPlayer: null after 2ms
+SEVERE(13:40:30.805): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 1
+INFO(13:40:30.807): moves: ((MARK 3 3) NOOP)
+INFO(13:40:30.811): step:2
+INFO(13:40:30.811): current state:((CELL 3 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(13:40:31.317): Sending play messages ...
+INFO(13:40:31.322): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:31.322): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:31.323): reply from MyPlayer: null after 2ms
+SEVERE(13:40:31.328): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 2
+INFO(13:40:31.329): moves: (NOOP (MARK 1 1))
+INFO(13:40:31.332): step:3
+INFO(13:40:31.332): current state:((CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(13:40:31.838): Sending play messages ...
+INFO(13:40:31.842): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:31.842): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:31.843): reply from MyPlayer: null after 1ms
+SEVERE(13:40:31.843): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 3
+INFO(13:40:31.844): moves: ((MARK 2 3) NOOP)
+INFO(13:40:31.846): step:4
+INFO(13:40:31.847): current state:((CELL 2 3 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(13:40:32.353): Sending play messages ...
+INFO(13:40:32.355): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:32.356): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:32.356): reply from MyPlayer: null after 1ms
+SEVERE(13:40:32.359): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 4
+INFO(13:40:32.360): moves: (NOOP (MARK 1 2))
+INFO(13:40:32.362): step:5
+INFO(13:40:32.362): current state:((CELL 1 2 O) (CELL 2 3 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(13:40:32.865): Sending play messages ...
+INFO(13:40:32.868): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:32.868): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:32.869): reply from MyPlayer: null after 1ms
+SEVERE(13:40:32.869): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 5
+INFO(13:40:32.872): moves: ((MARK 2 1) NOOP)
+INFO(13:40:32.875): step:6
+INFO(13:40:32.875): current state:((CELL 2 1 X) (CELL 1 2 O) (CELL 2 3 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(13:40:33.380): Sending play messages ...
+INFO(13:40:33.383): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:33.384): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:33.384): reply from MyPlayer: null after 1ms
+SEVERE(13:40:33.384): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 6
+INFO(13:40:33.385): moves: (NOOP (MARK 1 3))
+INFO(13:40:33.387): step:7
+INFO(13:40:33.387): current state:((CELL 1 3 O) (CELL 2 1 X) (CELL 1 2 O) (CELL 2 3 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(13:40:33.395): Sending stop messages ...
+INFO(13:40:33.396): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:33.397): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:33.397): Game over! results: 0 100 
+INFO(13:40:33.398): runtimes (in ms): 36 14 
+INFO(13:40:33.398): Done.
+INFO(13:40:33.634): match:TTT_SIM30
+INFO(13:40:33.635): game:tictactoe
+INFO(13:40:33.635): starting game with startclock=10, playclock=10
+INFO(13:40:33.635): step:1
+INFO(13:40:33.638): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:33.638): role: XPLAYER => player: local(Random)
+INFO(13:40:33.640): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:33.640): Sending start messages ...
+INFO(13:40:33.644): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:33.651): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:33.651): reply from MyPlayer: null after 7ms
+INFO(13:40:34.161): Sending play messages ...
+INFO(13:40:34.165): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:34.166): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:34.166): reply from MyPlayer: null after 1ms
+SEVERE(13:40:34.170): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 1
+INFO(13:40:34.172): moves: ((MARK 1 2) NOOP)
+INFO(13:40:34.176): step:2
+INFO(13:40:34.177): current state:((CELL 1 2 X) (CELL 1 1 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:34.683): Sending play messages ...
+INFO(13:40:34.686): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:34.687): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:34.687): reply from MyPlayer: null after 1ms
+SEVERE(13:40:34.693): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 2
+INFO(13:40:34.694): moves: (NOOP (MARK 1 1))
+INFO(13:40:34.697): step:3
+INFO(13:40:34.697): current state:((CELL 1 1 O) (CELL 1 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:35.204): Sending play messages ...
+INFO(13:40:35.207): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:35.208): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:35.208): reply from MyPlayer: null after 1ms
+SEVERE(13:40:35.208): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 3
+INFO(13:40:35.209): moves: ((MARK 2 1) NOOP)
+INFO(13:40:35.211): step:4
+INFO(13:40:35.211): current state:((CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:35.715): Sending play messages ...
+INFO(13:40:35.720): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:35.721): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:35.721): reply from MyPlayer: null after 1ms
+SEVERE(13:40:35.721): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 4
+INFO(13:40:35.722): moves: (NOOP (MARK 1 3))
+INFO(13:40:35.724): step:5
+INFO(13:40:35.725): current state:((CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:36.227): Sending play messages ...
+INFO(13:40:36.228): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:36.229): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:36.229): reply from MyPlayer: null after 1ms
+SEVERE(13:40:36.237): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 5
+INFO(13:40:36.238): moves: ((MARK 2 3) NOOP)
+INFO(13:40:36.242): step:6
+INFO(13:40:36.242): current state:((CELL 2 3 X) (CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:36.759): Sending play messages ...
+INFO(13:40:36.763): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:36.764): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:36.764): reply from MyPlayer: null after 1ms
+SEVERE(13:40:36.765): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 6
+INFO(13:40:36.767): moves: (NOOP (MARK 2 2))
+INFO(13:40:36.769): step:7
+INFO(13:40:36.770): current state:((CELL 2 2 O) (CELL 2 3 X) (CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:37.273): Sending play messages ...
+INFO(13:40:37.278): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:37.279): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:37.279): reply from MyPlayer: null after 1ms
+SEVERE(13:40:37.280): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 7
+INFO(13:40:37.281): moves: ((MARK 3 2) NOOP)
+INFO(13:40:37.283): step:8
+INFO(13:40:37.283): current state:((CELL 3 2 X) (CELL 2 2 O) (CELL 2 3 X) (CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 3 1 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:37.787): Sending play messages ...
+INFO(13:40:37.840): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:37.841): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:37.842): reply from MyPlayer: null after 2ms
+SEVERE(13:40:37.843): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 8
+INFO(13:40:37.844): moves: (NOOP (MARK 3 1))
+INFO(13:40:37.845): step:9
+INFO(13:40:37.846): current state:((CELL 3 1 O) (CELL 3 2 X) (CELL 2 2 O) (CELL 2 3 X) (CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:37.865): Sending stop messages ...
+INFO(13:40:37.867): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:37.867): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:37.868): Game over! results: 0 100 
+INFO(13:40:37.869): runtimes (in ms): 88 16 
+INFO(13:40:37.869): Done.
+INFO(13:40:38.266): match:TTT_SIM30
+INFO(13:40:38.268): game:tictactoe
+INFO(13:40:38.268): starting game with startclock=10, playclock=10
+INFO(13:40:38.269): step:1
+INFO(13:40:38.273): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:38.274): role: XPLAYER => player: local(Random)
+INFO(13:40:38.277): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:38.278): Sending start messages ...
+INFO(13:40:38.288): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:38.298): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:38.298): reply from MyPlayer: null after 10ms
+INFO(13:40:38.818): Sending play messages ...
+INFO(13:40:38.831): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:38.832): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:38.832): reply from MyPlayer: null after 1ms
+SEVERE(13:40:38.834): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 1
+INFO(13:40:38.837): moves: ((MARK 3 3) NOOP)
+INFO(13:40:38.844): step:2
+INFO(13:40:38.845): current state:((CELL 3 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(13:40:39.354): Sending play messages ...
+INFO(13:40:39.362): Begin creating Socket for remote(MyPlayer, localhost:4001)
+INFO(13:40:39.363): Done creating Socket for remote(MyPlayer, localhost:4001)
+INFO(13:40:39.365): message to MyPlayer sent: "(PLAY TTT_SIM30 ((MARK 3 3) NOOP))"
+INFO(13:40:40.645): reply from MyPlayer: null after 1283ms
+SEVERE(13:40:40.645): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 2
+INFO(13:40:40.647): moves: (NOOP (MARK 1 1))
+INFO(13:40:40.649): step:3
+INFO(13:40:40.650): current state:((CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(13:40:41.156): Sending play messages ...
+INFO(13:40:41.159): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:41.160): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:41.160): reply from MyPlayer: null after 1ms
+SEVERE(13:40:41.160): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 3
+INFO(13:40:41.161): moves: ((MARK 3 2) NOOP)
+INFO(13:40:41.163): step:4
+INFO(13:40:41.163): current state:((CELL 3 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(13:40:41.667): Sending play messages ...
+INFO(13:40:41.672): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:41.672): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:41.673): reply from MyPlayer: null after 1ms
+SEVERE(13:40:41.673): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 4
+INFO(13:40:41.674): moves: (NOOP (MARK 1 2))
+INFO(13:40:41.676): step:5
+INFO(13:40:41.677): current state:((CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(13:40:42.179): Sending play messages ...
+INFO(13:40:42.182): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:42.183): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:42.183): reply from MyPlayer: null after 1ms
+SEVERE(13:40:42.184): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 5
+INFO(13:40:42.185): moves: ((MARK 2 3) NOOP)
+INFO(13:40:42.190): step:6
+INFO(13:40:42.190): current state:((CELL 2 3 X) (CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(13:40:42.695): Sending play messages ...
+INFO(13:40:42.700): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:42.700): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:42.701): reply from MyPlayer: null after 1ms
+SEVERE(13:40:42.701): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 6
+INFO(13:40:42.702): moves: (NOOP (MARK 1 3))
+INFO(13:40:42.708): step:7
+INFO(13:40:42.708): current state:((CELL 1 3 O) (CELL 2 3 X) (CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(13:40:42.717): Sending stop messages ...
+INFO(13:40:42.718): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:42.719): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:42.720): Game over! results: 0 100 
+INFO(13:40:42.720): runtimes (in ms): 37 1298 
+INFO(13:40:42.720): Done.
+INFO(13:40:42.942): match:TTT_SIM30
+INFO(13:40:42.943): game:tictactoe
+INFO(13:40:42.944): starting game with startclock=10, playclock=10
+INFO(13:40:42.944): step:1
+INFO(13:40:42.946): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:42.947): role: XPLAYER => player: local(Random)
+INFO(13:40:42.949): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:42.949): Sending start messages ...
+INFO(13:40:42.954): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:42.960): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:42.960): reply from MyPlayer: null after 6ms
+INFO(13:40:43.470): Sending play messages ...
+INFO(13:40:43.475): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:43.475): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:43.476): reply from MyPlayer: null after 1ms
+SEVERE(13:40:43.479): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 1
+INFO(13:40:43.481): moves: ((MARK 3 3) NOOP)
+INFO(13:40:43.486): step:2
+INFO(13:40:43.486): current state:((CELL 3 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL OPLAYER) )
+INFO(13:40:43.992): Sending play messages ...
+INFO(13:40:43.996): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:43.997): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:43.998): reply from MyPlayer: null after 1ms
+SEVERE(13:40:44.003): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 2
+INFO(13:40:44.004): moves: (NOOP (MARK 1 1))
+INFO(13:40:44.007): step:3
+INFO(13:40:44.007): current state:((CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CONTROL XPLAYER) )
+INFO(13:40:44.513): Sending play messages ...
+INFO(13:40:44.517): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:44.517): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:44.517): reply from MyPlayer: null after 0ms
+SEVERE(13:40:44.518): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 3
+INFO(13:40:44.519): moves: ((MARK 3 2) NOOP)
+INFO(13:40:44.521): step:4
+INFO(13:40:44.521): current state:((CELL 3 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(13:40:45.028): Sending play messages ...
+INFO(13:40:45.030): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:45.031): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:45.031): reply from MyPlayer: null after 1ms
+SEVERE(13:40:45.034): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 4
+INFO(13:40:45.035): moves: (NOOP (MARK 1 2))
+INFO(13:40:45.037): step:5
+INFO(13:40:45.037): current state:((CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(13:40:45.541): Sending play messages ...
+INFO(13:40:45.544): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:45.544): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:45.544): reply from MyPlayer: null after 0ms
+SEVERE(13:40:45.545): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 5
+INFO(13:40:45.548): moves: ((MARK 3 1) NOOP)
+INFO(13:40:45.551): step:6
+INFO(13:40:45.551): current state:((CELL 3 1 X) (CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 3 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CONTROL OPLAYER) )
+INFO(13:40:45.565): Sending stop messages ...
+INFO(13:40:45.566): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:45.567): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:45.567): Game over! results: 100 0 
+INFO(13:40:45.567): runtimes (in ms): 33 9 
+INFO(13:40:45.567): Done.
+INFO(13:40:45.801): match:TTT_SIM30
+INFO(13:40:45.803): game:tictactoe
+INFO(13:40:45.803): starting game with startclock=10, playclock=10
+INFO(13:40:45.803): step:1
+INFO(13:40:45.805): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:45.806): role: XPLAYER => player: local(Random)
+INFO(13:40:45.808): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:45.808): Sending start messages ...
+INFO(13:40:45.812): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:45.819): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:45.819): reply from MyPlayer: null after 7ms
+INFO(13:40:46.329): Sending play messages ...
+INFO(13:40:46.330): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:46.336): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:46.336): reply from MyPlayer: null after 6ms
+SEVERE(13:40:46.340): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 1
+INFO(13:40:46.342): moves: ((MARK 3 1) NOOP)
+INFO(13:40:46.346): step:2
+INFO(13:40:46.346): current state:((CELL 3 1 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:46.851): Sending play messages ...
+INFO(13:40:46.852): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:46.853): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:46.854): reply from MyPlayer: null after 2ms
+SEVERE(13:40:46.860): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 2
+INFO(13:40:46.862): moves: (NOOP (MARK 1 1))
+INFO(13:40:46.865): step:3
+INFO(13:40:46.865): current state:((CELL 1 1 O) (CELL 3 1 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:47.370): Sending play messages ...
+INFO(13:40:47.374): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:47.375): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:47.375): reply from MyPlayer: null after 1ms
+SEVERE(13:40:47.375): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 3
+INFO(13:40:47.376): moves: ((MARK 1 3) NOOP)
+INFO(13:40:47.378): step:4
+INFO(13:40:47.378): current state:((CELL 1 3 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 1 2 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:47.882): Sending play messages ...
+INFO(13:40:47.886): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:47.887): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:47.887): reply from MyPlayer: null after 1ms
+SEVERE(13:40:47.887): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 4
+INFO(13:40:47.888): moves: (NOOP (MARK 1 2))
+INFO(13:40:47.891): step:5
+INFO(13:40:47.892): current state:((CELL 1 2 O) (CELL 1 3 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:48.395): Sending play messages ...
+INFO(13:40:48.400): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:48.400): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:48.400): reply from MyPlayer: null after 0ms
+SEVERE(13:40:48.401): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 5
+INFO(13:40:48.402): moves: ((MARK 2 2) NOOP)
+INFO(13:40:48.406): step:6
+INFO(13:40:48.406): current state:((CELL 2 2 X) (CELL 1 2 O) (CELL 1 3 X) (CELL 1 1 O) (CELL 3 1 X) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:48.419): Sending stop messages ...
+INFO(13:40:48.420): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:48.420): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:48.421): Game over! results: 100 0 
+INFO(13:40:48.421): runtimes (in ms): 34 17 
+INFO(13:40:48.421): Done.
+INFO(13:40:48.660): match:TTT_SIM30
+INFO(13:40:48.661): game:tictactoe
+INFO(13:40:48.661): starting game with startclock=10, playclock=10
+INFO(13:40:48.661): step:1
+INFO(13:40:48.664): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:48.664): role: XPLAYER => player: local(Random)
+INFO(13:40:48.666): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:48.666): Sending start messages ...
+INFO(13:40:48.670): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:48.677): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:48.677): reply from MyPlayer: null after 7ms
+INFO(13:40:49.187): Sending play messages ...
+INFO(13:40:49.188): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:49.194): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:49.194): reply from MyPlayer: null after 6ms
+SEVERE(13:40:49.199): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 1
+INFO(13:40:49.200): moves: ((MARK 2 3) NOOP)
+INFO(13:40:49.204): step:2
+INFO(13:40:49.205): current state:((CELL 2 3 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:49.709): Sending play messages ...
+INFO(13:40:49.713): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:49.714): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:49.714): reply from MyPlayer: null after 1ms
+SEVERE(13:40:49.718): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 2
+INFO(13:40:49.720): moves: (NOOP (MARK 1 1))
+INFO(13:40:49.723): step:3
+INFO(13:40:49.723): current state:((CELL 1 1 O) (CELL 2 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:50.229): Sending play messages ...
+INFO(13:40:50.232): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:50.233): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:50.233): reply from MyPlayer: null after 1ms
+SEVERE(13:40:50.234): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 3
+INFO(13:40:50.235): moves: ((MARK 3 2) NOOP)
+INFO(13:40:50.237): step:4
+INFO(13:40:50.237): current state:((CELL 3 2 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:50.743): Sending play messages ...
+INFO(13:40:50.747): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:50.747): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:50.747): reply from MyPlayer: null after 0ms
+SEVERE(13:40:50.748): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 4
+INFO(13:40:50.749): moves: (NOOP (MARK 1 2))
+INFO(13:40:50.751): step:5
+INFO(13:40:50.751): current state:((CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:51.255): Sending play messages ...
+INFO(13:40:51.258): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:51.258): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:51.258): reply from MyPlayer: null after 0ms
+SEVERE(13:40:51.259): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 5
+INFO(13:40:51.262): moves: ((MARK 3 3) NOOP)
+INFO(13:40:51.264): step:6
+INFO(13:40:51.265): current state:((CELL 3 3 X) (CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CONTROL OPLAYER) )
+INFO(13:40:51.773): Sending play messages ...
+INFO(13:40:51.777): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:51.778): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:51.778): reply from MyPlayer: null after 1ms
+SEVERE(13:40:51.778): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 6
+INFO(13:40:51.779): moves: (NOOP (MARK 1 3))
+INFO(13:40:51.781): step:7
+INFO(13:40:51.781): current state:((CELL 1 3 O) (CELL 3 3 X) (CELL 1 2 O) (CELL 3 2 X) (CELL 1 1 O) (CELL 2 3 X) (CELL 2 1 B) (CELL 2 2 B) (CELL 3 1 B) (CONTROL XPLAYER) )
+INFO(13:40:51.790): Sending stop messages ...
+INFO(13:40:51.791): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:51.792): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:51.793): Game over! results: 0 100 
+INFO(13:40:51.793): runtimes (in ms): 37 16 
+INFO(13:40:51.793): Done.
+INFO(13:40:52.025): match:TTT_SIM30
+INFO(13:40:52.026): game:tictactoe
+INFO(13:40:52.027): starting game with startclock=10, playclock=10
+INFO(13:40:52.027): step:1
+INFO(13:40:52.029): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:52.030): role: XPLAYER => player: local(Random)
+INFO(13:40:52.032): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:52.033): Sending start messages ...
+INFO(13:40:52.038): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:52.044): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:52.045): reply from MyPlayer: null after 7ms
+INFO(13:40:52.553): Sending play messages ...
+INFO(13:40:52.561): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:52.561): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:52.561): reply from MyPlayer: null after 0ms
+SEVERE(13:40:52.562): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 1
+INFO(13:40:52.564): moves: ((MARK 2 2) NOOP)
+INFO(13:40:52.568): step:2
+INFO(13:40:52.568): current state:((CELL 2 2 X) (CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:53.073): Sending play messages ...
+INFO(13:40:53.078): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:53.079): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:53.079): reply from MyPlayer: null after 1ms
+SEVERE(13:40:53.084): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 2
+INFO(13:40:53.085): moves: (NOOP (MARK 1 1))
+INFO(13:40:53.088): step:3
+INFO(13:40:53.088): current state:((CELL 1 1 O) (CELL 2 2 X) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:53.595): Sending play messages ...
+INFO(13:40:53.598): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:53.598): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:53.599): reply from MyPlayer: null after 1ms
+SEVERE(13:40:53.600): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 3
+INFO(13:40:53.601): moves: ((MARK 1 2) NOOP)
+INFO(13:40:53.602): step:4
+INFO(13:40:53.603): current state:((CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:54.109): Sending play messages ...
+INFO(13:40:54.112): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:54.112): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:54.113): reply from MyPlayer: null after 2ms
+SEVERE(13:40:54.115): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 4
+INFO(13:40:54.115): moves: (NOOP (MARK 1 3))
+INFO(13:40:54.117): step:5
+INFO(13:40:54.118): current state:((CELL 1 3 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:54.621): Sending play messages ...
+INFO(13:40:54.625): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:54.626): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:54.626): reply from MyPlayer: null after 1ms
+SEVERE(13:40:54.627): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 5
+INFO(13:40:54.628): moves: ((MARK 3 1) NOOP)
+INFO(13:40:54.632): step:6
+INFO(13:40:54.632): current state:((CELL 3 1 X) (CELL 1 3 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 2 1 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:55.136): Sending play messages ...
+INFO(13:40:55.138): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:55.139): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:55.139): reply from MyPlayer: null after 1ms
+SEVERE(13:40:55.140): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 6
+INFO(13:40:55.142): moves: (NOOP (MARK 2 1))
+INFO(13:40:55.143): step:7
+INFO(13:40:55.143): current state:((CELL 2 1 O) (CELL 3 1 X) (CELL 1 3 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:55.646): Sending play messages ...
+INFO(13:40:55.648): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:55.651): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:55.651): reply from MyPlayer: null after 3ms
+SEVERE(13:40:55.652): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 7
+INFO(13:40:55.653): moves: ((MARK 2 3) NOOP)
+INFO(13:40:55.654): step:8
+INFO(13:40:55.655): current state:((CELL 2 3 X) (CELL 2 1 O) (CELL 3 1 X) (CELL 1 3 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:56.158): Sending play messages ...
+INFO(13:40:56.160): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:56.161): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:56.163): reply from MyPlayer: null after 3ms
+SEVERE(13:40:56.164): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 8
+INFO(13:40:56.165): moves: (NOOP (MARK 3 2))
+INFO(13:40:56.167): step:9
+INFO(13:40:56.167): current state:((CELL 3 2 O) (CELL 2 3 X) (CELL 2 1 O) (CELL 3 1 X) (CELL 1 3 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:56.671): Sending play messages ...
+INFO(13:40:56.679): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:56.680): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:56.680): reply from MyPlayer: null after 1ms
+SEVERE(13:40:56.680): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 9
+INFO(13:40:56.681): moves: ((MARK 3 3) NOOP)
+INFO(13:40:56.682): step:10
+INFO(13:40:56.682): current state:((CELL 3 3 X) (CELL 3 2 O) (CELL 2 3 X) (CELL 2 1 O) (CELL 3 1 X) (CELL 1 3 O) (CELL 1 2 X) (CELL 1 1 O) (CELL 2 2 X) (CONTROL OPLAYER) )
+INFO(13:40:56.693): Sending stop messages ...
+INFO(13:40:56.697): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:56.697): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:56.698): Game over! results: 50 50 
+INFO(13:40:56.698): runtimes (in ms): 46 20 
+INFO(13:40:56.698): Done.
+INFO(13:40:56.921): match:TTT_SIM30
+INFO(13:40:56.922): game:tictactoe
+INFO(13:40:56.922): starting game with startclock=10, playclock=10
+INFO(13:40:56.923): step:1
+INFO(13:40:56.925): current state:((CELL 1 1 B) (CELL 1 2 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:56.925): role: XPLAYER => player: local(Random)
+INFO(13:40:56.928): role: OPLAYER => player: remote(MyPlayer, localhost:4001)
+INFO(13:40:56.928): Sending start messages ...
+INFO(13:40:56.931): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:56.938): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:56.939): reply from MyPlayer: null after 7ms
+INFO(13:40:57.449): Sending play messages ...
+INFO(13:40:57.454): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:57.455): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:57.455): reply from MyPlayer: null after 1ms
+SEVERE(13:40:57.459): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 1
+INFO(13:40:57.460): moves: ((MARK 1 2) NOOP)
+INFO(13:40:57.465): step:2
+INFO(13:40:57.465): current state:((CELL 1 2 X) (CELL 1 1 B) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:57.972): Sending play messages ...
+INFO(13:40:57.975): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:57.976): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:57.976): reply from MyPlayer: null after 1ms
+SEVERE(13:40:57.982): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 2
+INFO(13:40:57.983): moves: (NOOP (MARK 1 1))
+INFO(13:40:57.985): step:3
+INFO(13:40:57.986): current state:((CELL 1 1 O) (CELL 1 2 X) (CELL 1 3 B) (CELL 2 1 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:58.491): Sending play messages ...
+INFO(13:40:58.495): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:58.496): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:58.496): reply from MyPlayer: null after 1ms
+SEVERE(13:40:58.496): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 3
+INFO(13:40:58.497): moves: ((MARK 2 1) NOOP)
+INFO(13:40:58.499): step:4
+INFO(13:40:58.499): current state:((CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 1 3 B) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:40:59.003): Sending play messages ...
+INFO(13:40:59.008): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:59.008): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:59.009): reply from MyPlayer: null after 1ms
+SEVERE(13:40:59.009): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 4
+INFO(13:40:59.010): moves: (NOOP (MARK 1 3))
+INFO(13:40:59.012): step:5
+INFO(13:40:59.013): current state:((CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 1 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:40:59.515): Sending play messages ...
+INFO(13:40:59.519): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:40:59.520): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:40:59.520): reply from MyPlayer: null after 1ms
+SEVERE(13:40:59.521): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 5
+INFO(13:40:59.522): moves: ((MARK 3 1) NOOP)
+INFO(13:40:59.526): step:6
+INFO(13:40:59.526): current state:((CELL 3 1 X) (CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 2 2 B) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:41:00.030): Sending play messages ...
+INFO(13:41:00.034): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:41:00.034): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:41:00.034): reply from MyPlayer: null after 0ms
+SEVERE(13:41:00.035): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 6
+INFO(13:41:00.036): moves: (NOOP (MARK 2 2))
+INFO(13:41:00.038): step:7
+INFO(13:41:00.038): current state:((CELL 2 2 O) (CELL 3 1 X) (CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 2 3 B) (CELL 3 2 B) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:41:00.542): Sending play messages ...
+INFO(13:41:00.545): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:41:00.546): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:41:00.546): reply from MyPlayer: null after 1ms
+SEVERE(13:41:00.547): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 7
+INFO(13:41:00.547): moves: ((MARK 2 3) NOOP)
+INFO(13:41:00.549): step:8
+INFO(13:41:00.549): current state:((CELL 2 3 X) (CELL 2 2 O) (CELL 3 1 X) (CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 3 2 B) (CELL 3 3 B) (CONTROL OPLAYER) )
+INFO(13:41:01.052): Sending play messages ...
+INFO(13:41:01.056): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:41:01.056): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:41:01.056): reply from MyPlayer: null after 1ms
+SEVERE(13:41:01.059): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 8
+INFO(13:41:01.060): moves: (NOOP (MARK 3 2))
+INFO(13:41:01.061): step:9
+INFO(13:41:01.061): current state:((CELL 3 2 O) (CELL 2 3 X) (CELL 2 2 O) (CELL 3 1 X) (CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CELL 3 3 B) (CONTROL XPLAYER) )
+INFO(13:41:01.566): Sending play messages ...
+INFO(13:41:01.567): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:41:01.568): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:41:01.571): reply from MyPlayer: null after 4ms
+SEVERE(13:41:01.571): Illegal move "null" from remote(MyPlayer, localhost:4001) in step 9
+INFO(13:41:01.572): moves: ((MARK 3 3) NOOP)
+INFO(13:41:01.573): step:10
+INFO(13:41:01.573): current state:((CELL 3 3 X) (CELL 3 2 O) (CELL 2 3 X) (CELL 2 2 O) (CELL 3 1 X) (CELL 1 3 O) (CELL 2 1 X) (CELL 1 1 O) (CELL 1 2 X) (CONTROL OPLAYER) )
+INFO(13:41:01.583): Sending stop messages ...
+INFO(13:41:01.584): Begin creating Socket for remote(MyPlayer, localhost:4001)
+SEVERE(13:41:01.585): error: io error for remote(MyPlayer, localhost:4001) : Connection refused
+INFO(13:41:01.585): Game over! results: 50 50 
+INFO(13:41:01.585): runtimes (in ms): 43 18 
+INFO(13:41:01.585): Done.
