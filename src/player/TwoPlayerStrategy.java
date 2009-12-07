@@ -253,7 +253,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				IGameNode next = game.getNextNode(arg0, combMove);
 				next.setPreserve(true);
 				System.out.print("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
-				System.out.println("   Value: ("+values.get(next.getState())+", "+((int[]) (simulationValues.get(next.getState()).values().toArray()[0]))[playerNumber]+")");
+				System.out.println("   Value: ("+values.get(next.getState())+", "+((int[]) (simulationValues.get(next.getState()).keySet().toArray()[0]))[playerNumber]+")");
 				childs.add(next);
 				//if((max == 1 && bestValue == 100) || (max == 0 && bestValue == 0)) break;
 			}
@@ -342,7 +342,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				temp.put(value, 1);
 				simulationValues.put(node.getState(), temp);
 			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
-				Integer newCount = ((Integer) simulationValues.get(node.getState()).keySet().toArray()[0])+1;
+				Integer newCount = ((Integer) simulationValues.get(node.getState()).values().toArray()[0])+1;
 				for(int i=0; i<value.length; i++) {
 					tempVal[i] = ((newCount-1)*tempVal[i]+value[i])/newCount;
 				}
