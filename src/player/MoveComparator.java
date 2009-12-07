@@ -66,7 +66,12 @@ public class MoveComparator implements Comparator<IGameNode>{
 					//System.out.println("val1 is equal to val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
 					return 0;
 				}
-			}
+			// the following covers the cases where values are not known. something is better than not known here.
+			} else if(this.simul.get(node1.getState()) == null && this.simul.get(node2.getState()) != null) {
+				return 1;
+			} else if(this.simul.get(node1.getState()) != null && this.simul.get(node2.getState()) == null ) {
+				return -1;
+			} else return 0;
 		}
 		
 		//the pseudo-49 approach
