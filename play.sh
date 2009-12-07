@@ -21,3 +21,6 @@ do
 	$CMD $MATCH_ID$ITER $GAMEFILE $STARTCLOCK $PLAYCLOCK -remote $ROLEINDEX MyPlayer localhost 4001 >> "$NOW-${GAMEFILE:6}-$ROLEINDEX.txt"
 	ct=$(( $ct + 1 ))
 done
+
+cat "$NOW-${GAMEFILE:6}-$ROLEINDEX.txt" | grep results | awk "{ SUM += \$(4+${ROLEINDEX}) } END { print SUM/NR }" >> "$NOW-${GAMEFILE:6}-$ROLEINDEX.txt"
+
