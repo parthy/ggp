@@ -30,26 +30,35 @@ public class SimplexSolver {
 
 	public static void main(String[] args){
 
-                solver = new SimplexSolver();
+        solver = new SimplexSolver();
 
 		Random random = new Random();
-		//just one testcase
-		LinkedList<Float> line1 = new LinkedList<Float>();
-		line1.add(120f);
-		line1.add(180f);
-//		line1.add(new Float(random.nextInt(101)));
-//		line1.add(new Float(random.nextInt(101)));
 
-		LinkedList<Float> line2 = new LinkedList<Float>();
-		line2.add(160f);
-		line2.add(140f);
-//		line2.add(new Float(random.nextInt(101)));
-//		line2.add(new Float(random.nextInt(101)));
+		for(int i=0; i<100; i++){
+			System.out.println("\n|||||||||||| new problem |||||||||||||\n");
 
-		LinkedList<LinkedList<Float>> problem = new LinkedList<LinkedList<Float>>();
-		problem.add(line1);
-		problem.add(line2);
+			//just one testcase
+			LinkedList<Float> line1 = new LinkedList<Float>();
+	//		line1.add(120f);
+	//		line1.add(180f);
+			line1.add(new Float(random.nextInt(101)));
+			line1.add(new Float(random.nextInt(101)));
 
+			LinkedList<Float> line2 = new LinkedList<Float>();
+	//		line2.add(160f);
+	//		line2.add(140f);
+			line2.add(new Float(random.nextInt(101)));
+			line2.add(new Float(random.nextInt(101)));
+
+			LinkedList<LinkedList<Float>> problem = new LinkedList<LinkedList<Float>>();
+			problem.add(line1);
+			problem.add(line2);
+
+			solve(problem);
+		}
+	}
+
+	public static void solve(LinkedList<LinkedList<Float>> problem){
 		System.out.println(problem);
 
 		problem = solver.preprocess(problem);
@@ -72,8 +81,8 @@ public class SimplexSolver {
 			System.out.println(problem);
 		}
 
-                makeResult(problem);
-                System.out.println("playerI "+movesI+" playerII "+movesII);
+		makeResult(problem);
+		System.out.println("playerI "+movesI+" playerII "+movesII);
 	}
 
 	private static void choosePivot(LinkedList<LinkedList<Float>> problem) {
