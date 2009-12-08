@@ -321,8 +321,14 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 						value[2] = values.get(child.getState())[2]+1;
 					}
 				}
-			} else { // no turn taking -> no max-min. assume the opponent takes his best move after we moved
-				// the above comment means: we take the best value of the opponent's best moves
+			} else { // no turn taking -> no max-min. what to do here?
+				// for now we make a pessimistic assumption:
+				// just take our worst value
+				if(values.get(child.getState())[playerNumber] < value[playerNumber] || value[0] == -1) {
+					value[0] = values.get(child.getState())[0];
+					value[1] = values.get(child.getState())[1];
+					value[2] = values.get(child.getState())[2]+1;
+				}
 			}
 		}
 		
