@@ -15,6 +15,10 @@ import java.util.Random;
  * input as matrix -> the winvalues for player1 -> between 0-100
  * only zero-sum games
  * the out put will be 2 vectors
+ * if one value in this vector is > 1.0 {
+ *        another value is exactly 1.0
+ *        take the value with 1.0 and treat the other (> 1.0) like 0
+ * }
  *
  * @author konrad
  */
@@ -34,20 +38,21 @@ public class SimplexSolver {
 
 		Random random = new Random();
 
-		for(int i=0; i<100; i++){
+		for(int i=0; i<1; i++){
 			System.out.println("\n|||||||||||| new problem |||||||||||||\n");
 
 			//just one testcase
 			LinkedList<Float> line1 = new LinkedList<Float>();
-	//		line1.add(120f);
-	//		line1.add(180f);
+	/*		line1.add(60f);
+			line1.add(10f);
+	*/		line1.add(new Float(random.nextInt(101)));
 			line1.add(new Float(random.nextInt(101)));
 			line1.add(new Float(random.nextInt(101)));
 
 			LinkedList<Float> line2 = new LinkedList<Float>();
-	//		line2.add(160f);
-	//		line2.add(140f);
-			line2.add(new Float(random.nextInt(101)));
+	/*		line2.add(40f);
+			line2.add(10f);
+          */      	line2.add(new Float(random.nextInt(101)));
 			line2.add(new Float(random.nextInt(101)));
 
 			LinkedList<LinkedList<Float>> problem = new LinkedList<LinkedList<Float>>();
@@ -61,6 +66,8 @@ public class SimplexSolver {
 	public static void solve(LinkedList<LinkedList<Float>> problem){
 		System.out.println(problem);
 
+                //problem = transpose(problem);
+		System.out.println(problem);
 		problem = solver.preprocess(problem);
 
 		System.out.println(problem);
@@ -91,7 +98,7 @@ public class SimplexSolver {
 		Float min = null;
 		LinkedList<Float> lastline = problem.get(problem.size()-1);
 		for(int i=0; i<(lastline.size()-1); i++){
-			if(min == null || lastline.get(i) <= min){
+			if(min == null || lastline.get(i) < min){
 				pivotX = i;
 				min =  lastline.get(i);
 			}
@@ -102,7 +109,7 @@ public class SimplexSolver {
 		//each row
 		for(int j=0; j<(problem.size()-1); j++){
 			Float valY = problem.get(j).get(problem.get(j).size()-1) / (-problem.get(j).get(pivotX));
-			if(valY > 0 && (min == null || valY < min)){
+			if((min == null || valY < min)){
 				pivotY = j;
 				min = valY;
 			}
@@ -171,14 +178,23 @@ public class SimplexSolver {
         movesI = new LinkedList<Float>();
         movesII = new LinkedList<Float>();
 
-        //fill
-        for(int i=0; i<(problem.size()-1); i++){
-            movesI.add(0f);
-            movesII.add(0f);
-        }
 
 
         LinkedList<Float> lastline = problem.get(problem.size()-1);
+
+
+        //fill
+        for(int i=0; i<(problem.size()-1); i++){
+            movesII.add(0f);
+        }
+
+        for(int i=0; i<(lastline.size()-1); i++){
+            movesI.add(0f);
+        }
+
+
+
+
         Float gameValue = -lastline.get(lastline.size()-1);
         for(int i=0; i<(problem.size()-1); i++){
             Float value = problem.get(i).get(problem.get(i).size()-1);
@@ -199,6 +215,36 @@ public class SimplexSolver {
                 movesII.set(vectorX.get(j)-1, lastline.get(j)/gameValue);
             }
         }
+    }
+
+    private static LinkedList<LinkedList<Float>> transpose(LinkedList<LinkedList<Float>> problem) {
+
+        int size = problem.size();
+
+        for(int i=0; i<size; i++){
+            for(int j=0; j<size; j++){
+                if(i != j){
+                    if( (i+j) > (size-1)){
+                        return problem;
+                    } else {
+                        //dont swap twice on the diagonal
+                        if( ((i+j)!=(size-1)) || ((2*i)<(size-1))){
+                            problem = swap(problem, i, j, size-i-1, size-j-1);
+                        }
+                    }
+                }
+            }
+        }
+        return problem;
+    }
+
+    private static LinkedList<LinkedList<Float>> swap(LinkedList<LinkedList<Float>> problem, int i, int j, int i0, int j0) {
+
+        Float tmp = problem.get(i).get(j);
+        problem.get(i).set(j, problem.get(i0).get(j0));
+        problem.get(i0).set(j0, tmp);
+
+        return problem;
     }
 
 
@@ -223,7 +269,7 @@ public class SimplexSolver {
 			LinkedList<Float> line = problem.get(i);
 			//substract 100
 			for(int j=0; j<line.size(); j++){
-				line.set(j, line.get(j)-200);
+				line.set(j, -1*line.get(j));
                                 //only one time
                                 if(i == 0){
                                     vectorX.add(j+1);
