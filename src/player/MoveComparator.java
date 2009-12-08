@@ -18,7 +18,7 @@ import org.eclipse.palamedes.gdl.core.simulation.Match;
  * @author konrad
  */
 public class MoveComparator implements Comparator<IGameNode>{
-	private HashMap<IGameState, Integer> values;
+	private HashMap<IGameState, int[]> values;
 	private HashMap<IGameState, HashMap<int[], Integer>> simul;
 	private TwoPlayerStrategy strat;
 	private Match match;
@@ -75,8 +75,14 @@ public class MoveComparator implements Comparator<IGameNode>{
 				}
 			// the following covers the cases where values are not known. something is better than not known here.
 			} else if(this.simul.get(node1.getState()) == null && this.simul.get(node2.getState()) != null) {
+				HashMap<int[], Integer> val2 = this.simul.get(node2.getState());
+				if( ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()] == 0) // if the known value is zero, this is bad
+					return -1;
 				return 1;
 			} else if(this.simul.get(node1.getState()) != null && this.simul.get(node2.getState()) == null ) {
+				HashMap<int[], Integer> val1 = this.simul.get(node1.getState());
+				if( ((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] == 0) // if the known value is zero, this is bad
+					return 1;
 				return -1;
 			} else {
 				// the simulation values don't distinguish. try mobility approach
@@ -97,13 +103,13 @@ public class MoveComparator implements Comparator<IGameNode>{
 			//we dont have a value
 			tmpValue1 = 49;
 		} else {
-			tmpValue1 = values.get(node1.getState());
+			tmpValue1 = values.get(node1.getState())[strat.getPlayerNumber()];
 		}
 		int tmpValue2 = 0;
 		if(!values.containsKey(node2.getState())){
 			tmpValue2 = 49;
 		} else {
-			tmpValue2 = values.get(node2.getState());
+			tmpValue2 = values.get(node2.getState())[strat.getPlayerNumber()];
 		}
 		//now we really compare
 		if(tmpValue1 < tmpValue2){ // higher value means better node
@@ -111,6 +117,14 @@ public class MoveComparator implements Comparator<IGameNode>{
 		} else {
 			if(tmpValue1 == tmpValue2){
 				//they have the same value
+				// first try to distinguish using the distance field
+				int dist1 = values.get(node1.getState())[2];
+				int dist2 = values.get(node2.getState())[2];
+				if(dist1 != -1 && dist2 != -1) {
+					if(dist1 < dist2) return -1;
+					if(dist1 == dist2) return 0;
+					if(dist1 > dist2) return 1;
+				}
 				//here the heuristic decides
 				// the values don't distinguish. try mobility approach
 				int mobility = strat.getMobilityVariant();
