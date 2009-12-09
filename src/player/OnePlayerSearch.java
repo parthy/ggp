@@ -42,10 +42,10 @@ public class OnePlayerSearch extends AbstractStrategy {
 		heuristic = new OnePlayerHeuristic(this);
 		
 		queue.add(game.getTree().getRootNode());
-		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000L;
+		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1200L;
 		try {
 			// simulate for half of the time, then use the experience to search
-			while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*500 && !foundSolution) {
+			while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*450 && !foundSolution) {
 				simulateGame(game.getTree().getRootNode());
 			}
 			Search();
@@ -79,6 +79,10 @@ public class OnePlayerSearch extends AbstractStrategy {
 					visitedStates.clear();
 					queue.add(node);
 					Search();
+					if(foundSolution) {
+						fillCurrentWayLimited(node.getDepth());
+						return currentWay.remove(0).getMoves()[0];
+					}
 				} catch(InterruptedException ex) {}
 				
 				List<IMove[]> allMoves = game.getCombinedMoves(node);
@@ -181,6 +185,15 @@ public class OnePlayerSearch extends AbstractStrategy {
 	void fillCurrentWay() {
 		IGameNode cur = solution;
 		while(cur.getParent() != null) {
+			System.out.println(cur);
+			currentWay.add(0, cur);
+			cur = cur.getParent();
+		}
+	}
+	
+	void fillCurrentWayLimited(int limit) {
+		IGameNode cur = solution;
+		while(cur.getParent() != null && cur.getDepth() > limit) {
 			System.out.println(cur);
 			currentWay.add(0, cur);
 			cur = cur.getParent();
