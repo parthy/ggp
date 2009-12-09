@@ -40,13 +40,23 @@ public class SimplexSolver {
 		solver = new SimplexSolver();
 
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 1; i++) {
                     
 			System.out.println("\n|||||||||||| new problem |||||||||||||\n");
 
-			LinkedList<LinkedList<Float>> problem = make2PlayerProblem(3, 3);
+			LinkedList<LinkedList<Float>> problem = make2PlayerProblem(random.nextInt(4)+1, random.nextInt(4)+1);
 
 			solve(problem);
+
+			Float value = 0f;
+			for(int j=0; j<movesI.size(); j++){
+				for(int k=0; k<movesII.size(); k++){
+					if((movesI.get(j) <= 1f) && (movesII.get(k) <= 1f)){
+						value += movesI.get(j)*movesII.get(k)*problem.get(k).get(j);
+					}
+				}
+			}
+			System.out.println("calculated value " + value);
 		}
 	}
 
