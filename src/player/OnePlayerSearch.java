@@ -13,36 +13,47 @@ import org.eclipse.palamedes.gdl.core.model.IFluent;
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.IMove;
+import org.eclipse.palamedes.gdl.core.model.utils.Game;
+import org.eclipse.palamedes.gdl.core.model.utils.GameNode;
+import org.eclipse.palamedes.gdl.core.resolver.prologprover.GameProlog;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
 
 public class OnePlayerSearch extends AbstractStrategy {
 	private List<IGameNode> queue = new ArrayList<IGameNode>();
 	private List<IGameNode> currentWay = new ArrayList<IGameNode>();
-	private Map<Integer, IGameState> visitedStates = new HashMap<Integer, IGameState>();
-	private HashMap<IGameState, HashMap<int[], Integer>> maxNValues = new HashMap<IGameState, HashMap<int[], Integer>>();
+	private Map<IGameState, Integer> visitedStates = new HashMap<IGameState, Integer>();
+	private HashMap<IGameState, HashMap<Integer, Integer>> values = new HashMap<IGameState, HashMap<Integer, Integer>>();
 	private boolean foundSolution = false;
 	private int nodesVisited;
 	private long endTime;
 	IGameNode solution;
 	IGameNode node;
+	
+	private IHeuristic heuristic;
 
 	@Override
 	public void initMatch(Match initMatch) {
 		super.initMatch(initMatch);
 		// initiate solution search
 		game = initMatch.getGame();
+		game.getTree().getRootNode().setPreserve(true);
+		
+		heuristic = new OnePlayerHeuristic(this);
+		
 		queue.add(game.getTree().getRootNode());
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000L;
 		try {
-			//Search();
-			while(System.currentTimeMillis() < endTime) {
+			// simulate for half of the time, then use the experience to search
+			while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*500 && !foundSolution) {
 				simulateGame(game.getTree().getRootNode());
 			}
+			Search();
 		} catch (InterruptedException ex) {
 			Logger.getLogger(OnePlayerSearch.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		System.err.println("nodes visited: "+nodesVisited);
+		System.err.println("values found: "+values.size());
 		visitedStates.clear();
 		if(foundSolution) fillCurrentWay();
 		
@@ -54,35 +65,40 @@ public class OnePlayerSearch extends AbstractStrategy {
     	 * return the head element of currentWay and remove it from the list
     	 */
     	System.out.println(node);
-    	if(!currentWay.isEmpty())
+    	if(!currentWay.isEmpty()) {
+    		//System.out.println("Doing move "+currentWay.get(0).getMoves()[0].getMove()+" has value: "+values.get(currentWay.get(0).getState()).toString());
 			return currentWay.remove(0).getMoves()[0];
+    	}
 		else {// if no way is there, just do something
 			try {
 				// if no way is there, just do something
-				// first simulate a little
-				long end = System.currentTimeMillis() + match.getPlayTime()*1000 - 800;
+				// first search a little
+				endTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 800;
 				try {
-					while(System.currentTimeMillis() < end)
-						simulateGame(node);
-				} catch(InterruptedException ex) {
-					
-				}
+					queue.clear();
+					visitedStates.clear();
+					queue.add(node);
+					Search();
+				} catch(InterruptedException ex) {}
+				
 				List<IMove[]> allMoves = game.getCombinedMoves(node);
-				PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new SimulationComparator(maxNValues));
+				PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values));
 				for(IMove[] move : allMoves) {
-					if(game.getNextNode(node, move).isTerminal()){
-						if(game.getGoalValues(game.getNextNode(node, move))[0] == 100){
+					IGameNode next = game.getNextNode(node, move);
+					System.out.println("Possible move "+move[0].getMove()+" has value: "+values.get(next.getState()).toString());
+					if(next.isTerminal()){
+						if(game.getGoalValues(next)[0] == 100){
 							//if we can reach the goal -> do it
-							return game.getNextNode(node, move).getMoves()[0];
+							return next.getMoves()[0];
 						} else {
-							if(game.getGoalValues(game.getNextNode(node, move))[0] == 0){
+							if(game.getGoalValues(next)[0] == 0){
 								//if we can come to a loss -> dont do it
 							} else {
-								children.add(game.getNextNode(node, move));
+								children.add(next);
 							}
 						}
 					}
-					children.add(game.getNextNode(node, move));
+					children.add(next);
 				}
 				if(!children.isEmpty())
 						return children.poll().getMoves()[0];
@@ -96,47 +112,68 @@ public class OnePlayerSearch extends AbstractStrategy {
 
     void Search() throws InterruptedException {
 
-    	while(!foundSolution) {
-			System.err.println("Now: "+System.currentTimeMillis()+", endTime: "+endTime);
-    		while(!queue.isEmpty() && System.currentTimeMillis() < endTime) {
-    			node = queue.remove(0);
-				nodesVisited++;
+		System.err.println("Now: "+System.currentTimeMillis()+", endTime: "+endTime);
+		while(!queue.isEmpty() && System.currentTimeMillis() < endTime) {
+			node = queue.remove(0);
+			nodesVisited++;
+			//System.out.println("Current state: "+node.getState().getFluents().toString());
+			// track our way of states so we don't visit states multiple times
+			visitedStates.put(node.getState(), node.getDepth());
 
-    			// try to regenerate state information of the node
-				game.regenerateNode(node);
-
-				// track our way of states so we don't visit states multiple times
-    			visitedStates.put(node.getState().hashCode(), null);
-
-    			if(node.getState().getGoalValue(0) == 100) {
+			// put some value in the values hash, maybe at first just heuristic guesses
+			HashMap<Integer, Integer> tmp = new HashMap<Integer, Integer>();
+			
+			if(node.isTerminal()) {
+				// set the goal value as a value you can totally rely on -> treated as it occurred MAX_VALUE times
+				tmp.put(game.getGoalValues(node)[0], Integer.MAX_VALUE); 
+				this.values.put(node.getState(), tmp);
+				if(node.getState().getGoalValue(0) == 100) {
     				foundSolution = true;
     				this.solution = node;
+    				return;
     			}
-
-   				// add successor nodes to queue
-				List<IMove[]> allMoves = game.getCombinedMoves(node);
-				PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new HeuristicComparator(this));
-				for(IMove[] move : allMoves) {
-					if(!visitedStates.containsKey(game.getNextNode(node, move).getState().hashCode())){
-						children.add(game.getNextNode(node, move));
-					}
+				continue;
+			} else {
+				// put a value calculated by the heuristic in our hash.
+				int occ = -1;
+				HashMap<Integer, Integer> entry = values.get(node.getState());
+				if(entry != null) {
+					if(entry.values().iterator().hasNext())
+						occ = entry.values().iterator().next();
 				}
-				while(!children.isEmpty()){
-					System.err.println("value "+MyPlayer.strategy.getHeuristicValue(children.peek()));
-					queue.add(0, children.poll());
-				}
-    		}
-    		if(foundSolution || System.currentTimeMillis() >= endTime){
-				System.err.println("break because of time");
-				return;
+				tmp.put(heuristic.calculateHeuristic(node), occ);
+				this.values.put(node.getState(), tmp);
 			}
-    		queue.clear();
-    	}
+
+			// add successor nodes to queue
+			List<IMove[]> allMoves = game.getCombinedMoves(node);
+			PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values));
+			for(IMove[] move : allMoves) {
+				IGameNode next = game.getNextNode(node, move);
+				next.setPreserve(true);
+				if(!visitedStates.containsKey(next.getState()) || visitedStates.get(next.getState()) > next.getDepth()){
+					children.add(next);
+				}
+				if(foundSolution || System.currentTimeMillis() >= endTime){
+					System.err.println("break because of time or found solution");
+					return;
+				}
+			}
+			while(!children.isEmpty()){
+				//System.err.println("value "+values.get(children.peek().getState()));
+				queue.add(0, children.poll());
+				if(foundSolution || System.currentTimeMillis() >= endTime){
+					System.err.println("break because of time or found solution");
+					return;
+				}
+			}
+		}
+		if(foundSolution || System.currentTimeMillis() >= endTime){
+			System.err.println("break because of time or found solution");
+			return;
+		}
+		queue.clear();
     }
-
-	void DLS() {
-
-	}
 
 	void fillCurrentWay() {
 		IGameNode cur = solution;
@@ -157,13 +194,17 @@ public class OnePlayerSearch extends AbstractStrategy {
 		IGameNode currentNode = start;
 		int[] value;
 		while(true) {
-			// regenerate node, the usual crap
-			game.regenerateNode(currentNode);
+			currentNode.setPreserve(true);
 			
 			// game over?
 			if(currentNode.isTerminal()) { 
 				value = currentNode.getState().getGoalValues();
 				System.out.println("Played a game and got score "+value[playerNumber]);
+				if(value[0] == 100) { // we accidentally won.
+					foundSolution = true;
+					solution = currentNode;
+					return;
+				}
 				break;
 			}
 			
@@ -172,39 +213,38 @@ public class OnePlayerSearch extends AbstractStrategy {
 		}
 		
 		// since the game is over, we can now go all the way back and fiddle around with the goals
-		HashMap<int[], Integer> existingValue = maxNValues.get(currentNode.getState());
+		HashMap<Integer, Integer> existingValue = values.get(currentNode.getState());
 		
 		//System.out.println("Existing Value in Hash: "+existingValue);
 		
 		// if there is no value yet, we put it in
 		if(existingValue == null) {
-			HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
-			temp.put(value, 1);
-			maxNValues.put(currentNode.getState(), temp);
+			HashMap<Integer, Integer> temp = new HashMap<Integer, Integer>();
+			temp.put(value[0], 1);
+			values.put(currentNode.getState(), temp);
 		}
 		// now we look at the parent of the goal state.
 		IGameNode node = currentNode;
+		node.setPreserve(true);
 		while(node.getParent() != null) {
-			game.regenerateNode(node); // we are a bit paranoid with that, but what the hell.
 			node = node.getParent();
-			game.regenerateNode(node); // we are a bit paranoid with that, but what the hell.
-			HashMap<int[], Integer> entry = maxNValues.get(node.getState());
-			int[] tempVal = null;
+			node.setPreserve(true);
+			HashMap<Integer, Integer> entry = values.get(node.getState());
+			Integer tempVal = null;
 			if(entry != null) {
-				tempVal = (int[]) maxNValues.get(node.getState()).keySet().toArray()[0];
+				tempVal = (Integer) values.get(node.getState()).keySet().toArray()[0];
 			}
 			if(entry == null || tempVal == null) { // no value in there yet, so we just set the achieved goal value
-				HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
-				temp.put(value, 1);
-				maxNValues.put(node.getState(), temp);
+				HashMap<Integer, Integer> temp = new HashMap<Integer, Integer>();
+				temp.put(value[0], 1);
+				values.put(node.getState(), temp);
 			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
-				Integer newCount = ((Integer) maxNValues.get(node.getState()).values().toArray()[0])+1;
-				for(int i=0; i<value.length; i++) {
-					tempVal[i] = ((newCount-1)*tempVal[i]+value[i])/newCount;
-				}
-				HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
+				Integer newCount = ((Integer) values.get(node.getState()).values().toArray()[0])+1;
+				if(newCount == 0) newCount++;
+				tempVal = ((newCount-1)*tempVal+value[0])/newCount;
+				HashMap<Integer, Integer> temp = new HashMap<Integer, Integer>();
 				temp.put(tempVal, newCount);
-				maxNValues.put(node.getState(), temp);
+				values.put(node.getState(), temp);
 			}
 		}
 	}
@@ -214,19 +254,13 @@ public class OnePlayerSearch extends AbstractStrategy {
 	 * for now we just take a random move
 	 */
 	private IMove[] getMoveForSimulation(IGameNode arg0) throws InterruptedException {
-		IGameNode best = null;
-		try {
-			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new HeuristicComparator(this));
-			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
-				childs.add(game.getNextNode(arg0, combMove));
-				//if((max == 1 && bestValue == 100) || (max == 0 && bestValue == 0)) break;
-			}
-			best = childs.peek();
-			if(best == null) { // we didn't find anything.. (actually not possible)
-				return game.getRandomMove(arg0);
-			}
-		} catch (InterruptedException e) {}
-		
-		return best.getMoves();
+		return game.getRandomMove(arg0);
+	}
+	
+	/*
+	 * Hand out a value from our Hash
+	 */
+	public HashMap<Integer, Integer> getValue(IGameState state) {
+		return this.values.get(state);
 	}
 }

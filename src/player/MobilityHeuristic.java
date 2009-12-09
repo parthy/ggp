@@ -16,7 +16,7 @@ public class MobilityHeuristic implements IHeuristic {
 	}
 
 	@Override
-	public double calculateHeuristic(IGameNode node) {
+	public int calculateHeuristic(IGameNode node) {
 		try {
 			match.getGame().regenerateNode(node);
 			IGameState state = node.getState();
