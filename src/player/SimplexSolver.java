@@ -23,50 +23,46 @@ import java.util.Random;
  */
 public class SimplexSolver {
 
-	private static int pivotX;
-	private static int pivotY;
+	private static Integer pivotX;
+	private static Integer pivotY;
 	private static Float pivotVal;
 	private static SimplexSolver solver;
 	private static LinkedList<Integer> vectorX;
 	private static LinkedList<Integer> vectorY;
 	private static LinkedList<Float> movesI;
 	private static LinkedList<Float> movesII;
+	private	static Random random = new Random();
+        private static List<Float> visitedPivot = new LinkedList<Float>();
+        private static List<Integer> visitedPivotX = new LinkedList<Integer>();
 
 	public static void main(String[] args) {
 
 		solver = new SimplexSolver();
 
-		Random random = new Random();
 
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 100; i++) {
+                    
 			System.out.println("\n|||||||||||| new problem |||||||||||||\n");
 
-			//just one testcase
-			LinkedList<Float> line1 = new LinkedList<Float>();
-			/*		line1.add(60f);
-			line1.add(10f);
-			 */ line1.add(new Float(random.nextInt(101)));
-			line1.add(new Float(random.nextInt(101)));
-
-			LinkedList<Float> line2 = new LinkedList<Float>();
-			/*		line2.add(40f);
-			line2.add(10f);
-			 */ line2.add(new Float(random.nextInt(101)));
-			line2.add(new Float(random.nextInt(101)));
-			LinkedList<Float> line3 = new LinkedList<Float>();
-			/*		line2.add(40f);
-			line2.add(10f);
-			 */ line3.add(new Float(random.nextInt(101)));
-			line3.add(new Float(random.nextInt(101)));
-
-			LinkedList<LinkedList<Float>> problem = new LinkedList<LinkedList<Float>>();
-			problem.add(line1);
-			problem.add(line2);
-			problem.add(line3);
+			LinkedList<LinkedList<Float>> problem = make2PlayerProblem(3, 3);
 
 			solve(problem);
 		}
 	}
+
+        public static LinkedList<LinkedList<Float>> make2PlayerProblem(int movesI, int movesII){
+            LinkedList<LinkedList<Float>> problem = new LinkedList<LinkedList<Float>>();
+
+            for(int row=0; row<movesI; row++){
+                LinkedList<Float> line = new LinkedList<Float>();
+                for(int column=0; column<movesII; column++){
+                    line.add(new Float(random.nextInt(101)));
+                }
+                problem.add(line);
+            }
+
+            return problem;
+        }
 
 	public static void solve(LinkedList<LinkedList<Float>> problem) {
 		System.out.println(problem);
@@ -78,9 +74,11 @@ public class SimplexSolver {
 		System.out.println(problem);
 		System.out.println("vectorY " + vectorY + " vectorX " + vectorX);
 
+                //clear for each problem
+                visitedPivot.clear();
+
 		while (!isSolved(problem)) {
 			System.out.println("======= next step ===========");
-			System.out.println(isSolved(problem));
 
 			//set pivotX, pivotY, pivotValue
 			choosePivot(problem);
@@ -99,30 +97,50 @@ public class SimplexSolver {
 
 	private static void choosePivot(LinkedList<LinkedList<Float>> problem) {
 		//choose column
-		pivotX = 0;
-		Float min = null;
-		LinkedList<Float> lastline = problem.get(problem.size() - 1);
-		for (int i = 0; i < (lastline.size() - 1); i++) {
-			if (min == null || lastline.get(i) < min) {
-				pivotX = i;
-				min = lastline.get(i);
-			}
-		}
+		pivotX = null;
 
-		min = null;
-		pivotY = 0;
-		//each row
-		for (int j = 0; j < (problem.size() - 1); j++) {
-			Float valY = problem.get(j).get(problem.get(j).size() - 1) / (-problem.get(j).get(pivotX));
-			if ((min == null || valY < min)) {
-				pivotY = j;
-				min = valY;
-			}
-		}
+		LinkedList<Float> lastline = problem.get(problem.size() - 1);
+
+                visitedPivotX.clear();
+
+                while(pivotX == null || pivotY == null){
+                    System.out.println(visitedPivotX);
+
+                    Float min = null;
+                    
+                    for (int i = 0; i < (lastline.size() - 1); i++) {
+        //                System.out.println(i+" contains "+visitedPivotX.contains(i));
+                            if (!visitedPivotX.contains(i) && (min == null || lastline.get(i) < min)) {
+                                    pivotX = i;
+                                    min = lastline.get(i);
+                            }
+                    }
+
+                    System.out.println(pivotX);
+
+                    min = null;
+                    pivotY = null;
+                    //each row
+                    for (int j = 0; j < (problem.size() - 1); j++) {
+                            Float valY = problem.get(j).get(problem.get(j).size() - 1) / (-problem.get(j).get(pivotX));
+                            System.out.println("valY "+valY+" "+visitedPivot.contains(problem.get(j).get(pivotX)));
+                            if (!visitedPivot.contains(problem.get(j).get(pivotX)) && (valY>0) && (min == null || valY < min)) {
+                                    pivotY = j;
+                                    min = valY;
+                            }
+                    }
+                    //TODO: what happened when pivotY is still null
+                    if(pivotY == null){
+                        // choose another pivotX
+                        visitedPivotX.add(pivotX);
+                        pivotX = null;
+                    }
+                }
 
 		// calculate it
 		pivotVal = problem.get(pivotY).get(pivotX);
-
+                visitedPivot.add(pivotVal);
+                System.out.println("visited "+visitedPivot);
 	}
 
 	private static boolean isSolved(LinkedList<LinkedList<Float>> problem) {
@@ -233,7 +251,7 @@ public class SimplexSolver {
 			for (int row = 0; row < problem.size(); row++) {
 
 				newLine.add(problem.get(row).get(column));
-	//			System.err.println(row + " " + column+" "+problem.get(row).get(column)+" "+newLine);
+		//		System.err.println(row + " " + column+" "+problem.get(row).get(column)+" "+newLine);
 			}
 			result.add(newLine);
 		}
