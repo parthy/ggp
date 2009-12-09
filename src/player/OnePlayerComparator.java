@@ -35,7 +35,8 @@ public class OnePlayerComparator implements Comparator<IGameNode> {
 				return 0;
 			}
 		}
-		
+		if(values.get(arg0.getState()) != null && values.get(arg1.getState()) == null) return -1;
+		if(values.get(arg0.getState()) == null && values.get(arg1.getState()) != null) return 1;
 		return 0;
 	}
 
