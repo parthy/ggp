@@ -117,14 +117,6 @@ public class MoveComparator implements Comparator<IGameNode>{
 		} else {
 			if(tmpValue1 == tmpValue2){
 				//they have the same value
-				// first try to distinguish using the distance field
-				int dist1 = values.get(node1.getState())[2];
-				int dist2 = values.get(node2.getState())[2];
-				if(dist1 != -1 && dist2 != -1) {
-					if(dist1 < dist2) return -1;
-					if(dist1 == dist2) return 0;
-					if(dist1 > dist2) return 1;
-				}
 				//here the heuristic decides
 				// the values don't distinguish. try mobility approach
 				int mobility = strat.getMobilityVariant();

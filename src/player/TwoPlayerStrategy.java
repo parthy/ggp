@@ -58,7 +58,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		game = initMatch.getGame();
 		playerNumber = game.getRoleIndex(match.getRole());
 		
-		currentDepthLimit = 5;
+		currentDepthLimit = 1;
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000;
 		try {
 			IGameNode root = game.getTree().getRootNode();
@@ -73,10 +73,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			}
 			movesAtStart[0] = myMoves.length;
 			movesAtStart[1] = allMoves[(index+1)%2].length;
-			
+			System.out.println("Max is set to: "+max+", we are playerIndex "+playerNumber+", thus the opponent: "+((playerNumber+1)%2));
 			// new approach: search the game for half the prep time. if we didn't succeed by then, use the remaining time
 			// to simulate some matches.
-			IDS(endTime-initMatch.getStartTime()*500, root, 0);
+			IDS(endTime - match.getStartTime()*500, root, 0);
 			while(System.currentTimeMillis() < endTime) {
 				simulateGame(root);
 			}
@@ -111,11 +111,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				// check if we get a value for the values hash
 				if(currentNode.isTerminal()){
 					int[] value = game.getGoalValues(currentNode);
-					int[] valueInput = new int[3];
-					valueInput[0] = value[0];
-					valueInput[1] = value[1];
-					valueInput[2] = 0;
-					values.put(currentNode.getState(), valueInput);
+					values.put(currentNode.getState(), value.clone());
 					makeValue(currentNode, makeValueLimit);
 					continue;
 				}
@@ -167,113 +163,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		//buildStrategy();
 	}
 
-	public void DFS() throws InterruptedException{
-	
-		queue.add(game.getTree().getRootNode());
-		
-		while(!queue.isEmpty() && System.currentTimeMillis() < endTime) {
-			node = queue.remove(0);
-			//System.err.println(node.getDepth());
-			nodesVisited++;
-
-			// try to regenerate state information of the node
-			game.regenerateNode(node);
-
-			if(node.isTerminal()){
-				values.put(node.getState(), game.getGoalValues(node));
-				makeValue(node);
-				continue;
-			}
-
-
-			// track our way of states so we don't visit states multiple times
-			visitedStates.put(node.getState(), null);
-
-			// add successor nodes to queue
-			List<IMove[]> allMoves = game.getCombinedMoves(node);
-			PriorityQueue<IGameNode> newNodes = new PriorityQueue<IGameNode>(10, new HeuristicComparator(this));
-			for(IMove[] move : allMoves) {
-				if(!visitedStates.containsKey(game.getNextNode(node, move).getState())){
-					newNodes.add(game.getNextNode(node, move));
-				} else {
-					if(values.containsKey(game.getNextNode(node, move).getState())){
-						makeValue(node);
-					}
-				}
-			}
-			while(!newNodes.isEmpty()){
-				queue.add(0, newNodes.poll());
-			}
-		}
-		if(System.currentTimeMillis() >= endTime)
-			System.err.println("break because of time");
-		else 
-			System.err.println("we searched eveything");
-		queue.clear();
-
-	}
-
-	public void makeValue(IGameNode node) throws InterruptedException{
-		if(node == null) {
-			return;
-		}
-		//we already have a value
-		if(values.get(node.getState()) != null){
-			makeValue(node.getParent());
-			return;
-		}
-		children.clear();
-		List<IMove[]> allMoves = game.getCombinedMoves(node);
-		for(IMove[] move : allMoves)
-			children.add(game.getNextNode(node, move));
-		int[] value = new int[]{-1, -1, -1};
-		for(IGameNode child : children) {
-			child.setPreserve(true);
-			if(values.get(child.getState()) == null) {
-				return;
-			}
-			// should we maximize or minimize?
-			if(max == 1) { // we are max player
-				if(node.getDepth()%2 == 0 && values.get(child.getState())[playerNumber] > value[playerNumber]) { // maximize
-						value[0] = values.get(child.getState())[0];
-						value[1] = values.get(child.getState())[1];
-						value[2] = values.get(child.getState())[2]+1;
-				} else { // maximize opponent
-					if(values.get(child.getState())[(playerNumber+1)%2] > value[(playerNumber+1)%2]) {
-						value[0] = values.get(child.getState())[0];
-						value[1] = values.get(child.getState())[1];
-						value[2] = values.get(child.getState())[2]+1;
-					}
-				}
-			} else if(max == 0) { // we are min player
-				if(node.getDepth()%2 == 0) { // maximize opponent
-					if(values.get(child.getState())[(playerNumber+1)%2] > value[(playerNumber+1)%2]) {
-						value[0] = values.get(child.getState())[0];
-						value[1] = values.get(child.getState())[1];
-						value[2] = values.get(child.getState())[2]+1;
-					}
-				} else { // maximize
-					if(values.get(child.getState())[playerNumber] > value[playerNumber]) {
-						value[0] = values.get(child.getState())[0];
-						value[1] = values.get(child.getState())[1];
-						value[2] = values.get(child.getState())[2]+1;
-					}
-				}
-			} else { // no turn taking -> no max-min. assume the opponent takes his best move after we moved
-				// the above comment means: we take the best value of the opponent's best moves
-			}
-		}
-		
-		if(value[0] != -1 && value[1] != -1){
-			values.put(node.getState(), value);
-			if(node.getParent() != null) {
-				node.getParent().setPreserve(true);
-				makeValue(node.getParent());
-			}
-		}
-	}
 	/*
-	 * Limited makeValue function for use in getMove
+	 * Limit-capable makeValue function for use in getMove
 	 */
 	public void makeValue(IGameNode node, int minDepth) throws InterruptedException{
 		if(node == null || node.getDepth() < minDepth) {
@@ -288,7 +179,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		List<IMove[]> allMoves = game.getCombinedMoves(node);
 		for(IMove[] move : allMoves)
 			children.add(game.getNextNode(node, move));
-		int[] value = new int[]{-1, -1, -1};
+		int[] value = new int[]{-1, -1};
 		for(IGameNode child : children) {
 			child.setPreserve(true);
 			if(values.get(child.getState()) == null) {
@@ -296,38 +187,30 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			}
 			// should we maximize or minimize?
 			if(max == 1) { // we are max player
-				if(node.getDepth()%2 == 0 && values.get(child.getState())[playerNumber] > value[playerNumber]) { // maximize
-						value[0] = values.get(child.getState())[0];
-						value[1] = values.get(child.getState())[1];
-						value[2] = values.get(child.getState())[2]+1;
+				if(node.getDepth()%2 == 0) { // maximize
+					if(values.get(child.getState())[playerNumber] > value[playerNumber]) {
+						value = values.get(child.getState()).clone();
+					}
 				} else { // maximize opponent
 					if(values.get(child.getState())[(playerNumber+1)%2] > value[(playerNumber+1)%2]) {
-						value[0] = values.get(child.getState())[0];
-						value[1] = values.get(child.getState())[1];
-						value[2] = values.get(child.getState())[2]+1;
+						value = values.get(child.getState()).clone();
 					}
 				}
 			} else if(max == 0) { // we are min player
 				if(node.getDepth()%2 == 0) { // maximize opponent
 					if(values.get(child.getState())[(playerNumber+1)%2] > value[(playerNumber+1)%2]) {
-						value[0] = values.get(child.getState())[0];
-						value[1] = values.get(child.getState())[1];
-						value[2] = values.get(child.getState())[2]+1;
+						value = values.get(child.getState()).clone();
 					}
 				} else { // maximize
 					if(values.get(child.getState())[playerNumber] > value[playerNumber]) {
-						value[0] = values.get(child.getState())[0];
-						value[1] = values.get(child.getState())[1];
-						value[2] = values.get(child.getState())[2]+1;
+						value = values.get(child.getState()).clone();
 					}
 				}
 			} else { // no turn taking -> no max-min. what to do here?
 				// for now we make a pessimistic assumption:
 				// just take our worst value
 				if(values.get(child.getState())[playerNumber] < value[playerNumber] || value[0] == -1) {
-					value[0] = values.get(child.getState())[0];
-					value[1] = values.get(child.getState())[1];
-					value[2] = values.get(child.getState())[2]+1;
+						value = values.get(child.getState()).clone();
 				}
 			}
 		}

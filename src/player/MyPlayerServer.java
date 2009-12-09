@@ -24,7 +24,7 @@ public class MyPlayerServer extends PlayerServer {
     	/* create and start player server */
     	try {    		
     		Map<String, String> options = getOptions(args);
-            new MyPlayerServer(new MyPlayer(), getPort(options), options).waitForExit();
+            new MyPlayerServer(new MyPlayer(), 4001, options).waitForExit();
         } catch (IOException ex) {
             ex.printStackTrace();
             System.exit(-1);
