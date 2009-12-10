@@ -18,33 +18,16 @@ import org.eclipse.palamedes.gdl.core.simulation.Match;
 public class MainStrategy implements IStrategy {
 
 	private IStrategy myStrategy;
-	private IHeuristic heuristic;
 
 	public void initMatch(Match initMatch) {
 		if(initMatch.getGame().getRoleCount() == 1){
 			this.myStrategy = new OnePlayerSearch();
+		} else if(initMatch.getGame().getRoleCount() == 2){
+			this.myStrategy = new TwoPlayerStrategy();
 		} else {
-			if(initMatch.getGame().getRoleCount() == 2){
-				this.myStrategy = new TwoPlayerStrategy();
-				this.heuristic = new NoveltyHeuristic();
-			} else {
-				throw new UnsupportedOperationException("i dont know how to play this game");
-			}
+				this.myStrategy = new MultiPlayerStrategy();
 		}
 		myStrategy.initMatch(initMatch);
-	}
-
-	@Override
-	public double getHeuristicValue(IGameNode arg0) {
-		if(heuristic == null){
-			return 0;
-		} else {
-			return heuristic.calculateHeuristic(arg0);
-		}
-	}
-
-	public void setHeuristic(IHeuristic heuristic){
-		this.heuristic = heuristic;
 	}
 	
 	@Override
@@ -63,6 +46,11 @@ public class MainStrategy implements IStrategy {
 
 	public double getExpectedGoalValue() {
 		return this.getExpectedGoalValue();
+	}
+
+	@Override
+	public double getHeuristicValue(IGameNode arg0) {
+		return myStrategy.getHeuristicValue(arg0);
 	}
 
 }
