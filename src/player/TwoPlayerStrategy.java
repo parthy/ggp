@@ -7,6 +7,7 @@ package player;
 //package src.de.tudresden.inf.ggp.basicplayer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,11 +53,15 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	public static final int MOB_INVERSE = 9;
 	public static final int MOB_MOBILITY_TEAM = 10;
 	public static final int MOB_INV_MOB_TEAM = 5;
+	private int enemyNumber;
+
+	private SimplexSolver solver = new SimplexSolver();
 	
 	public void initMatch(Match initMatch) {
 		match = initMatch;
 		game = initMatch.getGame();
 		playerNumber = game.getRoleIndex(match.getRole());
+		enemyNumber = (playerNumber == 0) ? 1 : 0;
 		
 		currentDepthLimit = 1;
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000;
@@ -76,26 +81,36 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			System.out.println("Max is set to: "+max+", we are playerIndex "+playerNumber+", thus the opponent: "+((playerNumber+1)%2));
 			// new approach: search the game for half the prep time. if we didn't succeed by then, use the remaining time
 			// to simulate some matches.
-			IDS(endTime - match.getStartTime()*500, root, 0);
-			while(System.currentTimeMillis() < endTime) {
-				simulateGame(root);
+			Boolean searchFinished = IDS(endTime - match.getStartTime()*500, root, 0);
+			if(!searchFinished){
+				while(System.currentTimeMillis() < endTime) {
+					simulateGame(root);
+				}
+				System.out.println("While simulating, I got "+simulationValues.size()+" values.");
+				System.out.println("Additionally, I found out the following for mobility: ("
+						+mobilityStatistics[0]+", "+mobilityStatistics[3]+") pro, ("
+						+mobilityStatistics[1]+", "+mobilityStatistics[4]+") con, ("
+						+mobilityStatistics[2]+", "+mobilityStatistics[5]+") even.");
 			}
-			System.out.println("While simulating, I got "+simulationValues.size()+" values.");
-			System.out.println("Additionally, I found out the following for mobility: ("
-					+mobilityStatistics[0]+", "+mobilityStatistics[3]+") pro, ("
-					+mobilityStatistics[1]+", "+mobilityStatistics[4]+") con, ("
-					+mobilityStatistics[2]+", "+mobilityStatistics[5]+") even.");
 		} catch (InterruptedException e) {}
 	}
-	
-	public void IDS(long endSearchTime, IGameNode start, int makeValueLimit) throws InterruptedException {
+
+	/**
+	 *
+	 * @param endSearchTime
+	 * @param start
+	 * @param makeValueLimit
+	 * @return true if search finished, else false
+	 * @throws java.lang.InterruptedException
+	 */
+	public boolean IDS(long endSearchTime, IGameNode start, int makeValueLimit) throws InterruptedException {
 		boolean flag = true;
 		while(flag) {
 			flag = false;
 			
-			System.err.println("currentDepth"+currentDepthLimit);
-			System.err.println("Now: "+System.currentTimeMillis()+", endTime: "+endSearchTime);
-			System.err.println("Visited: "+nodesVisited);
+			System.out.println("currentDepth"+currentDepthLimit);
+	//		System.out.println("Now: "+System.currentTimeMillis()+", endTime: "+endSearchTime);
+	//		System.out.println("Visited: "+nodesVisited);
 			
 			visitedStates.clear();
 			queue.clear();
@@ -154,13 +169,14 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				//if(children.size() > 0) gameTree.put(currentNode, -1);
 			}
 			if(System.currentTimeMillis() > endSearchTime){
-				System.err.println("stop search because of time");
-				return;
+				System.out.println("stop search because of time");
+				return false;
 			}
 			currentDepthLimit++;
 		}
 		System.out.println("Search finished, values: "+values.size());
 		//buildStrategy();
+		return true;
 	}
 
 	/*
@@ -175,42 +191,73 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			makeValue(node.getParent(), minDepth);
 			return;
 		}
-		children.clear();
-		List<IMove[]> allMoves = game.getCombinedMoves(node);
-		for(IMove[] move : allMoves)
-			children.add(game.getNextNode(node, move));
+
 		int[] value = new int[]{-1, -1};
-		for(IGameNode child : children) {
-			child.setPreserve(true);
-			if(values.get(child.getState()) == null) {
-				return;
+		if(max == 2){
+			// no turn-taking -> do this weird simplex-stuff
+			IMove[] myMoves = game.getLegalMoves(node)[playerNumber];
+			IMove[] enemyMoves = game.getLegalMoves(node)[enemyNumber];
+
+			LinkedList<LinkedList<Float>> problem = new LinkedList<LinkedList<Float>>();
+
+			// for each move the enemy can do
+			for(int i=0; i<enemyMoves.length; i++){
+				LinkedList<Float> line = new LinkedList<Float>();
+				//for each move i enemy can do
+				for(int j=0; j<myMoves.length; j++){
+					// calculate the child
+					IMove[] move = {myMoves[j], enemyMoves[i]};
+					IGameNode child = game.getNextNode(node, move);
+					child.setPreserve(true);
+					// if one child has no value -> abuse
+					if(values.get(child.getState()) == null){
+						return;
+					}
+					//generate the problem
+//					System.out.println("M: my "+myMoves[j]+" enemy "+enemyMoves[i]+" value "+values.get(child.getState())[playerNumber]);
+					line.add(new Float(values.get(child.getState())[playerNumber]));
+				}
+				problem.add(line);
 			}
-			// should we maximize or minimize?
-			if(max == 1) { // we are max player
-				if(node.getDepth()%2 == 0) { // maximize
-					if(values.get(child.getState())[playerNumber] > value[playerNumber]) {
-						value = values.get(child.getState()).clone();
-					}
-				} else { // maximize opponent
-					if(values.get(child.getState())[(playerNumber+1)%2] > value[(playerNumber+1)%2]) {
-						value = values.get(child.getState()).clone();
-					}
+			Float solution = solver.solve(problem);
+			// i play a zero sum game
+			value[playerNumber] = Math.round(solution);
+			value[enemyNumber] = Math.round(solution);
+	//		System.out.println("P: "+problem);
+	//		System.out.println("value "+solution);
+		} else {
+
+			children.clear();
+			List<IMove[]> allMoves = game.getCombinedMoves(node);
+			for(IMove[] move : allMoves)
+				children.add(game.getNextNode(node, move));
+			for(IGameNode child : children) {
+				child.setPreserve(true);
+				// cant do anything, because we dont know the goal value of 1 child
+				if(values.get(child.getState()) == null) {
+					return;
 				}
-			} else if(max == 0) { // we are min player
-				if(node.getDepth()%2 == 0) { // maximize opponent
-					if(values.get(child.getState())[(playerNumber+1)%2] > value[(playerNumber+1)%2]) {
-						value = values.get(child.getState()).clone();
+				// should we maximize or minimize?
+				if(max == 1) { // we are max player
+					if(node.getDepth()%2 == 0) { // maximize
+						if(values.get(child.getState())[playerNumber] > value[playerNumber]) {
+							value = values.get(child.getState()).clone();
+						}
+					} else { // maximize opponent
+						if(values.get(child.getState())[(playerNumber+1)%2] > value[(playerNumber+1)%2]) {
+							value = values.get(child.getState()).clone();
+						}
 					}
-				} else { // maximize
-					if(values.get(child.getState())[playerNumber] > value[playerNumber]) {
-						value = values.get(child.getState()).clone();
+				} else if(max == 0) { // we are min player
+					if(node.getDepth()%2 == 0) { // maximize opponent
+						if(values.get(child.getState())[(playerNumber+1)%2] > value[(playerNumber+1)%2]) {
+							value = values.get(child.getState()).clone();
+						}
+					} else { // maximize
+						if(values.get(child.getState())[playerNumber] > value[playerNumber]) {
+							value = values.get(child.getState()).clone();
+						}
 					}
-				}
-			} else { // no turn taking -> no max-min. what to do here?
-				// for now we make a pessimistic assumption:
-				// just take our worst value
-				if(values.get(child.getState())[playerNumber] < value[playerNumber] || value[0] == -1) {
-						value = values.get(child.getState()).clone();
 				}
 			}
 		}
@@ -233,6 +280,73 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			currentDepthLimit = arg0.getDepth()+1;
 			arg0.setPreserve(true);
 			IDS(end, arg0, arg0.getDepth());
+			//if max = 2
+			Boolean foundMove = true;
+			if(max == 2){
+				//
+				// get the probabilities from the simplexSolver
+				// no turn-taking -> do this weird simplex-stuff
+				IMove[] myMoves = game.getLegalMoves(arg0)[playerNumber];
+				IMove[] enemyMoves = game.getLegalMoves(arg0)[enemyNumber];
+
+				LinkedList<LinkedList<Float>> problem = new LinkedList<LinkedList<Float>>();
+
+				// for each move the enemy can do
+				for(int i=0; i<enemyMoves.length; i++){
+					LinkedList<Float> line = new LinkedList<Float>();
+					//for each move i enemy can do
+					for(int j=0; j<myMoves.length; j++){
+						// calculate the child
+						IMove[] move = {myMoves[j], enemyMoves[i]};
+						IGameNode child = game.getNextNode(arg0, move);
+						child.setPreserve(true);
+						// if one child has no value
+						// -> öet the normal getMove decide
+						if(values.get(child.getState()) == null){
+							foundMove = false;
+							break;
+						}
+						//generate the problem
+	//					System.out.println("M: my "+myMoves[j]+" enemy "+enemyMoves[i]+" value "+values.get(child.getState())[playerNumber]);
+						line.add(new Float(values.get(child.getState())[playerNumber]));
+					}
+					if(foundMove == false){
+						break;
+					}
+					problem.add(line);
+				}
+				if(foundMove == true){
+					System.out.println("P: "+problem);
+					LinkedList<Float> moves = solver.getMoves(problem);
+					// choose the move randomly
+					int rand = random.nextInt(1000);
+					System.out.println("all moves: "+Arrays.asList(myMoves));
+					Float currentSpace = 0f;
+					IMove move = null;
+					for(int i=0; i<moves.size(); i++){
+						if((moves.get(i) >= 0f) && moves.get(i) <= 1f){
+								System.out.println("Possible Move: "+myMoves[i]+" when "+currentSpace+" <= "+rand+" < "+(currentSpace+moves.get(i)*1000));
+								if(move == null && (currentSpace <= rand) && (rand < (currentSpace+moves.get(i)*1000))){
+									move = myMoves[i];
+								}
+								currentSpace += moves.get(i)*1000;
+						} else {
+								System.out.println("Possible Move: "+myMoves[i]+" dont do this");
+						}
+					}
+
+					if((move == null)){
+						//should not happen
+						System.out.println("found no move while solving the problem");
+						//handle this like foundMove == false
+					} else {
+						return move;
+					}
+				}
+
+
+			}
+			// max != 2 or (max==2) wasnt able to calculate a move, hrhrhr
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this, match, true));
 			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
 				IGameNode next = game.getNextNode(arg0, combMove);
@@ -285,7 +399,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			// game over?
 			if(currentNode.isTerminal()) { 
 				value = currentNode.getState().getGoalValues();
-				System.out.println("Played a game and got score "+value[playerNumber]);
+		//		System.out.println("Played a game and got score "+value[playerNumber]);
 				break;
 			}
 			

@@ -37,8 +37,8 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	// not yet instantiated, because we can specify a domain-specific comparator
 	private PriorityQueue<IGameNode> queue;
 	
-	// the current depth limit for IDS
-	private int currentDepthLimit;
+	// the current depth limit for IDS (not needed right now)
+	// private int currentDepthLimit;
 	
 	// the root node of our game tree
 	IGameNode root;
@@ -72,7 +72,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		root.setPreserve(true);
 		
 		// First, we try to learn something about the game by randomly simulating it
-		while(System.currentTimeMillis() < endTime-match.getStartTime()*520) { // simulate for almost the half start time
+		while(System.currentTimeMillis() < endTime-match.getStartTime()*450) { // simulate for almost the half start time
 			try {
 				simulateGame(root);
 			} catch(InterruptedException e) {}
@@ -85,7 +85,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		this.queue = new PriorityQueue<IGameNode>(50, new MultiPlayerComparator(values, playerNumber));
 		
 		// And start search
-		currentDepthLimit = 1;
+		//currentDepthLimit = 1;
 		queue.add(root);
 		try {
 			DFS(0);
@@ -116,8 +116,8 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 				continue;
 			}
 			// Set the value according to a heuristic.
-			values.put(currentNode.getState(), new int[][]{heuristic.getHeurArray(currentNode), {0, HEUR}});
-			makeValue(currentNode, makeValueLimit);
+			//values.put(currentNode.getState(), new int[][]{heuristic.getHeurArray(currentNode), {0, HEUR}});
+			//makeValue(currentNode, makeValueLimit);
 			// leave tracing infos
 			visitedStates.put(currentNode.getState(), currentNode.getDepth()-1);
 			
@@ -228,10 +228,15 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	@Override
 	public IMove getMove(IGameNode arg0) {
 		// first search for the time we have
-		endTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 1500;
+		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 1300;
 		queue.clear();
+		arg0.setPreserve(true);
 		queue.add(arg0);
 		try {
+			endTime = realEndTime - match.getPlayTime()*550;
+			while(System.currentTimeMillis() < endTime - match.getPlayTime()*550)
+				simulateGame(arg0);
+			endTime = realEndTime;
 			DFS(arg0.getDepth());
 			
 			// search finished or end of time, now we have to decide.
@@ -262,7 +267,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		int[] value;
 		while(true) {
 			currentNode.setPreserve(true);
-			
+			if(System.currentTimeMillis() >= endTime) return;
 			// try to prove that we have simultaneous moves
 			int turns = 0;
 			IMove[][] legalMoves = game.getLegalMoves(currentNode);
@@ -307,7 +312,9 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		// now we look at the parents of the goal state.
 		IGameNode node = currentNode;
 		node.setPreserve(true);
-		while(node.getParent() != null) {
+		while(node.getParent() != null && node.getDepth() >= start.getDepth()) {
+			if(System.currentTimeMillis() >= endTime) return;
+
 			node = node.getParent();
 			node.setPreserve(true);
 			existingValue = values.get(node.getState());

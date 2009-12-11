@@ -28,8 +28,11 @@ public class MultiPlayerComparator implements Comparator<IGameNode> {
 			return -1;
 		if(values.get(arg0.getState())[0][playerNumber] < values.get(arg1.getState())[0][playerNumber])
 			return 1;
-		if(values.get(arg0.getState())[0][playerNumber] == values.get(arg1.getState())[0][playerNumber])
+		if(values.get(arg0.getState())[0][playerNumber] == values.get(arg1.getState())[0][playerNumber]) {
+			if(values.get(arg0.getState())[1][0] > values.get(arg1.getState())[1][0]) return -1;
+			if(values.get(arg0.getState())[1][0] < values.get(arg1.getState())[1][0]) return 1;
 			return 0;
+		}
 		
 		return 0;
 	}
