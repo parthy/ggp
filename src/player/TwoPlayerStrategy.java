@@ -108,9 +108,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		while(flag) {
 			flag = false;
 			
-			System.err.println("currentDepth"+currentDepthLimit);
-	//		System.err.println("Now: "+System.currentTimeMillis()+", endTime: "+endSearchTime);
-	//		System.err.println("Visited: "+nodesVisited);
+			System.out.println("currentDepth"+currentDepthLimit);
+	//		System.out.println("Now: "+System.currentTimeMillis()+", endTime: "+endSearchTime);
+	//		System.out.println("Visited: "+nodesVisited);
 			
 			visitedStates.clear();
 			queue.clear();
@@ -169,7 +169,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				//if(children.size() > 0) gameTree.put(currentNode, -1);
 			}
 			if(System.currentTimeMillis() > endSearchTime){
-				System.err.println("stop search because of time");
+				System.out.println("stop search because of time");
 				return false;
 			}
 			currentDepthLimit++;
@@ -223,8 +223,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			// i play a zero sum game
 			value[playerNumber] = Math.round(solution);
 			value[enemyNumber] = Math.round(solution);
-//			System.out.println("P: "+problem);
-//			System.out.println("value "+solution);
+	//		System.out.println("P: "+problem);
+	//		System.out.println("value "+solution);
 		} else {
 
 			children.clear();
@@ -281,6 +281,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			arg0.setPreserve(true);
 			IDS(end, arg0, arg0.getDepth());
 			//if max = 2
+			Boolean foundMove = true;
 			if(max == 2){
 				//
 				// get the probabilities from the simplexSolver
@@ -300,55 +301,71 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 						IGameNode child = game.getNextNode(arg0, move);
 						child.setPreserve(true);
 						// if one child has no value
-						// TODO: we can do something better than random
+						// -> öet the normal getMove decide
 						if(values.get(child.getState()) == null){
-							return game.getRandomMove(arg0)[game.getRoleIndex(match.getRole())];
+							foundMove = false;
+							break;
 						}
 						//generate the problem
 	//					System.out.println("M: my "+myMoves[j]+" enemy "+enemyMoves[i]+" value "+values.get(child.getState())[playerNumber]);
 						line.add(new Float(values.get(child.getState())[playerNumber]));
 					}
+					if(foundMove == false){
+						break;
+					}
 					problem.add(line);
 				}
-				LinkedList<Float> moves = solver.getMoves(problem);
-				// choose the move randomly
-				int rand = random.nextInt(1000);
-				System.out.println("all moves: "+Arrays.asList(myMoves));
-				Float currentSpace = 0f;
-				IMove move = null;
-				for(int i=0; i<moves.size(); i++){
-					if(moves.get(i) <= 1f){
-						System.out.println("Possible Move: "+myMoves[i]+" when "+currentSpace+" <= "+rand+" < "+(currentSpace+moves.get(i)*1000));
-						if(move == null && (currentSpace <= rand) && (rand < (currentSpace+moves.get(i)*1000))){
-							move = myMoves[i];
+				if(foundMove == true){
+					System.out.println("P: "+problem);
+					LinkedList<Float> moves = solver.getMoves(problem);
+					// choose the move randomly
+					int rand = random.nextInt(1000);
+					System.out.println("all moves: "+Arrays.asList(myMoves));
+					Float currentSpace = 0f;
+					IMove move = null;
+					for(int i=0; i<moves.size(); i++){
+						if((moves.get(i) >= 0f) && moves.get(i) <= 1f){
+								System.out.println("Possible Move: "+myMoves[i]+" when "+currentSpace+" <= "+rand+" < "+(currentSpace+moves.get(i)*1000));
+								if(move == null && (currentSpace <= rand) && (rand < (currentSpace+moves.get(i)*1000))){
+									move = myMoves[i];
+								}
+								currentSpace += moves.get(i)*1000;
+						} else {
+								System.out.println("Possible Move: "+myMoves[i]+" dont do this");
 						}
-						currentSpace += moves.get(i)*1000;
+					}
+
+					if((move == null)){
+						//should not happen
+						System.out.println("found no move while solving the problem");
+						//handle this like foundMove == false
+					} else {
+						return move;
 					}
 				}
-				return move;
 
 
-			} else {
-				PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this, match, true));
-				for(IMove[] combMove : game.getCombinedMoves(arg0)) {
-					IGameNode next = game.getNextNode(arg0, combMove);
-					next.setPreserve(true);
-					System.out.print("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
-					int simval = -2;
-					int val[] = new int[]{-2, -2};
-					try {
-						simval = ((int[]) (simulationValues.get(next.getState()).keySet().toArray()[0]))[playerNumber];
-					} catch(NullPointerException ex) {}
-					val = values.get(next.getState());
-					if(val == null) val = new int[]{-2, -2};
-					System.out.println("   Value: (["+val[0]+","+val[1]+"], "+simval+")");
-					childs.add(next);
-					//if((max == 1 && bestValue == 100) || (max == 0 && bestValue == 0)) break;
-				}
-				best = childs.peek();
-				if(best == null) { // we didn't find anything.. (actually not possible)
-					return game.getRandomMove(arg0)[game.getRoleIndex(match.getRole())];
-				}
+			}
+			// max != 2 or (max==2) wasnt able to calculate a move, hrhrhr
+			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this, match, true));
+			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
+				IGameNode next = game.getNextNode(arg0, combMove);
+				next.setPreserve(true);
+				System.out.print("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
+				int simval = -2;
+				int val[] = new int[]{-2, -2};
+				try {
+					simval = ((int[]) (simulationValues.get(next.getState()).keySet().toArray()[0]))[playerNumber];
+				} catch(NullPointerException ex) {}
+				val = values.get(next.getState());
+				if(val == null) val = new int[]{-2, -2};
+				System.out.println("   Value: (["+val[0]+","+val[1]+"], "+simval+")");
+				childs.add(next);
+				//if((max == 1 && bestValue == 100) || (max == 0 && bestValue == 0)) break;
+			}
+			best = childs.peek();
+			if(best == null) { // we didn't find anything.. (actually not possible)
+				return game.getRandomMove(arg0)[game.getRoleIndex(match.getRole())];
 			}
 		} catch (InterruptedException e) {}
 		
@@ -382,7 +399,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			// game over?
 			if(currentNode.isTerminal()) { 
 				value = currentNode.getState().getGoalValues();
-				System.out.println("Played a game and got score "+value[playerNumber]);
+		//		System.out.println("Played a game and got score "+value[playerNumber]);
 				break;
 			}
 			

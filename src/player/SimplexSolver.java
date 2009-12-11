@@ -100,6 +100,10 @@ public class SimplexSolver {
 			choosePivot(matrix);
 //			System.out.println("x: " + pivotX + " y: " + pivotY + " val: " + pivotVal);
 
+			if(pivotVal == null){
+				return 0f;
+			}
+
 			switchVectors(matrix);
 //			System.out.println("vectorY " + vectorY + " vectorX " + vectorX);
 
@@ -129,7 +133,8 @@ public class SimplexSolver {
 		Float value = 0f;
 		for (int j = 0; j < movesI.size(); j++) {
 			for (int k = 0; k < movesII.size(); k++) {
-				if ((movesI.get(j) <= 1f) && (movesII.get(k) <= 1f)){
+				if ((movesI.get(j) <= 1f) && (movesII.get(k) <= 1f)
+						&&(movesI.get(j) >= 0f) && (movesII.get(k) >= 0f)){
 					value += movesI.get(j) * movesII.get(k) * problem.get(k).get(j);
 				}
 			}
@@ -159,6 +164,12 @@ public class SimplexSolver {
 			}
 
 //			System.out.println(pivotX);
+			if(pivotX == null){
+				//cant solve the problem
+				System.out.println("cant solve the problem "+problem);
+				pivotVal = null;
+				return;
+			}
 
 			min = null;
 			pivotY = null;
