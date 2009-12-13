@@ -47,56 +47,6 @@ public class MoveComparator implements Comparator<IGameNode>{
 				match.getGame().regenerateNode(node2);
 		} catch(InterruptedException e) {}
 		
-		// shall we use the simulation experience? (only if no real values are found)
-		if(this.useSimul && !values.containsKey(node1.getState()) && !values.containsKey(node2.getState())) { 
-			if(this.simul.get(node1.getState()) != null && this.simul.get(node2.getState()) != null) {
-				HashMap<int[], Integer> val1 = this.simul.get(node1.getState());
-				HashMap<int[], Integer> val2 = this.simul.get(node2.getState());
-				if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] < ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
-					// val1 brings us worse score
-					//System.out.println("val1 is worse than val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
-					return 1;
-				}
-				if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] > ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
-					// val1 brings us better score
-					//System.out.println("val1 is better than val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
-					return -1;
-				}
-				if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] == ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
-					// the simulation values don't distinguish. try mobility approach
-					int mobility = strat.getMobilityVariant();
-					switch(mobility) {
-						case 0: return 0;
-						default: 
-							try {
-								return compareMobility(mobility, match.getGame().getLegalMoves(node1), match.getGame().getLegalMoves(node2));
-							} catch (InterruptedException e) {}
-					}
-				}
-			// the following covers the cases where values are not known. something is better than not known here.
-			} else if(this.simul.get(node1.getState()) == null && this.simul.get(node2.getState()) != null) {
-				HashMap<int[], Integer> val2 = this.simul.get(node2.getState());
-				if( ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()] == 0) // if the known value is zero, this is bad
-					return -1;
-				return 1;
-			} else if(this.simul.get(node1.getState()) != null && this.simul.get(node2.getState()) == null ) {
-				HashMap<int[], Integer> val1 = this.simul.get(node1.getState());
-				if( ((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] == 0) // if the known value is zero, this is bad
-					return 1;
-				return -1;
-			} else {
-				// the simulation values don't distinguish. try mobility approach
-				int mobility = strat.getMobilityVariant();
-				switch(mobility) {
-					case 0: return 0;
-					default: 
-						try {
-							return compareMobility(mobility, match.getGame().getLegalMoves(node1), match.getGame().getLegalMoves(node2));
-						} catch (InterruptedException e) {}
-				}
-			}
-		}
-		
 		//the pseudo-49 approach
 		int tmpValue1 = 0;
 		if(!values.containsKey(node1.getState())){
@@ -116,21 +66,61 @@ public class MoveComparator implements Comparator<IGameNode>{
 			return 1;
 		} else {
 			if(tmpValue1 == tmpValue2){
-				//they have the same value
-				//here the heuristic decides
-				// the values don't distinguish. try mobility approach
-				int mobility = strat.getMobilityVariant();
-				switch(mobility) {
-					case 0: return 0;
-					default: 
-						try {
-							return compareMobility(mobility, match.getGame().getLegalMoves(node1), match.getGame().getLegalMoves(node2));
-						} catch (InterruptedException e) {return 0;}
+				//they have the same value or are both now known. here the simulation and heuristic kicks in.
+				// shall we use the simulation experience? (only if no real values are found)
+				if(this.useSimul && !values.containsKey(node1.getState()) && !values.containsKey(node2.getState())) { 
+					if(this.simul.get(node1.getState()) != null && this.simul.get(node2.getState()) != null) {
+						HashMap<int[], Integer> val1 = this.simul.get(node1.getState());
+						HashMap<int[], Integer> val2 = this.simul.get(node2.getState());
+						if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] < ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
+							// val1 brings us worse score
+							//System.out.println("val1 is worse than val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
+							return 1;
+						}
+						if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] > ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
+							// val1 brings us better score
+							//System.out.println("val1 is better than val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
+							return -1;
+						}
+						if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] == ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
+							// the simulation values don't distinguish. try mobility approach
+							int mobility = strat.getMobilityVariant();
+							switch(mobility) {
+								case 0: return 0;
+								default: 
+									try {
+										return compareMobility(mobility, match.getGame().getLegalMoves(node1), match.getGame().getLegalMoves(node2));
+									} catch (InterruptedException e) {}
+							}
+						}
+					// the following covers the cases where values are not known. something is better than not known here.
+					} else if(this.simul.get(node1.getState()) == null && this.simul.get(node2.getState()) != null) {
+						HashMap<int[], Integer> val2 = this.simul.get(node2.getState());
+						if( ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()] == 0) // if the known value is zero, this is bad
+							return -1;
+						return 1;
+					} else if(this.simul.get(node1.getState()) != null && this.simul.get(node2.getState()) == null ) {
+						HashMap<int[], Integer> val1 = this.simul.get(node1.getState());
+						if( ((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] == 0) // if the known value is zero, this is bad
+							return 1;
+						return -1;
+					} else {
+						// the simulation values don't distinguish. try mobility approach
+						int mobility = strat.getMobilityVariant();
+						switch(mobility) {
+							case 0: return 0;
+							default: 
+								try {
+									return compareMobility(mobility, match.getGame().getLegalMoves(node1), match.getGame().getLegalMoves(node2));
+								} catch (InterruptedException e) {}
+						}
+					}
 				}
 			} else {
 				return -1;
 			}
 		}
+		return 0;
 	}
 	
 	

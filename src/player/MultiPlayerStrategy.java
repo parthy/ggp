@@ -67,9 +67,9 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		game = match.getGame();
 		playerNumber = game.getRoleIndex(match.getRole());
 		
-		// Set the root node to preserve (even if it may not be needed)
+		// Set the root node
 		root = game.getTree().getRootNode();
-		root.setPreserve(true);
+		//root.setPreserve(true);
 		
 		// First, we try to learn something about the game by randomly simulating it
 		while(System.currentTimeMillis() < endTime-match.getStartTime()*450) { // simulate for almost the half start time
@@ -105,6 +105,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		while(!queue.isEmpty() && System.currentTimeMillis() < endTime) {
 			// get next element from queue
 			currentNode = queue.poll();
+			game.regenerateNode(currentNode);
 			nodesVisited++;
 			//if(nodesVisited % 1000 == 0) System.out.println("visited: "+nodesVisited);
 			
@@ -130,7 +131,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			for(int i=0; i<allMoves.size(); ++i) {
 				// watch out for the endTime
 				if(System.currentTimeMillis() >= endTime){
-					System.err.println("stop search because of time");
+					//System.err.println("stop search because of time");
 					return;
 				}
 				
@@ -147,10 +148,10 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 
 		}
 		if(System.currentTimeMillis() >= endTime){
-			System.err.println("stop search because of time");
+			//System.err.println("stop search because of time");
 			return;
 		}
-		System.out.println("Search finished, values: "+values.size()+", visited "+nodesVisited+" nodes.");
+		//System.out.println("Search finished, values: "+values.size()+", visited "+nodesVisited+" nodes.");
 	}
 	
 	/**
@@ -166,9 +167,12 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		
 		// watch out for the endTime
 		if(System.currentTimeMillis() >= endTime){
-			System.err.println("stop search because of time");
+			//System.err.println("stop search because of time");
 			return;
 		}
+		
+		// regenerate node
+		game.regenerateNode(node);
 		
 		// We already have a value for a terminal
 		if(values.get(node.getState()) != null && node.isTerminal()){
@@ -192,11 +196,13 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		for(IGameNode child : children) {
 			// watch out for the endTime
 			if(System.currentTimeMillis() >= endTime){
-				System.err.println("stop search because of time");
+				//System.err.println("stop search because of time");
 				return;
 			}
 			
-			child.setPreserve(true);
+			// regenerate node
+			game.regenerateNode(child);
+			
 			// if the value for one child is missing, we can't proceed
 			if(values.get(child.getState()) == null) {
 				return;
@@ -223,7 +229,6 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		if(value[0] != -1 && value[1] != -1){
 			values.put(node.getState(), new int[][]{value, {0, PROP}});
 			if(node.getParent() != null) {
-				node.getParent().setPreserve(true);
 				makeValue(node.getParent(), minDepth);
 			}
 		}
@@ -237,6 +242,9 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	private int whoseTurn(IGameNode node) throws InterruptedException {
 		if(!turntaking) return -1;
 		int index=-1;
+		// regenerate node
+		game.regenerateNode(node);
+		
 		IMove[][] moves = game.getLegalMoves(node);
 		for(int i=0; i<moves.length; i++) {
 			if(moves[i].length > 1) return i;
@@ -247,7 +255,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	@Override
 	public IMove getMove(IGameNode arg0) {
 		// first search for the time we have
-		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 1500;
+		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2000;
 		queue.clear();
 		arg0.setPreserve(true);
 		queue.add(arg0);
@@ -261,14 +269,21 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			// search finished or end of time, now we have to decide.
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MultiPlayerComparator(values, playerNumber));
 			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
+				if(System.currentTimeMillis() > endTime) {
+					// we have no time left, just return random move
+					return game.getRandomMove(arg0)[playerNumber];
+				}
 				IGameNode next = game.getNextNode(arg0, combMove);
-				next.setPreserve(true);
-				System.out.println("Possible move: "+combMove[playerNumber]+", values "+aryToString(values.get(next.getState())));
+				
+				// regenerate node
+				game.regenerateNode(next);
+				
+				//System.out.println("Possible move: "+combMove[playerNumber]+", values "+aryToString(values.get(next.getState())));
 				childs.add(next);
 			}
 			IGameNode best = childs.peek();
 			if(best == null) { // we didn't find anything.. (actually not possible)
-				return game.getRandomMove(arg0)[game.getRoleIndex(match.getRole())];
+				return game.getRandomMove(arg0)[playerNumber];
 			}
 			return best.getMoves()[playerNumber];
 		} catch(InterruptedException e) {}
@@ -283,9 +298,14 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	private void simulateGame(IGameNode start) throws InterruptedException {
 		// first we just play a game
 		IGameNode currentNode = start;
+		
+		// regenerate node
+		game.regenerateNode(currentNode);
+		
 		int[] value;
 		while(true) {
-			currentNode.setPreserve(true);
+			// regenerate node
+			game.regenerateNode(currentNode);
 			if(System.currentTimeMillis() >= endTime) return;
 			// try to prove that we have simultaneous moves
 			int turns = 0;
@@ -295,7 +315,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			}
 			if(turntaking && turns > 1) {
 				this.turntaking = false;
-				System.out.println("We found out that the game is not turn-taking!");
+				//System.out.println("We found out that the game is not turn-taking!");
 			}
 			
 			// game over?
@@ -308,9 +328,9 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 				}
 				if(zerosum && sum != 100) {
 					this.zerosum = false;
-					System.out.println("We found out that the game is not zero-sum!");
+					//System.out.println("We found out that the game is not zero-sum!");
 				}
-				System.out.println("Played a game and got score "+value[playerNumber]);
+				//System.out.println("Played a game and got score "+value[playerNumber]);
 				break;
 			}
 			
@@ -330,12 +350,16 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		}
 		// now we look at the parents of the goal state.
 		IGameNode node = currentNode;
-		node.setPreserve(true);
+		// regenerate node
+		game.regenerateNode(node);
+		
 		while(node.getParent() != null && node.getParent().getDepth() >= start.getDepth()) {
 			if(System.currentTimeMillis() >= endTime) return;
 
 			node = node.getParent();
-			node.setPreserve(true);
+			// regenerate node
+			game.regenerateNode(node);
+			
 			existingValue = values.get(node.getState());
 			int[] tempVal = null;
 			if(existingValue != null) {

@@ -127,7 +127,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				if(currentNode.isTerminal()){
 					int[] value = game.getGoalValues(currentNode);
 					values.put(currentNode.getState(), value.clone());
-					System.out.println("Found a value: "+value[playerNumber]);
+					//System.out.println("Found a value: "+value[playerNumber]);
 					makeValue(currentNode, makeValueLimit);
 					continue;
 				}
@@ -137,47 +137,35 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				
 				children.clear();
 				
-				boolean expanded=false;
 				// find out possible successors
 				if(currentNode.getDepth() < currentDepthLimit) {
-					try {
-    					List<IMove[]> allMoves = game.getCombinedMoves(currentNode);
-    					IMove[] combMoves;
-    					
-    					for(int i=0; i<allMoves.size(); ++i) {
-    						try {
-    							combMoves = allMoves.get(i);
-    							IGameNode next = game.getNextNode(currentNode, combMoves);
-    							next.setPreserve(true);
-    							Integer foundDepth = visitedStates.get(next.getState());
-    							
-    							if(foundDepth == null || foundDepth > currentNode.getDepth()){
-    								queue.add(0, next);
-    								expanded = true;
-    							}
-    							children.add(next);
-    						} catch (InterruptedException e) {}
-    					}
-					} catch (InterruptedException e1) {}
+					List<IMove[]> allMoves = game.getCombinedMoves(currentNode);
+					IMove[] combMoves;
+					
+					for(int i=0; i<allMoves.size(); ++i) {
+						combMoves = allMoves.get(i);
+						IGameNode next = game.getNextNode(currentNode, combMoves);
+						next.setPreserve(true);
+						Integer foundDepth = visitedStates.get(next.getState());
+						
+						if(foundDepth == null || foundDepth > currentNode.getDepth()){
+							queue.add(0, next);
+						}
+						children.add(next);
+					}
+				} else if(game.getCombinedMoves(currentNode).size() > 0) {
+					flag = true;
 				}
-				try {
-					if(!currentNode.isTerminal() && game.getCombinedMoves(currentNode).size() > 0 && !expanded && currentNode.getDepth() >= currentDepthLimit )
-						flag = true;
-				} catch (InterruptedException e) {}
-				//currentNode.setChildren(children);
-
-				
-				//if(children.size() > 0) gameTree.put(currentNode, -1);
 			}
-			if(System.currentTimeMillis() > endSearchTime){
+			if(System.currentTimeMillis() >= endSearchTime){
 				System.out.println("stop search because of time");
 				return false;
 			}
 			currentDepthLimit++;
 		}
 		System.out.println("Search finished, values: "+values.size());
-		//buildStrategy();
-		return (values.size() > 0) ? true : false;
+
+		return true;
 	}
 
 	/*
@@ -190,7 +178,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		
 		// watch out for the endTime
 		if(System.currentTimeMillis() > endTime){
-			System.out.println("stop search because of time");
+			System.out.println("makeValue1: stop search because of time");
 			return;
 		}
 		
@@ -212,7 +200,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			for(int i=0; i<enemyMoves.length; i++){
 				// watch out for the endTime
 				if(System.currentTimeMillis() > endTime){
-					System.out.println("stop search because of time");
+					System.out.println("makeValue move it: stop search because of time");
 					return;
 				}
 				LinkedList<Float> line = new LinkedList<Float>();
@@ -247,7 +235,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			for(IGameNode child : children) {
 				// watch out for the endTime
 				if(System.currentTimeMillis() > endTime){
-					System.out.println("stop search because of time");
+					System.out.println("makeValue child it: stop search because of time");
 					return;
 				}
 				
@@ -295,10 +283,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		IGameNode best = null;
 		try {
 			// search a bit more, from the node arg0.
-			long end = System.currentTimeMillis() + match.getPlayTime()*1000 - 2500;
+			endTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2000;
 			currentDepthLimit = arg0.getDepth()+1;
 			arg0.setPreserve(true);
-			IDS(end, arg0, arg0.getDepth()+1);
+			IDS(endTime, arg0, arg0.getDepth()+1);
 			//if max = 2
 			Boolean foundMove = true;
 			if(max == 2){
@@ -420,6 +408,17 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				value = currentNode.getState().getGoalValues();
 		//		System.out.println("Played a game and got score "+value[playerNumber]);
 				break;
+			}
+			
+			// try to prove that we have simultaneous moves
+			int turns = 0;
+			IMove[][] legalMoves = game.getLegalMoves(currentNode);
+			for(int i=0; i<legalMoves.length; i++) {
+				if(legalMoves[i].length > 1) turns++;
+			}
+			if(max < 2 && turns > 1) {
+				max = 2;
+				//System.out.println("We found out that the game is not turn-taking!");
 			}
 			
 			// choose a move
