@@ -39,6 +39,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	private IGameNode currentNode;
 	
 	private long endTime;
+	private boolean searchFinished=false;
 	private IGameNode node;
 	
 	private int[] mobilityStatistics = new int[]{0,0,0,0,0,0}; // we count the pro, con and even results for both ourselves and the opponent for mobility while simulating
@@ -89,7 +90,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 					+mobilityStatistics[0]+", "+mobilityStatistics[3]+") pro, ("
 					+mobilityStatistics[1]+", "+mobilityStatistics[4]+") con, ("
 					+mobilityStatistics[2]+", "+mobilityStatistics[5]+") even.");
-			IDS(endTime - match.getStartTime(), root, 0);
+			searchFinished = IDS(endTime - match.getStartTime(), root, 0);
 		} catch (InterruptedException e) {}
 	}
 
@@ -280,15 +281,16 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	public IMove getMove(IGameNode arg0) {
 		IGameNode best = null;
 		try {
-			
-			endTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2000;
-			// a little simulation doesn't harm
-			while(System.currentTimeMillis() < endTime - match.getPlayTime()*600)
-				simulateGame(arg0);
-			// search a bit more, from the node arg0.
-			currentDepthLimit = arg0.getDepth()+1;
-			arg0.setPreserve(true);
-			IDS(endTime, arg0, arg0.getDepth()+1);
+			if(!searchFinished) {
+				endTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2000;
+				// a little simulation doesn't harm
+				while(System.currentTimeMillis() < endTime - match.getPlayTime()*600)
+					simulateGame(arg0);
+				// search a bit more, from the node arg0.
+				currentDepthLimit = arg0.getDepth()+1;
+				arg0.setPreserve(true);
+				IDS(endTime, arg0, arg0.getDepth()+1);
+			}
 			//if max = 2
 			Boolean foundMove = true;
 			if(max == 2){
