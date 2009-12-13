@@ -49,7 +49,8 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	// flags for game properties. by optimistic assumption we set these initially to true and try to refute this in simulation.
 	private boolean turntaking = true;
 	private boolean zerosum = true;
-	
+	private boolean searchFinished = false;
+
 	// constants describing where node evaluations come from
 	// SIM means we calculated the values using a monte carlo approach
 	private static int SIM = 0;
@@ -62,7 +63,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	
 	public void initMatch(Match arg0) {
 		// Initialize game variables
-		endTime = System.currentTimeMillis() + arg0.getStartTime()*1000 - 2000; // our time stops then
+		endTime = System.currentTimeMillis() + arg0.getStartTime()*1000 - 1200; // our time stops then
 		match = arg0;
 		game = match.getGame();
 		playerNumber = game.getRoleIndex(match.getRole());
@@ -151,6 +152,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			//System.err.println("stop search because of time");
 			return;
 		}
+		if(queue.isEmpty()) searchFinished = true;
 		//System.out.println("Search finished, values: "+values.size()+", visited "+nodesVisited+" nodes.");
 	}
 	
@@ -255,17 +257,18 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	@Override
 	public IMove getMove(IGameNode arg0) {
 		// first search for the time we have
-		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2000;
+		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 1200;
 		queue.clear();
 		//arg0.setPreserve(true);
 		queue.add(arg0);
 		try {
-			endTime = realEndTime - match.getPlayTime()*450;
-			while(System.currentTimeMillis() < endTime)
-				simulateGame(arg0);
-			endTime = realEndTime;
-			DFS(arg0.getDepth());
-			
+			if(!searchFinished) {
+				endTime = realEndTime - match.getPlayTime()*450;
+				while(System.currentTimeMillis() < endTime)
+					simulateGame(arg0);
+				endTime = realEndTime;
+				DFS(arg0.getDepth());
+			}
 			// search finished or end of time, now we have to decide.
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MultiPlayerComparator(values, playerNumber));
 			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
