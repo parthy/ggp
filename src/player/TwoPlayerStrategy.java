@@ -300,6 +300,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				IMove[] myMoves = game.getLegalMoves(arg0)[playerNumber];
 				IMove[] enemyMoves = game.getLegalMoves(arg0)[enemyNumber];
 
+				//init
+				List<LinkedList<Float>> averageScore = new LinkedList<LinkedList<Float>>();
+				for(int i=0; i<myMoves.length; i++){
+					averageScore.add(new LinkedList<Float>());
+				}
+
+
 				LinkedList<LinkedList<Float>> problem = new LinkedList<LinkedList<Float>>();
 
 				// for each move the enemy can do
@@ -313,16 +320,26 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 						child.setPreserve(true);
 						// if one child has no value
 						// -> let the normal getMove decide
+						Float value;
 						if(values.get(child.getState()) == null){
 							foundMove = false;
-							break;
+							value = 49f;
+						} else {
+							value = new Float(values.get(child.getState())[playerNumber]);
+						}
+
+						if(simulationValues.get(child.getState()) == null){
+							value += 0.49f;
+						} else {
+							value += 0.01f * ((int[]) (simulationValues.get(child.getState()).keySet().toArray()[0]))[playerNumber];
 						}
 						//generate the problem
 	//					System.out.println("M: my "+myMoves[j]+" enemy "+enemyMoves[i]+" value "+values.get(child.getState())[playerNumber]);
-						line.add(new Float(values.get(child.getState())[playerNumber]));
-					}
-					if(foundMove == false){
-						break;
+						if(foundMove == true){
+							line.add(new Float(values.get(child.getState())[playerNumber]));
+						}
+
+						averageScore.get(j).add(value);
 					}
 					problem.add(line);
 				}
@@ -349,13 +366,30 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 					if((move == null)){
 						//should not happen
 						System.out.println("found no move while solving the problem");
-						//handle this like foundMove == false
+						//let max != 2 solve it
 					} else {
 						return move;
 					}
+				} else {
+					//foundMove == false
+					// get the best out of average score
+					IMove move = null;
+					Float maximum = null;
+					for(int i=0; i<averageScore.size(); i++){
+						LinkedList<Float> row = averageScore.get(i);
+						Float score =  0f;
+						for(Float value : row){
+							score += value;
+						}
+						score = score / row.size();
+						if((move == null) || (score > maximum)){
+							move = myMoves[i];
+							maximum = score;
+						}
+						System.out.println("Possible move : "+myMoves[i]+"   Value: "+score);
+					}
+					return move;
 				}
-
-
 			}
 			// max != 2 or (max==2) wasnt able to calculate a move, hrhrhr
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this, match, true));
