@@ -81,17 +81,15 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			System.out.println("Max is set to: "+max+", we are playerIndex "+playerNumber+", thus the opponent: "+((playerNumber+1)%2));
 			// new approach: search the game for half the prep time. if we didn't succeed by then, use the remaining time
 			// to simulate some matches.
-			Boolean searchFinished = IDS(endTime - match.getStartTime()*500, root, 0);
-			if(!searchFinished){
-				while(System.currentTimeMillis() < endTime) {
-					simulateGame(root);
-				}
-				System.out.println("While simulating, I got "+simulationValues.size()+" values.");
-				System.out.println("Additionally, I found out the following for mobility: ("
-						+mobilityStatistics[0]+", "+mobilityStatistics[3]+") pro, ("
-						+mobilityStatistics[1]+", "+mobilityStatistics[4]+") con, ("
-						+mobilityStatistics[2]+", "+mobilityStatistics[5]+") even.");
+			while(System.currentTimeMillis() < endTime - match.getStartTime()*500) {
+				simulateGame(root);
 			}
+			System.out.println("While simulating, I got "+simulationValues.size()+" values.");
+			System.out.println("Additionally, I found out the following for mobility: ("
+					+mobilityStatistics[0]+", "+mobilityStatistics[3]+") pro, ("
+					+mobilityStatistics[1]+", "+mobilityStatistics[4]+") con, ("
+					+mobilityStatistics[2]+", "+mobilityStatistics[5]+") even.");
+			IDS(endTime - match.getStartTime(), root, 0);
 		} catch (InterruptedException e) {}
 	}
 
@@ -282,8 +280,12 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	public IMove getMove(IGameNode arg0) {
 		IGameNode best = null;
 		try {
-			// search a bit more, from the node arg0.
+			
 			endTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2000;
+			// a little simulation doesn't harm
+			while(System.currentTimeMillis() < endTime - match.getPlayTime()*600)
+				simulateGame(arg0);
+			// search a bit more, from the node arg0.
 			currentDepthLimit = arg0.getDepth()+1;
 			arg0.setPreserve(true);
 			IDS(endTime, arg0, arg0.getDepth()+1);
