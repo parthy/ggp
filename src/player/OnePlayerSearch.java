@@ -45,9 +45,9 @@ public class OnePlayerSearch extends AbstractStrategy {
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 2000;
 		try {
 			// simulate for half of the time, then use the experience to search
-			while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*450 && !foundSolution) {
+			/*while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*450 && !foundSolution) {
 				simulateGame(game.getTree().getRootNode());
-			}
+			}*/
 			Search();
 		} catch (InterruptedException ex) {
 			Logger.getLogger(OnePlayerSearch.class.getName()).log(Level.SEVERE, null, ex);

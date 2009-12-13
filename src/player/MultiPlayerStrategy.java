@@ -137,7 +137,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 				
 				combMoves = allMoves.get(i);
 				IGameNode next = game.getNextNode(currentNode, combMoves);
-				next.setPreserve(true);
+				//next.setPreserve(true);
 				Integer foundDepth = visitedStates.get(next.getState());
 				
 				if(foundDepth == null || foundDepth > currentNode.getDepth()){
@@ -257,7 +257,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		// first search for the time we have
 		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2000;
 		queue.clear();
-		arg0.setPreserve(true);
+		//arg0.setPreserve(true);
 		queue.add(arg0);
 		try {
 			endTime = realEndTime - match.getPlayTime()*450;
