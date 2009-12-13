@@ -42,7 +42,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 		heuristic = new OnePlayerHeuristic(this);
 		
 		queue.add(game.getTree().getRootNode());
-		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1200L;
+		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 2000;
 		try {
 			// simulate for half of the time, then use the experience to search
 			while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*450 && !foundSolution) {
@@ -73,7 +73,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			try {
 				// if no way is there, just do something
 				// first search a little
-				endTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 800;
+				endTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2000;
 				try {
 					queue.clear();
 					visitedStates.clear();
@@ -213,7 +213,13 @@ public class OnePlayerSearch extends AbstractStrategy {
 			currentNode.setPreserve(true);
 			
 			// game over?
-			if(currentNode.isTerminal()) { 
+			if(currentNode.isTerminal()) {
+				// watch out for the endTime
+				if(System.currentTimeMillis() > endTime){
+					System.out.println("stop search because of time");
+					return;
+				}
+				
 				value = currentNode.getState().getGoalValues();
 				System.out.println("Played a game and got score "+value[playerNumber]);
 				if(value[0] == 100) { // we accidentally won.
@@ -243,6 +249,12 @@ public class OnePlayerSearch extends AbstractStrategy {
 		IGameNode node = currentNode;
 		node.setPreserve(true);
 		while(node.getParent() != null) {
+			// watch out for the endTime
+			if(System.currentTimeMillis() > endTime){
+				System.out.println("stop search because of time");
+				return;
+			}
+			
 			node = node.getParent();
 			node.setPreserve(true);
 			HashMap<Integer, Integer> entry = values.get(node.getState());

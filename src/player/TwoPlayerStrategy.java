@@ -64,7 +64,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		enemyNumber = (playerNumber == 0) ? 1 : 0;
 		
 		currentDepthLimit = 1;
-		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000;
+		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 2000;
 		try {
 			IGameNode root = game.getTree().getRootNode();
 			root.setPreserve(true); // we set the node to preserve so the stupid game tree won't forget about the state anymore.
@@ -110,7 +110,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			
 			System.out.println("currentDepth"+currentDepthLimit);
 	//		System.out.println("Now: "+System.currentTimeMillis()+", endTime: "+endSearchTime);
-	//		System.out.println("Visited: "+nodesVisited);
+			System.out.println("Visited: "+nodesVisited);
 			
 			visitedStates.clear();
 			queue.clear();
@@ -120,13 +120,14 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			while(!queue.isEmpty() && System.currentTimeMillis() < endSearchTime) {
 				// get next element from queue
 				currentNode = queue.remove(0);
-				//nodesVisited++;
+				nodesVisited++;
 				//if(nodesVisited % 1000 == 0) System.out.println("visited: "+nodesVisited);
 				
 				// check if we get a value for the values hash
 				if(currentNode.isTerminal()){
 					int[] value = game.getGoalValues(currentNode);
 					values.put(currentNode.getState(), value.clone());
+					System.out.println("Found a value: "+value[playerNumber]);
 					makeValue(currentNode, makeValueLimit);
 					continue;
 				}
@@ -176,7 +177,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		}
 		System.out.println("Search finished, values: "+values.size());
 		//buildStrategy();
-		return true;
+		return (values.size() > 0) ? true : false;
 	}
 
 	/*
@@ -186,6 +187,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		if(node == null || node.getDepth() < minDepth) {
 			return;
 		}
+		
+		// watch out for the endTime
+		if(System.currentTimeMillis() > endTime){
+			System.out.println("stop search because of time");
+			return;
+		}
+		
 		//we already have a value
 		if(values.get(node.getState()) != null){
 			makeValue(node.getParent(), minDepth);
@@ -202,6 +210,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
 			// for each move the enemy can do
 			for(int i=0; i<enemyMoves.length; i++){
+				// watch out for the endTime
+				if(System.currentTimeMillis() > endTime){
+					System.out.println("stop search because of time");
+					return;
+				}
 				LinkedList<Float> line = new LinkedList<Float>();
 				//for each move i enemy can do
 				for(int j=0; j<myMoves.length; j++){
@@ -232,6 +245,12 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			for(IMove[] move : allMoves)
 				children.add(game.getNextNode(node, move));
 			for(IGameNode child : children) {
+				// watch out for the endTime
+				if(System.currentTimeMillis() > endTime){
+					System.out.println("stop search because of time");
+					return;
+				}
+				
 				child.setPreserve(true);
 				// cant do anything, because we dont know the goal value of 1 child
 				if(values.get(child.getState()) == null) {
@@ -276,10 +295,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		IGameNode best = null;
 		try {
 			// search a bit more, from the node arg0.
-			long end = System.currentTimeMillis() + match.getPlayTime()*1000 - 1000;
+			long end = System.currentTimeMillis() + match.getPlayTime()*1000 - 2500;
 			currentDepthLimit = arg0.getDepth()+1;
 			arg0.setPreserve(true);
-			IDS(end, arg0, arg0.getDepth());
+			IDS(end, arg0, arg0.getDepth()+1);
 			//if max = 2
 			Boolean foundMove = true;
 			if(max == 2){
@@ -301,7 +320,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 						IGameNode child = game.getNextNode(arg0, move);
 						child.setPreserve(true);
 						// if one child has no value
-						// -> öet the normal getMove decide
+						// -> let the normal getMove decide
 						if(values.get(child.getState()) == null){
 							foundMove = false;
 							break;

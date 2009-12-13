@@ -62,7 +62,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	
 	public void initMatch(Match arg0) {
 		// Initialize game variables
-		endTime = System.currentTimeMillis() + arg0.getStartTime()*1000 - 1000; // our time stops then
+		endTime = System.currentTimeMillis() + arg0.getStartTime()*1000 - 2000; // our time stops then
 		match = arg0;
 		game = match.getGame();
 		playerNumber = game.getRoleIndex(match.getRole());
@@ -128,6 +128,12 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			IMove[] combMoves;
 			
 			for(int i=0; i<allMoves.size(); ++i) {
+				// watch out for the endTime
+				if(System.currentTimeMillis() >= endTime){
+					System.err.println("stop search because of time");
+					return;
+				}
+				
 				combMoves = allMoves.get(i);
 				IGameNode next = game.getNextNode(currentNode, combMoves);
 				next.setPreserve(true);
@@ -157,6 +163,13 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		if(node == null || node.getDepth() < minDepth) {
 			return;
 		}
+		
+		// watch out for the endTime
+		if(System.currentTimeMillis() >= endTime){
+			System.err.println("stop search because of time");
+			return;
+		}
+		
 		// We already have a value for a terminal
 		if(values.get(node.getState()) != null && node.isTerminal()){
 			makeValue(node.getParent(), minDepth);
@@ -171,12 +184,18 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			children.add(game.getNextNode(node, move));
 		
 		// Determine player whose turn it is, if possible.
-		int player = -1;
+		int player = 0;
 		if(turntaking)
 			player = whoseTurn(node);
 		
 		int[] value = new int[game.getRoleCount()];
 		for(IGameNode child : children) {
+			// watch out for the endTime
+			if(System.currentTimeMillis() >= endTime){
+				System.err.println("stop search because of time");
+				return;
+			}
+			
 			child.setPreserve(true);
 			// if the value for one child is missing, we can't proceed
 			if(values.get(child.getState()) == null) {
@@ -228,13 +247,13 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	@Override
 	public IMove getMove(IGameNode arg0) {
 		// first search for the time we have
-		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 1300;
+		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 1500;
 		queue.clear();
 		arg0.setPreserve(true);
 		queue.add(arg0);
 		try {
-			endTime = realEndTime - match.getPlayTime()*550;
-			while(System.currentTimeMillis() < endTime - match.getPlayTime()*550)
+			endTime = realEndTime - match.getPlayTime()*450;
+			while(System.currentTimeMillis() < endTime)
 				simulateGame(arg0);
 			endTime = realEndTime;
 			DFS(arg0.getDepth());
@@ -312,7 +331,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		// now we look at the parents of the goal state.
 		IGameNode node = currentNode;
 		node.setPreserve(true);
-		while(node.getParent() != null && node.getDepth() >= start.getDepth()) {
+		while(node.getParent() != null && node.getParent().getDepth() >= start.getDepth()) {
 			if(System.currentTimeMillis() >= endTime) return;
 
 			node = node.getParent();
