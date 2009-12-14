@@ -2,20 +2,16 @@ package player;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-
 import java.util.PriorityQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.palamedes.gdl.core.model.IFluent;
+
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.IMove;
-import org.eclipse.palamedes.gdl.core.model.utils.Game;
-import org.eclipse.palamedes.gdl.core.model.utils.GameNode;
-import org.eclipse.palamedes.gdl.core.resolver.prologprover.GameProlog;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
 
@@ -45,9 +41,9 @@ public class OnePlayerSearch extends AbstractStrategy {
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 2000;
 		try {
 			// simulate for half of the time, then use the experience to search
-			/*while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*450 && !foundSolution) {
+			while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*450 && !foundSolution) {
 				simulateGame(game.getTree().getRootNode());
-			}*/
+			}
 			Search();
 		} catch (InterruptedException ex) {
 			Logger.getLogger(OnePlayerSearch.class.getName()).log(Level.SEVERE, null, ex);
@@ -290,5 +286,21 @@ public class OnePlayerSearch extends AbstractStrategy {
 	 */
 	public HashMap<Integer, Integer> getValue(IGameState state) {
 		return this.values.get(state);
+	}
+	
+	/*
+	 * seemingly our destroy function
+	 */
+	public void dispose() {
+		this.queue.clear();
+		this.queue = null;
+		this.values.clear();
+		this.values = null;
+		this.visitedStates.clear();
+		this.visitedStates = null;
+		this.currentWay.clear();
+		this.currentWay = null;
+		this.node = null;
+		this.solution = null;
 	}
 }

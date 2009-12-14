@@ -146,6 +146,9 @@ public final class MyPlayer extends Player {
 				e.printStackTrace();
 			}
         }
+        
+        // destroy everything in the strategy
+        strategy.dispose();
     }
 
 

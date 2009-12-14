@@ -40,7 +40,6 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	
 	private long endTime;
 	private boolean searchFinished=false;
-	private IGameNode node;
 	
 	private int[] mobilityStatistics = new int[]{0,0,0,0,0,0}; // we count the pro, con and even results for both ourselves and the opponent for mobility while simulating
 	private int[] movesAtStart = new int[2];
@@ -68,7 +67,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 2000;
 		try {
 			IGameNode root = game.getTree().getRootNode();
-			root.setPreserve(true); // we set the node to preserve so the stupid game tree won't forget about the state anymore.
+			//root.setPreserve(true); // we set the node to preserve so the stupid game tree won't forget about the state anymore.
 			IMove[][] allMoves = game.getLegalMoves(root);
 			String role = initMatch.getRole();
 			int index = game.getRoleIndex(role);
@@ -558,5 +557,21 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		if((mobilityStatistics[3]+mobilityStatistics[4]) < mobilityStatistics[5]) sum += MOB_DISABLE_OPP;
 		
 		return sum;
+	}
+	
+	/*
+	 * seemingly our destroy function
+	 */
+	public void dispose() {
+		this.queue.clear();
+		this.queue = null;
+		this.values.clear();
+		this.values = null;
+		this.simulationValues.clear();
+		this.simulationValues = null;
+		this.visitedStates.clear();
+		this.visitedStates = null;
+		this.mobilityStatistics = null;
+		this.currentNode = null;
 	}
 }

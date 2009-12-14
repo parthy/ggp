@@ -36,8 +36,11 @@ public class MainStrategy implements IStrategy {
 	}
 
 	public void dispose() {
+		System.out.println("Free Memory before gc: "+Runtime.getRuntime().freeMemory());
 		this.myStrategy.dispose();
 		myStrategy = null;
+		System.gc();
+		System.out.println("Free Memory after gc: "+Runtime.getRuntime().freeMemory());
 	}
 
 	public double getReliabilityValue() {

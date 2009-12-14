@@ -401,4 +401,16 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		return str;
 	}
 	
+	/*
+	 * seemingly our destroy function
+	 */
+	public void dispose() {
+		this.queue.clear();
+		this.queue = null;
+		this.values.clear();
+		this.values = null;
+		this.visitedStates.clear();
+		this.visitedStates = null;
+		this.root = null;
+	}
 }
