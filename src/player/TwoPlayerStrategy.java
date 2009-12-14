@@ -210,6 +210,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 					// calculate the child
 					IMove[] move = {myMoves[j], enemyMoves[i]};
 					IGameNode child = game.getNextNode(node, move);
+					game.regenerateNode(child);
 					//child.setPreserve(true);
 					// if one child has no value -> abuse
 					if(values.get(child.getState()) == null){
@@ -321,6 +322,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 						IMove[] move = {myMoves[j], enemyMoves[i]};
 						IGameNode child = game.getNextNode(arg0, move);
 						//child.setPreserve(true);
+						game.regenerateNode(child);
 						// if one child has no value
 						// -> let the normal getMove decide
 						Float value;
