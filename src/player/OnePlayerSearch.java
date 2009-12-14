@@ -71,13 +71,18 @@ public class OnePlayerSearch extends AbstractStrategy {
 				// first search a little
 				endTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2000;
 				try {
-					queue.clear();
-					visitedStates.clear();
-					queue.add(node);
-					Search();
+					while(System.currentTimeMillis() < endTime-match.getPlayTime()*500) {
+						simulateGame(node);
+					}
 					if(foundSolution) {
 						fillCurrentWayLimited(node.getDepth());
 						return currentWay.remove(0).getMoves()[0];
+					} else {
+
+						queue.clear();
+						visitedStates.clear();
+						queue.add(node);
+						Search();
 					}
 				} catch(InterruptedException ex) {}
 				
@@ -245,7 +250,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 		}
 		// now we look at the parent of the goal state.
 		IGameNode node = currentNode;
-		node.setPreserve(true);
+		//node.setPreserve(true);
 		while(node.getParent() != null) {
 			// watch out for the endTime
 			if(System.currentTimeMillis() > endTime){
