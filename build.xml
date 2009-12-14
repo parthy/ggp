@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="IDSPlayer" default="all" basedir=".">
+<project name="IDSPlayer" default="jar" basedir=".">
 
 <property name="src.dir"     value="src"/>
 
@@ -23,7 +23,7 @@
 	<delete dir="${build.dir}"/>
 </target>
 
-<target name="compile">
+<target name="compile" depends="clean">
 	<mkdir dir="${classes.dir}"/>
 	<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
 </target>

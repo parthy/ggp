@@ -33,7 +33,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 		super.initMatch(initMatch);
 		// initiate solution search
 		game = initMatch.getGame();
-		game.getTree().getRootNode().setPreserve(true);
+		//game.getTree().getRootNode().setPreserve(true);
 		
 		heuristic = new OnePlayerHeuristic(this);
 		
@@ -118,6 +118,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 		System.err.println("Now: "+System.currentTimeMillis()+", endTime: "+endTime);
 		while(!queue.isEmpty() && System.currentTimeMillis() < endTime) {
 			node = queue.remove(0);
+			game.regenerateNode(node);
 			nodesVisited++;
 			//System.out.println("Current state: "+node.getState().getFluents().toString());
 			// track our way of states so we don't visit states multiple times
@@ -153,7 +154,8 @@ public class OnePlayerSearch extends AbstractStrategy {
 			PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values));
 			for(IMove[] move : allMoves) {
 				IGameNode next = game.getNextNode(node, move);
-				next.setPreserve(true);
+				//next.setPreserve(true);
+				game.regenerateNode(next);
 				if(!visitedStates.containsKey(next.getState()) || visitedStates.get(next.getState()) > next.getDepth()){
 					children.add(next);
 				}
@@ -206,8 +208,8 @@ public class OnePlayerSearch extends AbstractStrategy {
 		IGameNode currentNode = start;
 		int[] value;
 		while(true) {
-			currentNode.setPreserve(true);
-			
+		//	currentNode.setPreserve(true);
+			game.regenerateNode(currentNode);
 			// game over?
 			if(currentNode.isTerminal()) {
 				// watch out for the endTime
@@ -252,7 +254,8 @@ public class OnePlayerSearch extends AbstractStrategy {
 			}
 			
 			node = node.getParent();
-			node.setPreserve(true);
+			//node.setPreserve(true);
+			game.regenerateNode(node);
 			HashMap<Integer, Integer> entry = values.get(node.getState());
 			Integer tempVal = null;
 			if(entry != null) {

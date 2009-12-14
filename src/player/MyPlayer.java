@@ -149,6 +149,7 @@ public final class MyPlayer extends Player {
         
         // destroy everything in the strategy
         strategy.dispose();
+	strategy = null;
     }
 
 
