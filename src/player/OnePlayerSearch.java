@@ -162,17 +162,16 @@ public class OnePlayerSearch extends AbstractStrategy {
 
 			// add successor nodes to queue
 			List<IMove[]> allMoves = game.getCombinedMoves(node);
-			children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values));
+			this.children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values));
 			for(IMove[] move : allMoves) {
 				IGameNode next = game.getNextNode(node, move);
 				//next.setPreserve(true);
 				game.regenerateNode(next);
 				if(!visitedStates.containsKey(next.getState()) || visitedStates.get(next.getState()) > next.getDepth()){
-					children.add(next);
+					this.children.add(next);
 				}
 				if(foundSolution || System.currentTimeMillis() >= endTime){
-					children.clear();
-					children = null;
+					this.children.clear();
 					System.out.println("break because of time or found solution");
 					return;
 				}
@@ -181,7 +180,6 @@ public class OnePlayerSearch extends AbstractStrategy {
 				//System.err.println("value "+values.get(children.peek().getState()));
 				queue.add(0, children.poll());
 				children.clear();
-				children = null;
 				if(foundSolution || System.currentTimeMillis() >= endTime){
 					System.out.println("break because of time or found solution");
 					return;
