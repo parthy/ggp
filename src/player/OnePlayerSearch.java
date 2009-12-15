@@ -36,7 +36,6 @@ public class OnePlayerSearch extends AbstractStrategy {
 		super.initMatch(initMatch);
 		// initiate solution search
 		game = initMatch.getGame();
-		//game.getTree().getRootNode().setPreserve(true);
 		
 		heuristic = new OnePlayerHeuristic(this);
 		
@@ -75,9 +74,9 @@ public class OnePlayerSearch extends AbstractStrategy {
 				long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2500;
 				endTime = System.currentTimeMillis() + match.getPlayTime()*500;
 				try {
-					/*while(System.currentTimeMillis() < endTime) {
+					while(System.currentTimeMillis() < endTime) {
 						simulateGame(node);
-					}*/
+					}
 					if(foundSolution) {
 						fillCurrentWayLimited(node.getDepth());
 						return currentWay.remove(0).getMoves()[0];
@@ -91,7 +90,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 				} catch(InterruptedException ex) {}
 				
 				List<IMove[]> allMoves = game.getCombinedMoves(node);
-				PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values));
+				PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values, false));
 				for(IMove[] move : allMoves) {
 					IGameNode next = game.getNextNode(node, move);
 					HashMap<Integer, Integer> val = values.get(next.getState());
@@ -162,13 +161,13 @@ public class OnePlayerSearch extends AbstractStrategy {
 
 			// add successor nodes to queue
 			List<IMove[]> allMoves = game.getCombinedMoves(node);
-			this.children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values));
+			children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values, true));
 			for(IMove[] move : allMoves) {
 				IGameNode next = game.getNextNode(node, move);
 				//next.setPreserve(true);
 				game.regenerateNode(next);
 				if(!visitedStates.containsKey(next.getState()) || visitedStates.get(next.getState()) > next.getDepth()){
-					this.children.add(next);
+					children.add(next);
 				}
 				if(foundSolution || System.currentTimeMillis() >= endTime){
 					this.children.clear();
@@ -176,14 +175,11 @@ public class OnePlayerSearch extends AbstractStrategy {
 					return;
 				}
 			}
-			while(!children.isEmpty()){
-				//System.err.println("value "+values.get(children.peek().getState()));
+			while(!children.isEmpty()) {
 				queue.add(0, children.poll());
-				if(foundSolution || System.currentTimeMillis() >= endTime){
-					System.out.println("break because of time or found solution");
-					return;
-				}
 			}
+			System.out.println("Queue size: "+queue.size());
+			children.clear();
 		}
 		if(foundSolution || System.currentTimeMillis() >= endTime){
 			System.out.println("break because of time or found solution");
@@ -257,7 +253,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 		// now we look at the parent of the goal state.
 		IGameNode node = currentNode;
 
-		while(node.getParent() != null && node.getDepth() <= start.getDepth()) {
+		while(node.getParent() != null && node.getParent().getDepth() >= start.getDepth()) {
 			// watch out for the endTime
 			if(System.currentTimeMillis() > endTime){
 				System.out.println("stop search because of time");
@@ -278,7 +274,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
 				Integer newCount = ((Integer) values.get(node.getState()).values().toArray()[0])+1;
 				if(newCount == 0) newCount++;
-				tempVal = ((Double) (Math.ceil((double) (((double) ((newCount-1)*tempVal+value[0]))/((double) newCount))))).intValue();
+				tempVal = ((newCount-1)*tempVal+value[0])/newCount;
 				HashMap<Integer, Integer> temp = new HashMap<Integer, Integer>();
 				temp.put(tempVal, newCount);
 				values.put(node.getState(), temp);

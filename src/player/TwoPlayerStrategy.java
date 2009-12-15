@@ -498,7 +498,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		}
 		// now we look at the parent of the goal state.
 		IGameNode node = currentNode;
-		while(node.getParent() != null) {
+		while(node.getParent() != null && node.getParent().getDepth() >= start.getDepth()) {
 			game.regenerateNode(node);
 			node = node.getParent();
 			HashMap<int[], Integer> entry = simulationValues.get(node.getState());
