@@ -15,7 +15,7 @@ public class NoveltyHeuristic implements IHeuristic {
 
 	//function not tested yet
 	public int calculateHeuristic(IGameNode node) {
-		if(node.getParent() == null) return 0;
+		if(node.getParent() == null || node.getState() == null || node.getParent().getState() == null) return 0;
 		int[] diffs = GameNode.getDiffCount(node.getState(), node.getParent().getState());
 		
 		// diffs is an array of {count aOnly, count bOnly, count overlap}

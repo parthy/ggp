@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.IMove;
+import org.eclipse.palamedes.gdl.core.model.*;
+import org.eclipse.palamedes.gdl.core.model.IGame;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
 
@@ -20,6 +22,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 	private List<IGameNode> currentWay = new ArrayList<IGameNode>();
 	private Map<IGameState, Integer> visitedStates = new HashMap<IGameState, Integer>();
 	private HashMap<IGameState, HashMap<Integer, Integer>> values = new HashMap<IGameState, HashMap<Integer, Integer>>();
+	private PriorityQueue<IGameNode> children;
 	private boolean foundSolution = false;
 	private int nodesVisited;
 	private long endTime;
@@ -48,8 +51,8 @@ public class OnePlayerSearch extends AbstractStrategy {
 		} catch (InterruptedException ex) {
 			Logger.getLogger(OnePlayerSearch.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		System.err.println("nodes visited: "+nodesVisited);
-		System.err.println("values found: "+values.size());
+		System.out.println("nodes visited: "+nodesVisited);
+		System.out.println("values found: "+values.size());
 		visitedStates.clear();
 		if(foundSolution) fillCurrentWay();
 		
@@ -69,16 +72,17 @@ public class OnePlayerSearch extends AbstractStrategy {
 			try {
 				// if no way is there, just do something
 				// first search a little
-				endTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2000;
+				long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2500;
+				endTime = System.currentTimeMillis() + match.getPlayTime()*500;
 				try {
-					while(System.currentTimeMillis() < endTime-match.getPlayTime()*500) {
+					/*while(System.currentTimeMillis() < endTime) {
 						simulateGame(node);
-					}
+					}*/
 					if(foundSolution) {
 						fillCurrentWayLimited(node.getDepth());
 						return currentWay.remove(0).getMoves()[0];
 					} else {
-
+						endTime = realEndTime;
 						queue.clear();
 						visitedStates.clear();
 						queue.add(node);
@@ -117,10 +121,12 @@ public class OnePlayerSearch extends AbstractStrategy {
 		}
 		return null;
     }
-
+    
+    public IGame getGame() { return this.game; }
+    
     void Search() throws InterruptedException {
 
-		System.err.println("Now: "+System.currentTimeMillis()+", endTime: "+endTime);
+		System.out.println("Now: "+System.currentTimeMillis()+", endTime: "+endTime);
 		while(!queue.isEmpty() && System.currentTimeMillis() < endTime) {
 			node = queue.remove(0);
 			game.regenerateNode(node);
@@ -137,10 +143,10 @@ public class OnePlayerSearch extends AbstractStrategy {
 				tmp.put(game.getGoalValues(node)[0], Integer.MAX_VALUE); 
 				this.values.put(node.getState(), tmp);
 				if(node.getState().getGoalValue(0) == 100) {
-    				foundSolution = true;
-    				this.solution = node;
-    				return;
-    			}
+    					foundSolution = true;
+    					this.solution = node;
+    					return;
+    				}
 				continue;
 			} else {
 				// put a value calculated by the heuristic in our hash.
@@ -156,7 +162,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 
 			// add successor nodes to queue
 			List<IMove[]> allMoves = game.getCombinedMoves(node);
-			PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values));
+			children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values));
 			for(IMove[] move : allMoves) {
 				IGameNode next = game.getNextNode(node, move);
 				//next.setPreserve(true);
@@ -165,21 +171,25 @@ public class OnePlayerSearch extends AbstractStrategy {
 					children.add(next);
 				}
 				if(foundSolution || System.currentTimeMillis() >= endTime){
-					System.err.println("break because of time or found solution");
+					children.clear();
+					children = null;
+					System.out.println("break because of time or found solution");
 					return;
 				}
 			}
 			while(!children.isEmpty()){
 				//System.err.println("value "+values.get(children.peek().getState()));
 				queue.add(0, children.poll());
+				children.clear();
+				children = null;
 				if(foundSolution || System.currentTimeMillis() >= endTime){
-					System.err.println("break because of time or found solution");
+					System.out.println("break because of time or found solution");
 					return;
 				}
 			}
 		}
 		if(foundSolution || System.currentTimeMillis() >= endTime){
-			System.err.println("break because of time or found solution");
+			System.out.println("break because of time or found solution");
 			return;
 		}
 		queue.clear();
@@ -213,7 +223,6 @@ public class OnePlayerSearch extends AbstractStrategy {
 		IGameNode currentNode = start;
 		int[] value;
 		while(true) {
-		//	currentNode.setPreserve(true);
 			game.regenerateNode(currentNode);
 			// game over?
 			if(currentNode.isTerminal()) {
@@ -234,7 +243,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			}
 			
 			// choose a move
-			currentNode = game.getNextNode(currentNode, getMoveForSimulation(currentNode));
+			currentNode = game.getNextNode(currentNode, game.getRandomMove(currentNode));
 		}
 		
 		// since the game is over, we can now go all the way back and fiddle around with the goals
@@ -250,8 +259,8 @@ public class OnePlayerSearch extends AbstractStrategy {
 		}
 		// now we look at the parent of the goal state.
 		IGameNode node = currentNode;
-		//node.setPreserve(true);
-		while(node.getParent() != null) {
+
+		while(node.getParent() != null && node.getDepth() <= start.getDepth()) {
 			// watch out for the endTime
 			if(System.currentTimeMillis() > endTime){
 				System.out.println("stop search because of time");
@@ -259,7 +268,6 @@ public class OnePlayerSearch extends AbstractStrategy {
 			}
 			
 			node = node.getParent();
-			//node.setPreserve(true);
 			game.regenerateNode(node);
 			HashMap<Integer, Integer> entry = values.get(node.getState());
 			Integer tempVal = null;
@@ -273,7 +281,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
 				Integer newCount = ((Integer) values.get(node.getState()).values().toArray()[0])+1;
 				if(newCount == 0) newCount++;
-				tempVal = ((newCount-1)*tempVal+value[0])/newCount;
+				tempVal = ((Double) (Math.ceil((double) (((double) ((newCount-1)*tempVal+value[0]))/((double) newCount))))).intValue();
 				HashMap<Integer, Integer> temp = new HashMap<Integer, Integer>();
 				temp.put(tempVal, newCount);
 				values.put(node.getState(), temp);
