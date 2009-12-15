@@ -179,7 +179,6 @@ public class OnePlayerSearch extends AbstractStrategy {
 			while(!children.isEmpty()){
 				//System.err.println("value "+values.get(children.peek().getState()));
 				queue.add(0, children.poll());
-				children.clear();
 				if(foundSolution || System.currentTimeMillis() >= endTime){
 					System.out.println("break because of time or found solution");
 					return;
