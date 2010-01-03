@@ -64,7 +64,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		enemyNumber = (playerNumber == 0) ? 1 : 0;
 		
 		currentDepthLimit = 1;
-		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 2000;
+		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000;
 		try {
 			IGameNode root = game.getTree().getRootNode();
 			//root.setPreserve(true); // we set the node to preserve so the stupid game tree won't forget about the state anymore.
@@ -81,15 +81,15 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			System.out.println("Max is set to: "+max+", we are playerIndex "+playerNumber+", thus the opponent: "+((playerNumber+1)%2));
 			// new approach: search the game for half the prep time. if we didn't succeed by then, use the remaining time
 			// to simulate some matches.
-			while(System.currentTimeMillis() < endTime - match.getStartTime()*500) {
+			/*while(System.currentTimeMillis() < endTime - match.getStartTime()*500) {
 				simulateGame(root);
-			}
+			}*/
 			System.out.println("While simulating, I got "+simulationValues.size()+" values.");
 			System.out.println("Additionally, I found out the following for mobility: ("
 					+mobilityStatistics[0]+", "+mobilityStatistics[3]+") pro, ("
 					+mobilityStatistics[1]+", "+mobilityStatistics[4]+") con, ("
 					+mobilityStatistics[2]+", "+mobilityStatistics[5]+") even.");
-			searchFinished = IDS(endTime - match.getStartTime(), root, 0);
+			searchFinished = IDS(endTime, root, 0);
 		} catch (InterruptedException e) {}
 	}
 
@@ -158,13 +158,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				}
 			}
 			if(System.currentTimeMillis() >= endSearchTime){
-				System.out.println("stop search because of time");
+				System.out.println("stop search because of time, visited Nodes: "+nodesVisited);
 				return false;
 			}
 			currentDepthLimit++;
 		}
 		System.out.println("Search finished, values: "+values.size());
-
+		System.out.println("Expanded Nodes: "+nodesVisited);
 		return true;
 	}
 
