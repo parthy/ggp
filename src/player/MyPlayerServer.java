@@ -10,9 +10,9 @@ import org.eclipse.palamedes.gdl.connection.PlayerServer;
  
 public class MyPlayerServer extends PlayerServer {
 
-    public MyPlayerServer(Player player, int port, Map<String,String> options) 
+    public MyPlayerServer(Player player, Map<String,String> options) 
     throws IOException {
-        super(player, port, options);
+        super(player, options);
     }
 
     /**
@@ -24,7 +24,7 @@ public class MyPlayerServer extends PlayerServer {
     	/* create and start player server */
     	try {    		
     		Map<String, String> options = getOptions(args);
-            new MyPlayerServer(new MyPlayer(), 4001, options).waitForExit();
+            new MyPlayerServer(new MyPlayer(), options).waitForExit();
         } catch (IOException ex) {
             ex.printStackTrace();
             System.exit(-1);

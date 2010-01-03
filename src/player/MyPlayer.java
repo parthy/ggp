@@ -44,7 +44,8 @@ public final class MyPlayer extends Player {
          *       does not support the full range of special characters like '+'.
          *       GameFactory.PROLOG is probably the fastest option, but you need
          *       to have Eclipse-Prolog installed (http://www.eclipse-clp.org/). */
-        IGame runningGame = GameFactory.createGame( GameFactory.PROLOG,
+	GameFactory factory = GameFactory.getInstance();
+        IGame runningGame = factory.createGame( GameFactory.PROLOGPROVER,
                                                     msg.getGameDescription() );
         System.out.println("MyPlayer created the game.");
 
