@@ -8,197 +8,50 @@ package player;
 
 import java.util.Comparator;
 import java.util.HashMap;
+
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
-import org.eclipse.palamedes.gdl.core.model.IMove;
-import org.eclipse.palamedes.gdl.core.simulation.Match;
 
 /**
  *
  * @author konrad
  */
 public class MoveComparator implements Comparator<IGameNode>{
-	private HashMap<IGameState, int[]> values;
-	private HashMap<IGameState, HashMap<int[], Integer>> simul;
+	private HashMap<IGameState, HashMap<int[], Integer>> values;
 	private TwoPlayerStrategy strat;
-	private Match match;
-	private boolean useSimul = false;
 	
-	public MoveComparator(TwoPlayerStrategy strat, Match match){
+	public MoveComparator(TwoPlayerStrategy strat){
 		this.strat = strat;
-		this.match = match;
 		this.values = strat.getValues();
-		this.simul = strat.getSimulationValues();
-	}
-	
-	public MoveComparator(TwoPlayerStrategy strat, Match match, boolean simul){
-		this.strat = strat;
-		this.match = match;
-		this.values = strat.getValues();
-		this.simul = strat.getSimulationValues();
-		this.useSimul = simul;
 	}
 
-	public int compare(IGameNode node1, IGameNode node2) {
-		try {
-			if(node1.getState() == null)
-				match.getGame().regenerateNode(node1);
-			if(node2.getState() == null)
-				match.getGame().regenerateNode(node2);
-		} catch(InterruptedException e) {}
+	@Override
+	public int compare(IGameNode arg0, IGameNode arg1) {
+		// arg0 is better than arg1, if the value in the hash is either better, or more reliable.
+		HashMap<int[], Integer> hash1 = values.get(arg0.getState());
+		HashMap<int[], Integer> hash2 = values.get(arg1.getState());
 		
-		//the pseudo-49 approach
-		int tmpValue1 = 0;
-		if(!values.containsKey(node1.getState())){
-			//we dont have a value
-			tmpValue1 = 49;
+		int[] val1 = (hash1 != null) ? (int[]) hash1.keySet().toArray()[0] : new int[]{49, 49};
+		int[] val2 = (hash2 != null) ? (int[]) hash2.keySet().toArray()[0] : new int[]{49, 49};
+		
+		Integer rel1 = (hash1 != null) ? (Integer) hash1.values().toArray()[0] : 1;
+		Integer rel2 = (hash2 != null) ? (Integer) hash2.values().toArray()[0] : 1;
+		
+		int player = strat.getPlayerNumber();
+		
+		if(val1[player] == val2[player]) {
+			if(rel1 > rel2) 
+				return -1;
+			else if(rel1 < rel2)
+				return 1;
+			else
+				return 0;
+		} else if(val1[player] > val2[player]) {
+			return -1;
 		} else {
-			tmpValue1 = values.get(node1.getState())[strat.getPlayerNumber()];
-		}
-		int tmpValue2 = 0;
-		if(!values.containsKey(node2.getState())){
-			tmpValue2 = 49;
-		} else {
-			tmpValue2 = values.get(node2.getState())[strat.getPlayerNumber()];
-		}
-		//now we really compare
-		if(tmpValue1 < tmpValue2){ // higher value means better node
 			return 1;
-		} else {
-			if(tmpValue1 == tmpValue2){
-				//they have the same value or are both now known. here the simulation and heuristic kicks in.
-				// shall we use the simulation experience? (only if no real values are found)
-				if(this.useSimul && !values.containsKey(node1.getState()) && !values.containsKey(node2.getState())) { 
-					if(this.simul.get(node1.getState()) != null && this.simul.get(node2.getState()) != null) {
-						HashMap<int[], Integer> val1 = this.simul.get(node1.getState());
-						HashMap<int[], Integer> val2 = this.simul.get(node2.getState());
-						if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] < ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
-							// val1 brings us worse score
-							//System.out.println("val1 is worse than val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
-							return 1;
-						}
-						if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] > ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
-							// val1 brings us better score
-							//System.out.println("val1 is better than val2: "+((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()]+", "+((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]);
-							return -1;
-						}
-						if(((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] == ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()]) {
-							// the simulation values don't distinguish. try mobility approach
-							int mobility = strat.getMobilityVariant();
-							switch(mobility) {
-								case 0: return 0;
-								default: 
-									try {
-										return compareMobility(mobility, match.getGame().getLegalMoves(node1), match.getGame().getLegalMoves(node2));
-									} catch (InterruptedException e) {}
-							}
-						}
-					// the following covers the cases where values are not known. something is better than not known here.
-					} else if(this.simul.get(node1.getState()) == null && this.simul.get(node2.getState()) != null) {
-						HashMap<int[], Integer> val2 = this.simul.get(node2.getState());
-						if( ((int[]) val2.keySet().toArray()[0])[strat.getPlayerNumber()] == 0) // if the known value is zero, this is bad
-							return -1;
-						return 1;
-					} else if(this.simul.get(node1.getState()) != null && this.simul.get(node2.getState()) == null ) {
-						HashMap<int[], Integer> val1 = this.simul.get(node1.getState());
-						if( ((int[]) val1.keySet().toArray()[0])[strat.getPlayerNumber()] == 0) // if the known value is zero, this is bad
-							return 1;
-						return -1;
-					} else {
-						// the simulation values don't distinguish. try mobility approach
-						int mobility = strat.getMobilityVariant();
-						switch(mobility) {
-							case 0: return 0;
-							default: 
-								try {
-									return compareMobility(mobility, match.getGame().getLegalMoves(node1), match.getGame().getLegalMoves(node2));
-								} catch (InterruptedException e) {}
-						}
-					}
-				}
-			} else {
-				return -1;
-			}
-		}
-		return 0;
-	}
-	
-	
-	private int compareMobility(int mobilityVariant, IMove[][] allMoves1, IMove[][] allMoves2) {
-		switch(mobilityVariant) {
-		case TwoPlayerStrategy.MOB_DISABLE_OPP:
-			if(allMoves1[(strat.getPlayerNumber()+1)%2].length < allMoves2[(strat.getPlayerNumber()+1)%2].length)
-				return -1;
-			if(allMoves1[(strat.getPlayerNumber()+1)%2].length > allMoves2[(strat.getPlayerNumber()+1)%2].length)
-				return 1;
-			return 0;
-			
-		case TwoPlayerStrategy.MOB_DISABLE_US:
-			if(allMoves1[(strat.getPlayerNumber()+0)%2].length < allMoves2[(strat.getPlayerNumber()+0)%2].length)
-				return -1;
-			if(allMoves1[(strat.getPlayerNumber()+0)%2].length > allMoves2[(strat.getPlayerNumber()+0)%2].length)
-				return 1;
-			return 0;
-			
-		case TwoPlayerStrategy.MOB_ENABLE_OPP:
-			if(allMoves1[(strat.getPlayerNumber()+1)%2].length > allMoves2[(strat.getPlayerNumber()+1)%2].length)
-				return -1;
-			if(allMoves1[(strat.getPlayerNumber()+1)%2].length < allMoves2[(strat.getPlayerNumber()+1)%2].length)
-				return 1;
-			return 0;
-			
-		case TwoPlayerStrategy.MOB_ENABLE_US:
-			if(allMoves1[(strat.getPlayerNumber()+0)%2].length > allMoves2[(strat.getPlayerNumber()+0)%2].length)
-				return -1;
-			if(allMoves1[(strat.getPlayerNumber()+0)%2].length < allMoves2[(strat.getPlayerNumber()+0)%2].length)
-				return 1;
-			return 0;
-			
-		case TwoPlayerStrategy.MOB_MOBILITY:
-			if(allMoves1[(strat.getPlayerNumber()+0)%2].length > allMoves2[(strat.getPlayerNumber()+0)%2].length)
-				return -1;
-			if(allMoves1[(strat.getPlayerNumber()+0)%2].length < allMoves2[(strat.getPlayerNumber()+0)%2].length)
-				return 1;
-			if(allMoves1[(strat.getPlayerNumber()+1)%2].length < allMoves2[(strat.getPlayerNumber()+1)%2].length)
-				return -1;
-			if(allMoves1[(strat.getPlayerNumber()+1)%2].length > allMoves2[(strat.getPlayerNumber()+1)%2].length)
-				return 1;
-			return 0;
-			
-		case TwoPlayerStrategy.MOB_INVERSE:
-			if(allMoves1[(strat.getPlayerNumber()+0)%2].length < allMoves2[(strat.getPlayerNumber()+0)%2].length)
-				return -1;
-			if(allMoves1[(strat.getPlayerNumber()+0)%2].length > allMoves2[(strat.getPlayerNumber()+0)%2].length)
-				return 1;
-			if(allMoves1[(strat.getPlayerNumber()+1)%2].length > allMoves2[(strat.getPlayerNumber()+1)%2].length)
-				return -1;
-			if(allMoves1[(strat.getPlayerNumber()+1)%2].length < allMoves2[(strat.getPlayerNumber()+1)%2].length)
-				return 1;
-			return 0;
-		
-		case TwoPlayerStrategy.MOB_MOBILITY_TEAM:
-			if(allMoves1[(strat.getPlayerNumber()+0)%2].length > allMoves2[(strat.getPlayerNumber()+0)%2].length)
-				return -1;
-			if(allMoves1[(strat.getPlayerNumber()+0)%2].length < allMoves2[(strat.getPlayerNumber()+0)%2].length)
-				return 1;
-			if(allMoves1[(strat.getPlayerNumber()+1)%2].length > allMoves2[(strat.getPlayerNumber()+1)%2].length)
-				return -1;
-			if(allMoves1[(strat.getPlayerNumber()+1)%2].length < allMoves2[(strat.getPlayerNumber()+1)%2].length)
-				return 1;
-			return 0;
-			
-		case TwoPlayerStrategy.MOB_INV_MOB_TEAM:
-			if(allMoves1[(strat.getPlayerNumber()+0)%2].length < allMoves2[(strat.getPlayerNumber()+0)%2].length)
-				return -1;
-			if(allMoves1[(strat.getPlayerNumber()+0)%2].length > allMoves2[(strat.getPlayerNumber()+0)%2].length)
-				return 1;
-			if(allMoves1[(strat.getPlayerNumber()+1)%2].length < allMoves2[(strat.getPlayerNumber()+1)%2].length)
-				return -1;
-			if(allMoves1[(strat.getPlayerNumber()+1)%2].length > allMoves2[(strat.getPlayerNumber()+1)%2].length)
-				return 1;
-			return 0;
-			
-		default: return 0;
 		}
 	}
+
+	
 }
