@@ -31,6 +31,10 @@ public class OnePlayerSearch extends AbstractStrategy {
 	
 	private IHeuristic heuristic;
 
+	public void setFirstEndTime(long endTime) {
+		this.endTime = endTime - 600;
+	}
+	
 	@Override
 	public void initMatch(Match initMatch) {
 		super.initMatch(initMatch);
@@ -40,7 +44,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 		heuristic = new OnePlayerHeuristic(this);
 		
 		queue.add(game.getTree().getRootNode());
-		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 2000;
+	
 		try {
 			// simulate for half of the time, then use the experience to search
 			while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*450 && !foundSolution) {

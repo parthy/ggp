@@ -18,15 +18,24 @@ import org.eclipse.palamedes.gdl.core.simulation.Match;
 public class MainStrategy implements IStrategy {
 
 	private IStrategy myStrategy;
-
+	private long firstEndTime;
+	
+	public MainStrategy(long endTime) {
+		this.firstEndTime = endTime;
+	}
+	
 	public void initMatch(Match initMatch) {
 		if(initMatch.getGame().getRoleCount() == 1){
 			this.myStrategy = new OnePlayerSearch();
+			((OnePlayerSearch) myStrategy).setFirstEndTime(firstEndTime);
 		} else if(initMatch.getGame().getRoleCount() == 2){
 			this.myStrategy = new TwoPlayerStrategy();
+			((TwoPlayerStrategy) myStrategy).setFirstEndTime(firstEndTime);
 		} else {
-				this.myStrategy = new MultiPlayerStrategy();
+			this.myStrategy = new MultiPlayerStrategy();
+			((MultiPlayerStrategy) myStrategy).setFirstEndTime(firstEndTime);
 		}
+		
 		myStrategy.initMatch(initMatch);
 	}
 	

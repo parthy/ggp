@@ -61,9 +61,12 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	// PROP means we propagated the value using e.g. maxN
 	private static int PROP = 3;
 	
+	public void setFirstEndTime(long endTime) {
+		this.endTime = endTime - 600;
+	}
+	
 	public void initMatch(Match arg0) {
 		// Initialize game variables
-		endTime = System.currentTimeMillis() + arg0.getStartTime()*1000 - 1200; // our time stops then
 		match = arg0;
 		game = match.getGame();
 		playerNumber = game.getRoleIndex(match.getRole());

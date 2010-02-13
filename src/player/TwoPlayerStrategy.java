@@ -44,6 +44,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
 	private SimplexSolver solver = new SimplexSolver();
 	
+	public void setFirstEndTime(long endTime) {
+		this.endTime = endTime - 600;
+	}
+	
 	public void initMatch(Match initMatch) {
 		match = initMatch;
 		game = initMatch.getGame();
