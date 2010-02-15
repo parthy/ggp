@@ -120,7 +120,8 @@ public class RuleOptimizer {
 	    			ArrayList<String> neededVars = getVarsFromLiteral(literal);
 	    			
 	    			// if we know all needed vars or we have to deal with true or does, we move it.
-	    			if((knownVars.containsAll(neededVars) && body.indexOf(literal) > toInsertAfter) || literal.matches(".*(true|does).*")) {
+					System.out.println(literal+": "+literal.matches(".*(true|does).*")+"\n\n");
+	    			if((knownVars.containsAll(neededVars) && body.indexOf(literal) > toInsertAfter) || (toInsertAfter == -1 && literal.matches(".*(true|does).*"))) {
 	    				collector.add(literal);
 	    				it.remove();
 	    			}
@@ -131,8 +132,8 @@ public class RuleOptimizer {
 	    		ArrayList<String> collector2 = new ArrayList<String>();
 	    		while(it2.hasNext()) {
 	    			String cur = it2.next();
-	    			if(cur.matches(".*distinct.*")) {
-	    				it.remove();
+	    			if(cur.matches(".*(distinct|true|does).*")) {
+	    				it2.remove();
 	    				collector2.add(0, cur);
 	    			} else {
 	    				collector2.add(cur);
@@ -143,7 +144,8 @@ public class RuleOptimizer {
 	    			collector2.addAll(body);
 	    			body = new ArrayList<String>(collector2);
 	    		} else { // otherwise, add the collector to the front part of the list, then the remaining body. 
-	    			ArrayList<String> newList = new ArrayList<String>(body.subList(0, toInsertAfter+1));
+					if(toInsertAfter+1 > body.size()) toInsertAfter = body.size()-1;
+					ArrayList<String> newList = new ArrayList<String>(body.subList(0, toInsertAfter+1));
 	    			newList.addAll(collector2);
 	    			newList.addAll(body.subList(toInsertAfter+1, body.size()));
 	    			body = new ArrayList<String>(newList);
