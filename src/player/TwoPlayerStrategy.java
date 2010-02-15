@@ -27,7 +27,12 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	
 	private LinkedList<IGameNode> queue = new LinkedList<IGameNode>();
 	private HashMap<IGameState, Integer> visitedStates = new HashMap<IGameState, Integer>();
-	private HashMap<IGameState, HashMap<int[], Integer>> values = new HashMap<IGameState, HashMap<int[], Integer>>();
+	/**
+	 * Integer is code for:
+	 *	propagated_simulation_values < 0 < simulation values < int_max
+	 *  int_max are terminal goal values or propagated from them
+	 */
+	private HashMap<IGameState, ValuesEntry> values = new HashMap<IGameState, ValuesEntry>();
 	
 	private ArrayList<IGameNode> children = new ArrayList<IGameNode>();
 	
@@ -43,6 +48,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	private int enemyNumber;
 
 	private SimplexSolver solver = new SimplexSolver();
+	private long endSearchTime;
+	private HashMap<IGameState, Integer> tmpHash;
 	
 	public void setFirstEndTime(long endTime) {
 		this.endTime = endTime - 600;
@@ -54,7 +61,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		playerNumber = game.getRoleIndex(match.getRole());
 		enemyNumber = (playerNumber == 0) ? 1 : 0;
 		
-		currentDepthLimit = 1;
+		currentDepthLimit = 0;
 		endTime = System.currentTimeMillis() + initMatch.getStartTime()*1000 - 1000;
 		try {
 			// set the game root node
@@ -91,133 +98,133 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	 *
 	 * @param endSearchTime
 	 * @param start
-	 * @param makeValueLimit
 	 * @return true if search finished, else false
 	 * @throws java.lang.InterruptedException
 	 */
 	public boolean IDS(long endSearchTime, IGameNode start) throws InterruptedException {
-		boolean flag = true;
-		while(flag) {
-			flag = false;
+		this.endSearchTime = endSearchTime;
+		
+		tmpHash = new HashMap<IGameState, Integer>();
+
+		boolean canSearchDeeper = true;
+		while(canSearchDeeper || System.currentTimeMillis() <= endSearchTime) {
 			
 			System.out.println("currentDepth"+currentDepthLimit);
 			System.out.println("Now: "+System.currentTimeMillis()+", endTime: "+endSearchTime);
 			System.out.println("Visited: "+nodesVisited);
 			
 			visitedStates.clear();
-			queue.clear();
-			
-			queue.add(start);
-			
-			while(!queue.isEmpty() && System.currentTimeMillis() < endSearchTime) {
-				// get next element from queue
-				currentNode = queue.remove(0);
-				game.regenerateNode(currentNode);
-				nodesVisited++;
-				
-				// check if we get a value for the values hash
-				// this updates the value in the hash and sets the number of occurrences to MAX_VALUE.
-				// if there are simulation values for this node, they will be overwritten.
-				if(currentNode.isTerminal()) {
-					int[] value = game.getGoalValues(currentNode);
-					
-					HashMap<int[], Integer> valueH = new HashMap<int[], Integer>();
-					valueH.put(value, Integer.MAX_VALUE);
-					
-					values.put(currentNode.getState(), valueH);
-					
-					continue;
-				}
-			
-				// leave tracing infos
-				visitedStates.put(currentNode.getState(), currentNode.getDepth()-1);
-				
-				children.clear();
-				
-				// find out possible successors
-				if(currentNode.getDepth() < currentDepthLimit) {
-					List<IMove[]> allMoves = game.getCombinedMoves(currentNode);
-					IMove[] combMoves;
-					
-					// fetch existing value in hash. this is gonna be updated now.
-					HashMap<int[], Integer> tempValues = values.get(currentNode.getState());
-					Integer occ = (Integer) tempValues.values().toArray()[0];
-					
-					// we now walk through all moves and calculate the successor nodes
-					// while doing so, we automatically check for existence of values
-					for(int i=0; i<allMoves.size(); ++i) {
-						combMoves = allMoves.get(i);
-						IGameNode next = game.getNextNode(currentNode, combMoves);
-						game.regenerateNode(next);
-						Integer foundDepth = visitedStates.get(next.getState());
-						
-						HashMap<int[], Integer> exValueH = values.get(next.getState()); 
-						if(exValueH != null) {
-							int[] exValues = (int[]) exValueH.keySet().toArray()[0];
-
-							// we use our brand new updateValues function to do an encapsulated calculation (min/max/simplex/...)
-							tempValues = updateValues(tempValues, exValues, currentNode.getDepth(), occ);
-						}
-						
-						if(foundDepth == null || foundDepth > currentNode.getDepth()) {
-							children.add(0, next);
-						}
-					}
-					
-					// if we could not calculate all successor values, we add the current node again to the queue
-					// otherwise, we write the now completely calculated values in the hash
-					values.put(currentNode.getState(), tempValues);
-					children.add(currentNode);
-					
-					// and finally add all newly expanded nodes to the queue
-					queue.addAll(0, children);
-					
-				} else if(game.getCombinedMoves(currentNode).size() > 0) {
-					flag = true;
-				}
-			}
-			if(System.currentTimeMillis() >= endSearchTime){
-				System.out.println("stop search because of time, visited Nodes: "+nodesVisited);
-				return false;
-			}
+			canSearchDeeper = DLS(start, 0);
 			currentDepthLimit++;
 		}
-		System.out.println("Search finished, values: "+values.size());
-		System.out.println("Expanded Nodes: "+nodesVisited);
-		return true;
+
+		ValuesEntry peter = values.get(start);
+		Integer occ = null;
+		if(peter != null){
+			occ = peter.getOccurences();
+		}
+		if(occ != null && occ == Integer.MAX_VALUE){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
-	 * This function updates values of a game node according to the current policy.
-	 * 
-	 * @param exValues The values before the update
-	 * @param newValues The values to update with
-	 * @param depth The depth we are currently 
-	 * @param occurrences The number of times we refined these values.
-	 * @return The newly calculated values.
+	 *
+	 * also uses:
+	 *	- currentDepthLimit
+	 *	- endSearchTime
+	 *	-
+	 *	- evaluation()
+	 *	- visitedStates
+	 *
+	 *	values.get(start_node) == max_int if search finished
+	 *
+	 * @param node to expand
+	 * @param depth < depthLimit
+	 * @return true if it could expand further but depthLimit stopped it
 	 */
-	private HashMap<int[], Integer> updateValues(HashMap<int[], Integer> exValues, int[] newValues, int depth, int occurrences) {
-		int newOcc = (occurrences == Integer.MAX_VALUE) ? occurrences : occurrences+1;
-		int[] exValuesInt = (int[]) exValues.keySet().toArray()[0];
+	private Boolean DLS(IGameNode node, int depth) throws InterruptedException{
+		game.regenerateNode(node);
+		nodesVisited++;
 		
-		// we have actually three cases:
-		// (1) zero-sum, simultaneous moves => simplex
-		if(max == 2) {
-			// TODO: Make simplex update the values. Is this actually possible this way?
-			return exValues;
+		if(System.currentTimeMillis() >= endSearchTime){
+			tmpHash.put(node.getState(), evaluateNode(node));
+			return false;
 		}
-		// (2) zero-sum, turn-taking, maximize us
-		else if(maximize(depth)) {
-			if(newValues[playerNumber] > exValuesInt[playerNumber])
-				exValues.put(newValues, newOcc);
+
+		if(depth >= currentDepthLimit){
+			tmpHash.put(node.getState(), evaluateNode(node));
+			return false;
 		}
-		// (3) zero-sum, turn-taking, maximize opponent
-		else if(!maximize(depth)) {
-			if(newValues[enemyNumber] > exValuesInt[enemyNumber])
-				exValues.put(newValues, newOcc);
+
+		if(node.isTerminal()){
+			values.put(node.getState(), new ValuesEntry(game.getGoalValues(node), Integer.MAX_VALUE));
+			return false;
 		}
-		
-		return exValues;
+
+		if(visitedStates.containsKey(node.getState())){
+			Integer foundDepth = visitedStates.get(node.getState());
+			if(foundDepth <= depth){
+				return false;
+			}
+		}
+
+		visitedStates.put(node.getState(), node.getDepth()-1);
+		// recursion
+
+		children.clear();
+		List<IMove[]> moves = game.getCombinedMoves(node);
+		Boolean expandFurther = false;
+		for(IMove[] move : moves){
+			IGameNode child = game.getNextNode(node, move);
+			children.add(child);
+			if(DLS(child, depth+1)){
+				expandFurther = true;
+			}			
+		}
+
+
+		propagateValue(node, children);
+
+		return expandFurther;
+
+	}
+
+	private void propagateValue(IGameNode node, ArrayList<IGameNode> children) throws InterruptedException {
+		game.regenerateNode(node);
+		if(max == 2){
+			// TODO: simplex
+		} else {
+			if(maximize(node)){
+				Integer best = null;
+				for(IGameNode child : children){
+					Integer newVal = tmpHash.get(child.getState());
+					if(best == null || newVal > best){
+						best = newVal;
+					}
+				}
+				tmpHash.put(node.getState(), best);
+			} else {
+				//minimize
+				Integer best = null;
+				for(IGameNode child : children){
+					Integer newVal = tmpHash.get(child.getState());
+					if(best == null || newVal < best){
+						best = newVal;
+					}
+				}
+				tmpHash.put(node.getState(), best);
+
+			}
+		}
+
+
+	}
+
+	private Integer evaluateNode(IGameNode node){
+		return 0;
 	}
 
 	/**
@@ -225,8 +232,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	 * @param depth
 	 * @return
 	 */
-	private boolean maximize(int depth) {
-		return (max < 2 && (max == 1 ^ depth%2 == 1));
+	private boolean maximize(IGameNode node) throws InterruptedException {
+		game.regenerateNode(node);
+		System.out.println("GUCKE HIER: "+node.getState());
+		if(game.getLegalMoves(node)[playerNumber].length > 1)
+			return true;
+		else
+			return false;
 	}
 
 	@Override
@@ -279,7 +291,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 							foundMove = false;
 							value = 49f;
 						} else {
-							int val = ((int[]) (values.get(child.getState()).keySet().toArray()[0]))[playerNumber];
+							int val = values.get(child.getState()).getGoalArray()[playerNumber];
 							value = new Float(val);
 						}
 						
@@ -293,7 +305,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 						
 						//generate the problem
 						if(foundMove == true){
-							line.add(new Float(((int[]) (values.get(child.getState()).keySet().toArray()[0]))[playerNumber]));
+							line.add(new Float(values.get(child.getState()).getGoalArray()[playerNumber]));
 						}
 
 						averageScore.get(j).add(value);
@@ -355,7 +367,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				
 				System.out.print("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
 				
-				int[] val = (int[]) (values.get(next.getState()).keySet().toArray()[0]);
+				int[] val = values.get(next.getState()).getGoalArray();
 				if(val == null) val = new int[]{-2, -2};
 				System.out.println("   Value: (["+val[0]+","+val[1]+"])");
 				childs.add(next);
@@ -370,7 +382,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		return best.getMoves()[playerNumber];
 	}
 
-	public HashMap<IGameState, HashMap<int[], Integer>> getValues(){
+	public HashMap<IGameState, ValuesEntry> getValues(){
 		return values;
 	}
 	
@@ -413,12 +425,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		}
 		
 		// since the game is over, we can now go all the way back and fiddle around with the goals
-		HashMap<int[], Integer> existingValue = values.get(currentNode.getState());
+		ValuesEntry existingValue = values.get(currentNode.getState());
 		
 		// if there is no value yet, we put it in
 		if(existingValue == null) {
-			HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
-			temp.put(value, 1);
+			ValuesEntry temp = new ValuesEntry(value, 1);
 			values.put(currentNode.getState(), temp);
 		}
 		// now we look at the parent of the goal state.
@@ -426,23 +437,17 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		while(node.getParent() != null && node.getParent().getDepth() >= start.getDepth()) {
 			game.regenerateNode(node);
 			node = node.getParent();
-			HashMap<int[], Integer> entry = values.get(node.getState());
-			int[] tempVal = null;
-			if(entry != null) {
-				tempVal = (int[]) values.get(node.getState()).keySet().toArray()[0];
-			}
-			if(entry == null || tempVal == null) { // no value in there yet, so we just set the achieved goal value
-				HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
-				temp.put(value, 1);
+			ValuesEntry entry = values.get(node.getState());
+			if(entry == null) { // no value in there yet, so we just set the achieved goal value
+				ValuesEntry temp = new ValuesEntry(value, 1);
 				values.put(node.getState(), temp);
 			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
-				Integer newCount = ((Integer) values.get(node.getState()).values().toArray()[0])+1;
+				Integer newCount = values.get(node.getState()).getOccurences()+1;
+				int[] tempVal = values.get(node.getState()).getGoalArray();
 				for(int i=0; i<value.length; i++) {
 					tempVal[i] = ((newCount-1)*tempVal[i]+value[i])/newCount;
 				}
-				HashMap<int[], Integer> temp = new HashMap<int[], Integer>();
-				temp.put(tempVal, newCount);
-				values.put(node.getState(), temp);
+				values.put(node.getState(), new ValuesEntry(tempVal, newCount));
 			}
 		}
 	}

@@ -44,20 +44,15 @@ public final class MyPlayer extends Player {
          *       does not support the full range of special characters like '+'.
          *       GameFactory.PROLOG is probably the fastest option, but you need
          *       to have Eclipse-Prolog installed (http://www.eclipse-clp.org/). */
-//        GameFactory factory = GameFactory.getInstance();
+        GameFactory factory = GameFactory.getInstance();
         RuleOptimizer ruleOptimizer = new RuleOptimizer();
-		System.out.println("ordered:\n"+ruleOptimizer.reorderGDL(msg.getGameDescription()));
-
-/*
         IGame runningGame = factory.createGame( GameFactory.PROLOGPROVER,
-                                                    ) );
-        /*
+                                                msg.getGameDescription());
 		System.out.println("MyPlayer created the game.");
 
         
         /** XXX: If you implement another strategy here is the place to instantiate it */
 		/** and if you wanna use a heuristic here is also the place to put it in */
-		/*
 
         strategy = new MainStrategy(endTime);
 
@@ -78,7 +73,6 @@ public final class MyPlayer extends Player {
         System.out.println( "MyPlayer created the match." );
         System.out.println( "MyPlayer is prepared to start the game." );
         System.out.println("stats:"+runningGame.getStatistic());
-		*/
     }
     
 	/**

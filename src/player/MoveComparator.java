@@ -17,7 +17,7 @@ import org.eclipse.palamedes.gdl.core.model.IGameState;
  * @author konrad
  */
 public class MoveComparator implements Comparator<IGameNode>{
-	private HashMap<IGameState, HashMap<int[], Integer>> values;
+	private HashMap<IGameState, ValuesEntry> values;
 	private TwoPlayerStrategy strat;
 	
 	public MoveComparator(TwoPlayerStrategy strat){
@@ -28,14 +28,14 @@ public class MoveComparator implements Comparator<IGameNode>{
 	@Override
 	public int compare(IGameNode arg0, IGameNode arg1) {
 		// arg0 is better than arg1, if the value in the hash is either better, or more reliable.
-		HashMap<int[], Integer> hash1 = values.get(arg0.getState());
-		HashMap<int[], Integer> hash2 = values.get(arg1.getState());
+		ValuesEntry entry1 = values.get(arg0.getState());
+		ValuesEntry entry2 = values.get(arg1.getState());
 		
-		int[] val1 = (hash1 != null) ? (int[]) hash1.keySet().toArray()[0] : new int[]{49, 49};
-		int[] val2 = (hash2 != null) ? (int[]) hash2.keySet().toArray()[0] : new int[]{49, 49};
+		int[] val1 = (entry1 != null) ? (int[]) entry1.getGoalArray() : new int[]{49, 49};
+		int[] val2 = (entry2 != null) ? (int[]) entry2.getGoalArray() : new int[]{49, 49};
 		
-		Integer rel1 = (hash1 != null) ? (Integer) hash1.values().toArray()[0] : 1;
-		Integer rel2 = (hash2 != null) ? (Integer) hash2.values().toArray()[0] : 1;
+		Integer rel1 = (entry1 != null) ? entry1.getOccurences() : 1;
+		Integer rel2 = (entry2 != null) ? entry2.getOccurences() : 1;
 		
 		int player = strat.getPlayerNumber();
 		

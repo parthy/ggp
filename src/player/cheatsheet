@@ -1,0 +1,73 @@
+		if(System.currentTimeMillis() < endSearchTime) {
+				// get next element from queue
+				nodesVisited++;
+
+				// check if we get a value for the values hash
+				// this updates the value in the hash and sets the number of occurrences to MAX_VALUE.
+				// if there are simulation values for this node, they will be overwritten.
+				if(currentNode.isTerminal()) {
+					int[] value = game.getGoalValues(currentNode);
+
+					HashMap<int[], Integer> valueH = new HashMap<int[], Integer>();
+					valueH.put(value, Integer.MAX_VALUE);
+
+					values.put(currentNode.getState(), valueH);
+
+					continue;
+				}
+
+				// leave tracing infos
+				visitedStates.put(currentNode.getState(), currentNode.getDepth()-1);
+
+				children.clear();
+
+				// find out possible successors
+				// only if we havent maxed it yet
+				HashMap<int[], Integer> tempValues = values.get(currentNode.getState());
+				Integer occ = null;
+				if(tempValues != null){
+					occ = (Integer) tempValues.values().toArray()[0];
+				}
+
+				if(currentNode.getDepth() < currentDepthLimit) {
+
+					// fetch existing value in hash. this is gonna be updated now.
+
+					// we now walk through all moves and calculate the successor nodes
+					// while doing so, we automatically check for existence of values
+					List<IMove[]> allMoves = game.getCombinedMoves(currentNode);
+//					List<IGameNode> children = new LinkedList<IGameNode>();
+					Boolean doUpdate = false;
+					for(IMove[] move : allMoves){
+						children.add(game.getNextNode(currentNode, move));
+					}
+
+					//maybe order children (killer)
+
+					updateValues(currentNode, children);
+
+					// if we could not calculate all successor values, we add the current node again to the queue
+					// otherwise, we write the now completely calculated values in the hash
+					children.add(currentNode);
+
+
+					// and finally add all newly expanded nodes to the queue, if the limit allows it
+
+				} else {
+
+
+					if(game.getCombinedMoves(currentNode).size() > 0) {
+						flag = true;
+					}
+				}
+			}
+			if(System.currentTimeMillis() >= endSearchTime){
+				System.out.println("stop search because of time, visited Nodes: "+nodesVisited);
+				return false;
+			}
+			currentDepthLimit++;
+		}
+		System.out.println("Search finished, values: "+values.size());
+		System.out.println("Expanded Nodes: "+nodesVisited);
+		return true;
+	
