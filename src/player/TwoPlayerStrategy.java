@@ -33,9 +33,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	 *  int_max are terminal goal values or propagated from them
 	 */
 	private HashMap<IGameState, ValuesEntry> values = new HashMap<IGameState, ValuesEntry>();
-	
-	private ArrayList<IGameNode> children = new ArrayList<IGameNode>();
-	
+		
 	private int currentDepthLimit;
 	private int nodesVisited;
 	private int max=1;
@@ -82,12 +80,12 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
 			// for about half the prep time, we simulate the game tree to get some monte carlo heuristics
 			// additionally, we refine our understanding of the game (zero-sum, turntaking, ...)
-			while(System.currentTimeMillis() < endTime - match.getStartTime()*500) {
+/*			while(System.currentTimeMillis() < endTime - match.getStartTime()*500) {
 				simulateGame(root);
 			}
 			System.out.println("While simulating, I got "+values.size()+" values.");
 			System.out.println("Max is set to: "+max+", we are playerIndex "+playerNumber+", thus the opponent: "+((playerNumber+1)%2));
-			
+*/
 			// with the gained knowledge we start our search routine
 			searchFinished = IDS(endTime, root);
 			
@@ -103,31 +101,33 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	 */
 	public boolean IDS(long endSearchTime, IGameNode start) throws InterruptedException {
 		this.endSearchTime = endSearchTime;
+		Boolean finishedSearch = false;
 		
 		tmpHash = new HashMap<IGameState, Integer>();
 
-		boolean canSearchDeeper = true;
-		while(canSearchDeeper || System.currentTimeMillis() <= endSearchTime) {
+		try{
+			boolean canSearchDeeper = true;
+			while(canSearchDeeper) {
+
+				System.out.println("currentDepth "+currentDepthLimit);
+				System.out.println("Now: "+System.currentTimeMillis()+", endTime: "+endSearchTime);
+				System.out.println("Visited: "+nodesVisited);
+
+				visitedStates.clear();
+				canSearchDeeper = DLS(start, 0);
+				currentDepthLimit++;
+			}
 			
-			System.out.println("currentDepth"+currentDepthLimit);
-			System.out.println("Now: "+System.currentTimeMillis()+", endTime: "+endSearchTime);
-			System.out.println("Visited: "+nodesVisited);
-			
-			visitedStates.clear();
-			canSearchDeeper = DLS(start, 0);
-			currentDepthLimit++;
+			finishedSearch = true;
+		}catch(InterruptedException e){
+			System.out.println("couldnt finish search because of time");
 		}
 
-		ValuesEntry peter = values.get(start);
-		Integer occ = null;
-		if(peter != null){
-			occ = peter.getOccurences();
-		}
-		if(occ != null && occ == Integer.MAX_VALUE){
-			return true;
-		} else {
-			return false;
-		}
+		System.out.println("stopped search and visited "+nodesVisited+" nodes.");
+		Integer peter = tmpHash.get(start.getState());
+		System.out.println("found something "+peter);
+
+		return finishedSearch;
 	}
 
 	/**
@@ -150,23 +150,32 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		nodesVisited++;
 		
 		if(System.currentTimeMillis() >= endSearchTime){
-			tmpHash.put(node.getState(), evaluateNode(node));
-			return false;
+//			tmpHash.put(node.getState(), evaluateNode(node));
+			// we dont need to evaluate the state, because good values for the decision
+			// should be made in the last iteration
+			// if we cant even make the iteration with depthlimit 1 we just suck
+			throw new InterruptedException("interrupted by time");
 		}
 
 		if(depth >= currentDepthLimit){
+			// reached the fringe -> ask for a evaluation
 			tmpHash.put(node.getState(), evaluateNode(node));
-			return false;
+			// we can expand in the next iteration
+			return true;
 		}
 
 		if(node.isTerminal()){
+			// can also save in constant hash
 			values.put(node.getState(), new ValuesEntry(game.getGoalValues(node), Integer.MAX_VALUE));
+			tmpHash.put(node.getState(), game.getGoalValues(node)[playerNumber]);
 			return false;
 		}
 
 		if(visitedStates.containsKey(node.getState())){
 			Integer foundDepth = visitedStates.get(node.getState());
 			if(foundDepth <= depth){
+				// have already seen this and therefor evaluated it
+				// there cant be the same state twice on one path
 				return false;
 			}
 		}
@@ -174,7 +183,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		visitedStates.put(node.getState(), node.getDepth()-1);
 		// recursion
 
-		children.clear();
+		// do not work with global variables in a recursive function
+		List<IGameNode> children = new LinkedList<IGameNode>();
 		List<IMove[]> moves = game.getCombinedMoves(node);
 		Boolean expandFurther = false;
 		for(IMove[] move : moves){
@@ -186,13 +196,14 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		}
 
 
-		propagateValue(node, children);
+		calculateValue(node, children);
 
 		return expandFurther;
 
 	}
 
-	private void propagateValue(IGameNode node, ArrayList<IGameNode> children) throws InterruptedException {
+	private void calculateValue(IGameNode node, List<IGameNode> children) throws InterruptedException {
+
 		game.regenerateNode(node);
 		if(max == 2){
 			// TODO: simplex
@@ -200,31 +211,39 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			if(maximize(node)){
 				Integer best = null;
 				for(IGameNode child : children){
+					game.regenerateNode(child);
 					Integer newVal = tmpHash.get(child.getState());
 					if(best == null || newVal > best){
 						best = newVal;
 					}
 				}
+				game.regenerateNode(node);
 				tmpHash.put(node.getState(), best);
 			} else {
 				//minimize
 				Integer best = null;
 				for(IGameNode child : children){
+					game.regenerateNode(child);
 					Integer newVal = tmpHash.get(child.getState());
 					if(best == null || newVal < best){
 						best = newVal;
 					}
 				}
+				game.regenerateNode(node);
 				tmpHash.put(node.getState(), best);
-
 			}
 		}
-
-
 	}
 
-	private Integer evaluateNode(IGameNode node){
-		return 0;
+	public Integer evaluateNode(IGameNode node){
+		Integer val1 = tmpHash.get(node.getState());
+		if(val1 != null)
+			return val1;
+		ValuesEntry val = values.get(node.getState());
+		if(val != null)
+			return val.getGoalArray()[playerNumber];
+		else
+			return 0;
 	}
 
 	/**
@@ -234,7 +253,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	 */
 	private boolean maximize(IGameNode node) throws InterruptedException {
 		game.regenerateNode(node);
-		System.out.println("GUCKE HIER: "+node.getState());
+	//	System.out.println("GUCKE HIER: "+node.getState());
 		if(game.getLegalMoves(node)[playerNumber].length > 1)
 			return true;
 		else
@@ -252,9 +271,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				while(System.currentTimeMillis() < endTime - match.getPlayTime()*600)
 					simulateGame(current);
 				// search a bit more, from the node arg0.
-				currentDepthLimit = current.getDepth()+1;
+				// nope -> try to search the same depth like we did in the last search
+				// but this time one from one step deeper, so ...
+				currentDepthLimit++;
 				
 				IDS(endTime, current);
+			} else {
+				System.out.println("=> searched the whole game.");
 			}
 			//if max = 2
 			Boolean foundMove = true;
@@ -287,12 +310,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 						// if one child has no value
 						// -> let the normal getMove decide
 						Float value;
-						if(values.get(child.getState()) == null){
+						if(tmpHash.get(child.getState()) == null){
 							foundMove = false;
 							value = 49f;
 						} else {
-							int val = values.get(child.getState()).getGoalArray()[playerNumber];
-							value = new Float(val);
+							value = new Float(tmpHash.get(child.getState()));
 						}
 						
 						/* This doesn't seem to be necessary anymore.
@@ -305,7 +327,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 						
 						//generate the problem
 						if(foundMove == true){
-							line.add(new Float(values.get(child.getState()).getGoalArray()[playerNumber]));
+							line.add(new Float(tmpHash.get(child.getState())));
 						}
 
 						averageScore.get(j).add(value);
@@ -359,17 +381,16 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 					return move;
 				}
 			}
-			// max != 2 or (max==2) wasnt able to calculate a move, hrhrhr
+			// max != 2 or (max==2) && wasnt able to calculate a move, hrhrhr
+			System.out.println("best we can get: "+evaluateNode(current));
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this));
 			for(IMove[] combMove : game.getCombinedMoves(current)) {
 				IGameNode next = game.getNextNode(current, combMove);
 				game.regenerateNode(next);
 				
-				System.out.print("Possible move: "+combMove[game.getRoleIndex(match.getRole())]);
+				System.out.print("Possible move: "+combMove[playerNumber]);
 				
-				int[] val = values.get(next.getState()).getGoalArray();
-				if(val == null) val = new int[]{-2, -2};
-				System.out.println("   Value: (["+val[0]+","+val[1]+"])");
+				System.out.println("   Value: ("+tmpHash.get(next.getState())+")");
 				childs.add(next);
 			}
 			best = childs.peek();
@@ -382,9 +403,15 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		return best.getMoves()[playerNumber];
 	}
 
+	/**
+	 * dont use this anymore
+	 * instead use the evaluate function
+	 * @return
 	public HashMap<IGameState, ValuesEntry> getValues(){
 		return values;
 	}
+	 */
+
 	
 	public int getPlayerNumber() {
 		return playerNumber;

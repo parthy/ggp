@@ -17,18 +17,16 @@ import org.eclipse.palamedes.gdl.core.model.IGameState;
  * @author konrad
  */
 public class MoveComparator implements Comparator<IGameNode>{
-	private HashMap<IGameState, ValuesEntry> values;
 	private TwoPlayerStrategy strat;
 	
 	public MoveComparator(TwoPlayerStrategy strat){
 		this.strat = strat;
-		this.values = strat.getValues();
 	}
 
 	@Override
 	public int compare(IGameNode arg0, IGameNode arg1) {
 		// arg0 is better than arg1, if the value in the hash is either better, or more reliable.
-		ValuesEntry entry1 = values.get(arg0.getState());
+/*		ValuesEntry entry1 = values.get(arg0.getState());
 		ValuesEntry entry2 = values.get(arg1.getState());
 		
 		int[] val1 = (entry1 != null) ? (int[]) entry1.getGoalArray() : new int[]{49, 49};
@@ -51,6 +49,15 @@ public class MoveComparator implements Comparator<IGameNode>{
 		} else {
 			return 1;
 		}
+*/
+	Integer val0 = strat.evaluateNode(arg0);
+	Integer val1 = strat.evaluateNode(arg1);
+
+	// if it cant be evaluated set it to 49
+	val0 = (val0 == null) ? 49 : val0;
+	val1 = (val1 == null) ? 49 : val1;
+
+	return -val0.compareTo(val1);
 	}
 
 	
