@@ -27,7 +27,7 @@ public class RuleOptimizer {
     		m = p.matcher(rulesString);
     	}
     	//System.out.println("--- OTHER FACTS ---");
-    	p = Pattern.compile("(\\([^\\(\\?\\)]*\\)) ");
+    	p = Pattern.compile("^[ ]*(\\([^\\(\\?\\)]*\\)) ");
     	m = p.matcher(rulesString);
     	while(m.find()) {
     		//System.out.println(rulesString.substring(m.start(1), m.end(1))+", "+m.start(1)+":"+m.end(1));
@@ -120,7 +120,6 @@ public class RuleOptimizer {
 	    			ArrayList<String> neededVars = getVarsFromLiteral(literal);
 	    			
 	    			// if we know all needed vars or we have to deal with true or does, we move it.
-					System.out.println(literal+": "+literal.matches(".*(true|does).*")+"\n\n");
 	    			if((knownVars.containsAll(neededVars) && body.indexOf(literal) > toInsertAfter) || (toInsertAfter == -1 && literal.matches(".*(true|does).*"))) {
 	    				collector.add(literal);
 	    				it.remove();

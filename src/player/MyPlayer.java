@@ -47,7 +47,7 @@ public final class MyPlayer extends Player {
         GameFactory factory = GameFactory.getInstance();
         RuleOptimizer ruleOptimizer = new RuleOptimizer();
         IGame runningGame = factory.createGame( GameFactory.PROLOGPROVER,
-                                                msg.getGameDescription());
+                                                ruleOptimizer.reorderGDL(msg.getGameDescription()));
 		System.out.println("MyPlayer created the game.");
 
         
