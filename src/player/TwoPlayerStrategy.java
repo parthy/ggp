@@ -114,7 +114,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				System.out.println("Visited: "+nodesVisited);
 
 				visitedStates.clear();
-				canSearchDeeper = DLS(start, 0);
+				canSearchDeeper = DLS(start, 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
 				currentDepthLimit++;
 			}
 			
@@ -145,7 +145,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	 * @param depth < depthLimit
 	 * @return true if it could expand further but depthLimit stopped it
 	 */
-	private Boolean DLS(IGameNode node, int depth) throws InterruptedException{
+	private Boolean DLS(IGameNode node, int depth, Integer alpha, Integer beta) throws InterruptedException{
 		game.regenerateNode(node);
 		nodesVisited++;
 		
@@ -190,49 +190,50 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		for(IMove[] move : moves){
 			IGameNode child = game.getNextNode(node, move);
 			children.add(child);
-			if(DLS(child, depth+1)){
+			if(DLS(child, depth+1, alpha, beta)){
 				expandFurther = true;
-			}			
+			}
+			// MiniMax
+			game.regenerateNode(node);
+			game.regenerateNode(child);
+			Integer val = tmpHash.get(child.getState());
+			// contraint: (val != null) because of DLS(child, ... )
+			if(val == null)
+				System.out.println("WHAT THE FUCK");
+
+			// alpha: guaranteed value for max player
+			//			-> the higher the better for max, worse for min
+			//			-> start at positive INFINITY
+			// berta: guarantedd value for min player
+			//			-> the lower the better for min, worse for max
+			//			-> start at negative INFINITY
+
+			if(maximize(node)){
+				if(val >= beta){
+					// val is greater than what the minimizing player gets in another branch
+					// -> min-player will not go into this branch
+					tmpHash.put(node.getState(), beta);
+					break;
+				}
+				if(val > alpha){
+					alpha = val;
+				}
+				tmpHash.put(node.getState(), alpha);
+			} else {
+				//minimize
+				if(val <= alpha){
+					tmpHash.put(node.getState(), alpha);
+					break;
+				}
+				if(val < beta){
+					beta = val;
+				}
+				tmpHash.put(node.getState(), beta);
+			}
 		}
-
-
-		calculateValue(node, children);
 
 		return expandFurther;
 
-	}
-
-	private void calculateValue(IGameNode node, List<IGameNode> children) throws InterruptedException {
-
-		game.regenerateNode(node);
-		if(max == 2){
-			// TODO: simplex
-		} else {
-			if(maximize(node)){
-				Integer best = null;
-				for(IGameNode child : children){
-					game.regenerateNode(child);
-					Integer newVal = tmpHash.get(child.getState());
-					if(best == null || newVal > best){
-						best = newVal;
-					}
-				}
-				game.regenerateNode(node);
-				tmpHash.put(node.getState(), best);
-			} else {
-				//minimize
-				Integer best = null;
-				for(IGameNode child : children){
-					game.regenerateNode(child);
-					Integer newVal = tmpHash.get(child.getState());
-					if(best == null || newVal < best){
-						best = newVal;
-					}
-				}
-				game.regenerateNode(node);
-				tmpHash.put(node.getState(), best);
-			}
-		}
 	}
 
 	public Integer evaluateNode(IGameNode node){
