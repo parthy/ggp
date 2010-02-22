@@ -6,12 +6,17 @@ package player;
 
 //package src.de.tudresden.inf.ggp.basicplayer;
 
-import java.util.ArrayList;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
@@ -483,6 +488,30 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	 * seemingly our destroy function
 	 */
 	public void dispose() {
+		// new functionality: transform hash and serialize it
+		HashMap<String, Integer> tmpHashNew = new HashMap<String, Integer>();
+		HashMap<String, ValuesEntry> valuesHashNew = new HashMap<String, ValuesEntry>();
+		
+		for(Entry<IGameState, Integer> entry : tmpHash.entrySet()) {
+			tmpHashNew.put(entry.getKey().toString(), entry.getValue());
+		}
+		
+		for(Entry<IGameState, ValuesEntry> entry : values.entrySet()) {
+			valuesHashNew.put(entry.getKey().toString(), entry.getValue());
+		}
+		
+		try {
+			MD5Hash hash = new MD5Hash(game.getSourceGDL());
+			FileOutputStream out = new FileOutputStream(hash.toString());
+			
+			ObjectOutputStream oos = new ObjectOutputStream(out);
+			
+			oos.writeObject(values);
+			oos.close();
+		} catch (IOException ex) {
+			Logger.getLogger(TwoPlayerStrategy.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		
 		this.queue.clear();
 		this.queue = null;
 		this.values.clear();
