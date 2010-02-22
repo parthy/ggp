@@ -1,0 +1,883 @@
+; J a v a  S t r i k e
+;  discrete variant without element of chance
+;
+; @orginal www.eden-nova.de/index.php?page=JavaStrike
+; @author Thomas "Eden_06" Kuehn
+; @version 1.0.2
+
+;;; roles ;;;
+
+(role red)
+(role blue)
+
+;;; initial configuration ;;;
+
+;cell ?field ?unit ?color
+; a cell in the game grid
+;@parameter
+; ?field : id of the cell {0-32}
+; ?unit  : unit which is currently stationed here {empty,scout,intercepter,defender,pioneer,base}
+; ?color : indicates to which player this unit belongs {none,red,blue} 
+;
+; game grid
+;        0  1  2  3  4
+;     5  6  7  8  9 10 11  
+; 12 13 14 15 16 17 18 19 20  
+;    21 22 23 24 25 26 27
+;       28 29 30 31 32
+;
+(init (cell 0 empty none))
+(init (cell 1 empty none))
+(init (cell 2 empty none))
+(init (cell 3 empty none))
+(init (cell 4 empty none))
+(init (cell 5 empty none))
+(init (cell 6 empty none))
+(init (cell 7 empty none))
+(init (cell 8 empty none))
+(init (cell 9 empty none))
+(init (cell 10 empty none))
+(init (cell 11 empty none))
+(init (cell 12 base red))
+(init (cell 13 empty none))
+(init (cell 14 empty none))
+(init (cell 15 empty none))
+(init (cell 16 empty none))
+(init (cell 17 empty none))
+(init (cell 18 empty none))
+(init (cell 19 empty none))
+(init (cell 20 base blue))
+(init (cell 21 empty none))
+(init (cell 22 empty none))
+(init (cell 23 empty none))
+(init (cell 24 empty none))
+(init (cell 25 empty none))
+(init (cell 26 empty none))
+(init (cell 27 empty none))
+(init (cell 28 empty none))
+(init (cell 29 empty none))
+(init (cell 30 empty none))
+(init (cell 31 empty none))
+(init (cell 32 empty none))
+
+;stock ?player ?unit ?number
+; number of units available for each player
+;@parameter
+; ?player : owner of the units {red,blue} 
+; ?unit   : type of unit {scout,interceptor,sniper,pioneer}
+; ?number : current number of units in stock{0-5}
+(init (stock red scout 5))
+(init (stock red interceptor 5))
+(init (stock red defender 5))
+(init (stock red sniper 5))
+(init (stock red pioneer 5))
+(init (stock blue scout 5))
+(init (stock blue interceptor 5))
+(init (stock blue defender 5))
+(init (stock blue sniper 5))
+(init (stock blue pioneer 5))
+
+; set start configuration
+
+(init (actionpoints 3))
+(init (control red))
+(init (round s1))
+
+;;; helping relations ;;;
+
+;smoke ?x
+;  special cells
+;@parameter
+; ?x index of smoked cells {0-32}
+(smoke 1)
+(smoke 2)
+(smoke 3)
+(smoke 8)
+(smoke 29)
+(smoke 30)
+(smoke 31)
+(smoke 24)
+
+;entry ?color ?x
+; entry points for new units
+;@parameter
+; ?color color of a player {red,blue}
+; ?x cell index where new units of this player can be placed {0-32}
+(entry red 5)
+(entry red 13)
+(entry red 21)
+(entry blue 11)
+(entry blue 19)
+(entry blue 27)
+
+;other ?player ?other
+; relation to distinguish and determin the opposit player
+;@parameter
+; ?player a player role {red,blue}
+; ?other  the opposit player role {red,blue}
+(other red blue)
+(other blue red)
+
+;path ?a ?b
+; describs a way from cell ?a to ?b
+;@parameter
+; ?a index of the from cell
+; ?b index of the to cell
+;
+;        0  1  2  3  4
+;     5  6  7  8  9 10 11  
+; 12 13 14 15 16 17 18 19 20  
+;    21 22 23 24 25 26 27
+;       28 29 30 31 32
+;
+;row 1
+(path 0 1)
+(path 0 6)
+(path 1 0)
+(path 1 2)
+(path 1 7)
+(path 2 1)
+(path 2 8)
+(path 2 3)
+(path 3 2)
+(path 3 9)
+(path 3 4)
+(path 4 3)
+(path 4 10)
+;row 2
+(path 5 12)
+(path 5 13)
+(path 5 6)
+(path 6 5)
+(path 6 0)
+(path 6 14)
+(path 6 7)
+(path 7 6)
+(path 7 1)
+(path 7 15)
+(path 7 8)
+(path 8 7)
+(path 8 2)
+(path 8 16)
+(path 8 9)
+(path 9 8)
+(path 9 3)
+(path 9 17)
+(path 9 10)
+(path 10 9)
+(path 10 4)
+(path 10 18)
+(path 10 11)
+(path 11 10)
+(path 11 19)
+(path 11 20)
+;row 3
+(path 13 12)
+(path 13 5)
+(path 13 21)
+(path 13 14)
+(path 14 13)
+(path 14 6)
+(path 14 22)
+(path 14 15)
+(path 15 14)
+(path 15 7)
+(path 15 23)
+(path 15 16)
+(path 16 15)
+(path 16 8)
+(path 16 24)
+(path 16 17)
+(path 17 16)
+(path 17 9)
+(path 17 25)
+(path 17 18)
+(path 18 17)
+(path 18 10)
+(path 18 26)
+(path 18 19)
+(path 19 18)
+(path 19 11)
+(path 19 27)
+(path 19 20)
+;row 4
+(path 21 12)
+(path 21 13)
+(path 21 22)
+(path 22 21)
+(path 22 28)
+(path 22 14)
+(path 22 23)
+(path 23 22)
+(path 23 29)
+(path 23 15)
+(path 23 24)
+(path 24 23)
+(path 24 30)
+(path 24 16)
+(path 24 25)
+(path 25 24)
+(path 25 31)
+(path 25 17)
+(path 25 26)
+(path 26 25)
+(path 26 32)
+(path 26 18)
+(path 26 27)
+(path 27 26)
+(path 27 19)
+(path 27 20)
+;row 5
+(path 28 22)
+(path 28 29)
+(path 29 28)
+(path 29 23)
+(path 29 30)
+(path 30 29)
+(path 30 24)
+(path 30 31)
+(path 31 30)
+(path 31 25)
+(path 31 32)
+(path 32 31)
+(path 32 26)
+
+;pred ?x ?y
+; the predeccesor relation over the numbers from 0 to 5
+;@parameter
+; ?x a number {0-5}
+; ?y the predeccessor of the number {0-4} 
+(pred 0 0)
+(pred 1 0)
+(pred 2 1)
+(pred 3 2)
+(pred 4 3)
+(pred 5 4) 
+
+;greater ?x ?y
+; the greater relation over the numbers from 0 to 5
+;@parameter
+;  ?x a number {0-5}
+;  ?y a number which is graeter then the first number {0-4}
+(<= (greater ?x ?y)
+    (distinct ?x ?y)
+    (pred ?x ?y) )
+(<= (greater ?x ?y)
+    (distinct ?x ?y)
+    (pred ?x ?a)
+    (greater ?a ?y) )
+
+;victory ?fieldtype ?attacker ?defender ?result
+; relation which indicates the result of a fights
+;@parameter
+; ?fieldtype : type of the battleground {normal, spezial, visible}
+; ?attacker  : attacking unit {scout,intercepter,defender,sniper,pioneer}
+; ?defender  : attacked unit {scout,intercepter,defender,sniper,pioneer}
+; ?result    : term which indicates if the attacker succeded {win,lose}
+
+; scout is attacking
+(victory normal scout scout win) ; should be random
+(victory normal scout interceptor win) ; should be random
+(victory normal scout defender win) ; should be random
+(victory normal scout sniper win)
+(victory normal scout pioneer lose)
+(victory normal scout base lose)
+; interceptor is attacking
+(victory normal interceptor scout win)
+(victory normal interceptor interceptor win) 
+(victory normal interceptor defender lose) ; should be random
+(victory normal interceptor sniper lose) ; should be random
+(victory normal interceptor pioneer win)
+(victory normal interceptor base lose)
+; defender is attacking
+(victory normal defender scout win) ; should be random
+(victory normal defender interceptor win) ; should be random
+(victory normal defender defender win) ; should be random
+(victory normal defender sniper lose)
+(victory normal defender pioneer lose)
+(victory normal defender base lose)
+; sniper is attacking
+(victory normal sniper scout win)
+(victory normal sniper interceptor win)
+(victory normal sniper defender win)
+(victory normal sniper sniper win) ; should be random
+(victory normal sniper pioneer win) ; should be random
+(victory normal sniper base lose)
+; pioneer is attacking
+(victory normal pioneer scout lose)
+(victory normal pioneer interceptor lose)
+(victory normal pioneer defender lose)
+(victory normal pioneer sniper lose)
+(victory normal pioneer pioneer lose)
+(victory normal pioneer base win)
+
+; if fight is on special cells
+; scout is attacking
+(victory special scout scout lose)
+(victory special scout interceptor win) ; should be random
+(victory special scout defender lose)
+(victory special scout sniper win)
+(victory special scout pioneer lose)
+(victory special scout base lose)
+; interceptor is attacking
+(victory special interceptor scout win) ; should be random
+(victory special interceptor interceptor win) ; should be random
+(victory special interceptor defender lose)
+(victory special interceptor sniper lose) 
+(victory special interceptor pioneer win) ; should be random
+(victory special interceptor base lose)
+; defender is attacking
+(victory special defender scout lose) 
+(victory special defender interceptor lose) ; should be random
+(victory special defender defender lose) 
+(victory special defender sniper lose)
+(victory special defender pioneer lose)
+(victory special defender base lose)
+; sniper is attacking
+(victory special sniper scout win) ; should be random
+(victory special sniper interceptor win)  ; should be random
+(victory special sniper defender win) ; should be random
+(victory special sniper sniper lose) 
+(victory special sniper pioneer lose)
+(victory special sniper base lose)
+; pioneer is attacking
+(<= (victory special pioneer ?vunit ?result)
+    (victory normal pioneer ?vunit ?result))
+; if fight is against visible sniper
+(victory visible scout sniper win)
+(victory visible interceptor sniper win) 
+(victory visible defender sniper win)
+(victory visible sniper sniper win) 
+(victory visible pioneer sniper lose)
+
+;nextround ?x ?y
+; the successor relation over the round count
+;@parameter
+; ?x a round number {s1-s200}
+; ?y the successor of this number {s2-s201}
+(nextround s1 s2)
+(nextround s2 s3)
+(nextround s3 s4)
+(nextround s4 s5)
+(nextround s5 s6)
+(nextround s6 s7)
+(nextround s7 s8)
+(nextround s8 s9)
+(nextround s9 s10)
+(nextround s10 s11)
+(nextround s11 s12)
+(nextround s12 s13)
+(nextround s13 s14)
+(nextround s14 s15)
+(nextround s15 s16)
+(nextround s16 s17)
+(nextround s17 s18)
+(nextround s18 s19)
+(nextround s19 s20)
+(nextround s20 s21)
+(nextround s21 s22)
+(nextround s22 s23)
+(nextround s23 s24)
+(nextround s24 s25)
+(nextround s25 s26)
+(nextround s26 s27)
+(nextround s27 s28)
+(nextround s28 s29)
+(nextround s29 s30)
+(nextround s30 s31)
+(nextround s31 s32)
+(nextround s32 s33)
+(nextround s33 s34)
+(nextround s34 s35)
+(nextround s35 s36)
+(nextround s36 s37)
+(nextround s37 s38)
+(nextround s38 s39)
+(nextround s39 s40)
+(nextround s40 s41)
+(nextround s41 s42)
+(nextround s42 s43)
+(nextround s43 s44)
+(nextround s44 s45)
+(nextround s45 s46)
+(nextround s46 s47)
+(nextround s47 s48)
+(nextround s48 s49)
+(nextround s49 s50)
+(nextround s50 s51)
+(nextround s51 s52)
+(nextround s52 s53)
+(nextround s53 s54)
+(nextround s54 s55)
+(nextround s55 s56)
+(nextround s56 s57)
+(nextround s57 s58)
+(nextround s58 s59)
+(nextround s59 s60)
+(nextround s60 s61)
+(nextround s61 s62)
+(nextround s62 s63)
+(nextround s63 s64)
+(nextround s64 s65)
+(nextround s65 s66)
+(nextround s66 s67)
+(nextround s67 s68)
+(nextround s68 s69)
+(nextround s69 s70)
+(nextround s70 s71)
+(nextround s71 s72)
+(nextround s72 s73)
+(nextround s73 s74)
+(nextround s74 s75)
+(nextround s75 s76)
+(nextround s76 s77)
+(nextround s77 s78)
+(nextround s78 s79)
+(nextround s79 s80)
+(nextround s80 s81)
+(nextround s81 s82)
+(nextround s82 s83)
+(nextround s83 s84)
+(nextround s84 s85)
+(nextround s85 s86)
+(nextround s86 s87)
+(nextround s87 s88)
+(nextround s88 s89)
+(nextround s89 s90)
+(nextround s90 s91)
+(nextround s91 s92)
+(nextround s92 s93)
+(nextround s93 s94)
+(nextround s94 s95)
+(nextround s95 s96)
+(nextround s96 s97)
+(nextround s97 s98)
+(nextround s98 s99)
+(nextround s99 s100)
+(nextround s100 s101)
+(nextround s101 s102)
+(nextround s102 s103)
+(nextround s103 s104)
+(nextround s104 s105)
+(nextround s105 s106)
+(nextround s106 s107)
+(nextround s107 s108)
+(nextround s108 s109)
+(nextround s109 s110)
+(nextround s110 s111)
+(nextround s111 s112)
+(nextround s112 s113)
+(nextround s113 s114)
+(nextround s114 s115)
+(nextround s115 s116)
+(nextround s116 s117)
+(nextround s117 s118)
+(nextround s118 s119)
+(nextround s119 s120)
+(nextround s120 s121)
+(nextround s121 s122)
+(nextround s122 s123)
+(nextround s123 s124)
+(nextround s124 s125)
+(nextround s125 s126)
+(nextround s126 s127)
+(nextround s127 s128)
+(nextround s128 s129)
+(nextround s129 s130)
+(nextround s130 s131)
+(nextround s131 s132)
+(nextround s132 s133)
+(nextround s133 s134)
+(nextround s134 s135)
+(nextround s135 s136)
+(nextround s136 s137)
+(nextround s137 s138)
+(nextround s138 s139)
+(nextround s139 s140)
+(nextround s140 s141)
+(nextround s141 s142)
+(nextround s142 s143)
+(nextround s143 s144)
+(nextround s144 s145)
+(nextround s145 s146)
+(nextround s146 s147)
+(nextround s147 s148)
+(nextround s148 s149)
+(nextround s149 s150)
+(nextround s150 s151)
+(nextround s151 s152)
+(nextround s152 s153)
+(nextround s153 s154)
+(nextround s154 s155)
+(nextround s155 s156)
+(nextround s156 s157)
+(nextround s157 s158)
+(nextround s158 s159)
+(nextround s159 s160)
+(nextround s160 s161)
+(nextround s161 s162)
+(nextround s162 s163)
+(nextround s163 s164)
+(nextround s164 s165)
+(nextround s165 s166)
+(nextround s166 s167)
+(nextround s167 s168)
+(nextround s168 s169)
+(nextround s169 s170)
+(nextround s170 s171)
+(nextround s171 s172)
+(nextround s172 s173)
+(nextround s173 s174)
+(nextround s174 s175)
+(nextround s175 s176)
+(nextround s176 s177)
+(nextround s177 s178)
+(nextround s178 s179)
+(nextround s179 s180)
+(nextround s180 s181)
+(nextround s181 s182)
+(nextround s182 s183)
+(nextround s183 s184)
+(nextround s184 s185)
+(nextround s185 s186)
+(nextround s186 s187)
+(nextround s187 s188)
+(nextround s188 s189)
+(nextround s189 s190)
+(nextround s190 s191)
+(nextround s191 s192)
+(nextround s192 s193)
+(nextround s193 s194)
+(nextround s194 s195)
+(nextround s195 s196)
+(nextround s196 s197)
+(nextround s197 s198)
+(nextround s198 s199)
+(nextround s199 s200)
+(nextround s200 s201)
+
+;;; legal moves ;;;
+
+; noop if the other player has controll
+(<= (legal ?player noop)
+    (true (control ?other))
+    (other ?player ?other))
+    
+; move(x,y)
+(<= (legal ?player (move ?x ?y))
+    (true (control ?player))
+    (path ?x ?y)
+    (distinct ?x ?y)
+    (true (actionpoints ?ap))
+    (greater ?ap 0)
+    (true (cell ?y empty none))
+    (true (cell ?x ?type ?player))
+    (distinct ?type base)) ; may can be removed
+
+; attack(x,y)
+(<= (legal ?player (attack ?x ?y))
+    (true (control ?player))
+    (path ?x ?y)
+    (distinct ?x ?y)
+    (true (actionpoints ?ap))
+    (greater ?ap 1)
+    (other ?player ?other)
+    (true (cell ?x ?ang ?player))
+    (true (cell ?y ?vrt ?other)) )
+
+; build(x,t)
+(<= (legal ?player (build ?x ?type))
+    (true (control ?player))
+    (true (actionpoints 3))
+    (entry ?player ?x)
+    (true (cell ?x empty none))
+    (true (stock ?player ?type ?count))
+    (greater ?count 0))
+
+; skip (if you at least did a move)
+(<= (legal ?player skip)
+    (true (control ?player))
+    (true (actionpoints ?ap))
+    (distinct ?ap 3))
+    
+;;; spezial game dependent relations ;;;
+
+; spotted ?field
+;  tells if a field containing a sniper is visible by a scout 
+; parameter
+;  ?field : the field containing a sniper
+(<= (spotted ?x)
+    (true (cell ?x sniper ?player))
+    (or (true (cell ?y scout ?other))
+        (true (cell ?z scout ?other))) 
+    (path ?x ?y)
+    (path ?y ?z)
+    (other ?player ?other) )
+
+(<= (canMove ?player)
+    (role ?player)
+    (or (legal ?player (move ?a ?b)) 
+        (legal ?player (attack ?c ?d))
+        (legal ?player (build ?e ?f))
+        (legal ?player skip)
+        (legal ?player noop)) )
+    
+;;; next relation ;;;
+
+;changes due to move
+(<= (next (cell ?y ?type ?player))
+    (does ?player (move ?x ?y))
+    (true (cell ?x ?type ?player)))
+(<= (next (cell ?x empty none))
+    (does ?player (move ?x ?y)))
+(<= (next (actionpoints ?newap))
+    (does ?player (move ?x ?y))
+    (true (actionpoints ?ap))
+    (pred ?ap ?newap)
+    (distinct ?newap 0))
+(<= (next (actionpoints 3))
+    (does ?player (move ?x ?y))
+    (true (actionpoints 1)))
+(<= (next (control ?other))
+    (does ?player (move ?x ?y))
+    (true (actionpoints 1))
+    (true (control ?player))
+    (other ?player ?other))
+(<= (next (control ?player))
+    (does ?player (move ?x ?y))
+    (true (actionpoints ?ap))
+    (greater ?ap 1)
+    (true (control ?player)))
+(<= (next (round ?new))
+    (does ?player (move ?x ?y))
+    (true (actionpoints 1))
+    (true (round ?old))
+    (nextround ?old ?new))
+(<= (next (round ?r))
+    (does ?player (move ?x ?y))
+    (true (actionpoints ?ap))
+    (greater ?ap 1)
+    (true (round ?r)))
+        
+; changes due to attack
+; fight on normal field (not against sniper)
+(<= (next (cell ?y ?ang ?player))
+    (does ?player (attack ?x ?y))
+    (true (cell ?x ?ang ?player))
+    (true (cell ?y ?vrt ?other))
+    (other ?player ?other)
+    (not (smoke ?y))
+    (victory normal ?ang ?vrt win) 
+    (distinct ?vrt sniper) )
+(<= (next (cell ?y ?vrt ?other))
+    (does ?player (attack ?x ?y))
+    (true (cell ?x ?ang ?player))
+    (true (cell ?y ?vrt ?other))
+    (other ?player ?other)
+    (not (smoke ?y))
+    (victory normal ?ang ?vrt lose) 
+    (distinct ?vrt sniper) )
+; fight on special field (not against sniper)    
+(<= (next (cell ?y ?ang ?player))
+    (does ?player (attack ?x ?y))
+    (true (cell ?x ?ang ?player))
+    (true (cell ?y ?vrt ?other))
+    (other ?player ?other)
+    (smoke ?y)
+    (victory special ?ang ?vrt win) 
+    (distinct ?vrt sniper) )    
+(<= (next (cell ?y ?vrt ?other))
+    (does ?player (attack ?x ?y))
+    (true (cell ?x ?ang ?player))
+    (true (cell ?y ?vrt ?other))
+    (other ?player ?other)
+    (smoke ?y)
+    (victory special ?ang ?vrt lose) 
+    (distinct ?vrt sniper) )    
+; fight on visible field (against sniper)
+(<= (next (cell ?y ?ang ?player))
+    (does ?player (attack ?x ?y))
+    (true (cell ?x ?ang ?player))
+    (true (cell ?y sniper ?other))
+    (other ?player ?other)
+    (spotted ?y)
+    (victory visible ?ang sniper win) )
+(<= (next (cell ?y sniper ?other))
+    (does ?player (attack ?x ?y))
+    (true (cell ?x ?ang ?player))
+    (true (cell ?y sniper ?other))
+    (other ?player ?other)
+    (spotted ?y)
+    (victory visible ?ang sniper lose) )
+; fight on normal field (against sniper)
+(<= (next (cell ?y ?ang ?player))
+    (does ?player (attack ?x ?y))
+    (true (cell ?x ?ang ?player))
+    (true (cell ?y sniper ?other))
+    (other ?player ?other)
+    (not (spotted ?y))
+    (not (smoke ?y))
+    (victory normal ?ang sniper win) )
+(<= (next (cell ?y sniper ?other))
+    (does ?player (attack ?x ?y))
+    (true (cell ?x ?ang ?player))
+    (true (cell ?y sniper ?other))
+    (other ?player ?other)
+    (not (spotted ?y))
+    (not (smoke ?y))
+    (victory normal ?ang sniper lose) )
+; fight on spezial field (against sniper)
+(<= (next (cell ?y ?ang ?player))
+    (does ?player (attack ?x ?y))
+    (true (cell ?x ?ang ?player))
+    (true (cell ?y sniper ?other))
+    (other ?player ?other)
+    (not (spotted ?y))
+    (smoke ?y)
+    (victory spezial ?ang sniper win) )
+(<= (next (cell ?y sniper ?other))
+    (does ?player (attack ?x ?y))
+    (true (cell ?x ?ang ?player))
+    (true (cell ?y sniper ?other))
+    (other ?player ?other)
+    (not (spotted ?y))
+    (smoke ?y)
+    (victory spezial ?ang sniper lose))
+(<= (next (cell ?x empty none))
+    (does ?player (attack ?x ?y))
+    (true (cell ?x ?ang ?player))
+    (true (cell ?y ?vrt ?other))
+    (other ?player ?other) )
+(<= (next (actionpoints ?newap))
+    (does ?player (attack ?x ?y))
+    (true (actionpoints ?ap))
+    (pred ?ap ?ap1)
+    (pred ?ap1 ?newap)
+    (distinct ?newap 0))
+(<= (next (actionpoints 3))
+    (does ?player (attack ?x ?y))
+    (true (actionpoints 2)))
+(<= (next (control ?other))
+    (does ?player (attack ?x ?y))
+    (true (actionpoints 2))
+    (true (control ?player))
+    (other ?player ?other))
+(<= (next (control ?player))
+    (does ?player (attack ?x ?y))
+    (true (actionpoints 3))
+    (true (control ?player)))    
+(<= (next (round ?new))
+    (does ?player (attack ?x ?y))
+    (true (actionpoints 2))
+    (true (round ?r))
+    (nextround ?r ?new))
+(<= (next (round ?r))
+    (does ?player (attack ?x ?y))
+    (true (actionpoints 3))
+    (true (round ?r))) 
+
+; changes due to build
+(<= (next (cell ?x ?t ?player))
+    (does ?player (build ?x ?t)))
+(<= (next (stock ?player ?t ?newcount))
+    (does ?player (build ?x ?t))
+    (true (stock ?player ?t ?count))
+    (distinct ?count 0)
+    (pred ?count ?newcount) )
+(<= (next (actionpoints 3))
+    (does ?player (build ?x ?t))
+    (true (actionpoints 3)))
+(<= (next (control ?other))
+    (does ?player (build ?x ?y))
+    (true (control ?player))
+    (other ?player ?other) )
+(<= (next (round ?new))
+    (does ?player (build ?x ?y))
+    (true (round ?r))
+    (nextround ?r ?new))
+    
+; changes due to skip
+(<= (next (actionpoints 3))
+    (does ?player skip))
+(<= (next (control ?other))
+    (does ?player skip)
+    (other ?player ?other))
+(<= (next (round ?new))
+    (does ?player skip)
+    (true (round ?r))
+    (nextround ?r ?new))    
+
+; let everything else stay the same
+; stock
+(<= (next (stock ?player ?t ?count))
+    (true (stock ?player ?t ?count))
+    (does ?p (build ?x ?type))
+    (or (distinct ?t ?type)
+        (distinct ?p ?player)) )
+(<= (next (stock ?player ?t ?count))
+    (true (stock ?player ?t ?count))
+    (does ?p (move ?x ?y)))
+(<= (next (stock ?player ?t ?count))
+    (true (stock ?player ?t ?count))
+    (does ?p (attack ?x ?y)))
+(<= (next (stock ?player ?t ?count))
+    (true (stock ?player ?t ?count))
+    (does ?p skip))            
+; cells (in case last move was move)
+(<= (next (cell ?x ?t ?color))
+    (true (cell ?x ?t ?color))
+    (does ?player (move ?a ?b)) 
+    (distinct ?x ?a)
+    (distinct ?x ?b))
+; cells (in case last move was attack)
+(<= (next (cell ?x ?t ?color))
+    (true (cell ?x ?t ?color))
+    (does ?player (attack ?a ?b)) 
+    (distinct ?x ?a)
+    (distinct ?x ?b))
+; cells (in case last move was build)    
+(<= (next (cell ?x ?t ?color))
+    (true (cell ?x ?t ?color))
+    (does ?player (build ?a ?type)) 
+    (distinct ?x ?a))
+; cells (in case last move was skip)    
+(<= (next (cell ?x ?t ?color))
+    (true (cell ?x ?t ?color))
+    (does ?player skip))    
+
+;;; goal states ;;;
+
+; evaluation for red
+(<= (goal red 100)
+    (true (cell 20 pioneer red)))
+(<= (goal red 50)
+    (true (cell 20 base blue))
+    (not (true (cell 12 pioneer blue))))
+(<= (goal red 0)
+    (true (cell 12 pioneer blue)))
+    
+; evaluation for blue    
+(<= (goal blue 100)
+    (true (cell 12 pioneer blue)))
+(<= (goal blue 50)
+    (true (cell 12 base red))
+    (not (true (cell 20 pioneer red))))
+(<= (goal blue 0)
+    (true (cell 20 pioneer red)))
+
+;;; terminal states ;;;
+
+; red wins
+(<= terminal 
+    (true (cell 12 pioneer blue)))
+; blue wins
+(<= terminal 
+    (true (cell 20 pioneer red)))
+; no moves are possible for the current player -> ensures playability
+(<= terminal
+    (true (control ?player))
+    (true (actionpoints 3))
+    (not (canMove ?player)))
+; there where 200 rounds played -> ensures termination
+(<= terminal
+    (true (round s201)) )

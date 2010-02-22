@@ -1,0 +1,179 @@
+; not valid GDL
+
+;;; Roles
+
+(role a)
+(role b)
+(role c)
+
+;;; Initial State
+
+(init (cell 1 1 o))
+(init (cell 1 2 o))
+(init (cell 1 3 o))
+(init (cell 2 1 o))
+(init (cell 2 2 o))
+(init (cell 2 3 o))
+(init (cell 3 1 o))
+(init (cell 3 2 o))
+(init (cell 3 3 o))
+(init (control c))
+
+;;; Dynamic Components (DC)
+
+;;; DC.Cell
+
+(<= (next (cell ?x ?y ?player))
+    (does ?player (mark ?x ?y))
+    (true (cell ?x ?y o)))
+    
+(<= (next (cell ?x ?y ?w))
+    (true (cell ?x ?y ?w))
+    (distinct ?w o))
+      
+(<= (next (cell ?x ?y o))
+    (does ?player (mark ?m ?n))
+    (true (cell ?x ?y o))
+    (distinctCell ?x ?y ?m ?n))
+
+;;; DC.Control
+
+(<= (next (control a)) 
+    (true (control c)))
+
+(<= (next (control b)) 
+    (true (control a)))
+
+(<= (next (control c)) 
+    (true (control b)))
+
+;;; Views
+
+(<= (column ?x ?player)
+    (true (cell ?x 1 ?player))
+    (true (cell ?x 2 ?player))
+    (true (cell ?x 3 ?player))
+    )
+    
+(<= (row ?y ?player)
+    (true (cell 1 ?y ?player))
+    (true (cell 2 ?y ?player))
+    (true (cell 3 ?y ?player))
+    )
+
+(<= (diagonal ?player)
+    (true (cell 1 1 ?player))
+    (true (cell 2 2 ?player))
+    (true (cell 3 3 ?player))
+    )
+
+(<= (diagonal ?player)
+    (true (cell 1 3 ?player))
+    (true (cell 2 2 ?player))
+    (true (cell 3 1 ?player))
+    )
+
+(<= (line ?player)
+    (row ?x ?player))
+    
+(<= (line ?player)
+    (column ?y ?player))
+
+(<= (line ?player)
+    (diagonal ?player))
+ 
+(<= (tritt ?player)
+    (true (cell 1 1 ?player))
+    (true (cell 1 3 ?player))
+    (true (cell 3 2 ?player))
+    )
+
+(<= (tritt ?player)
+    (true (cell 3 1 ?player))
+    (true (cell 3 3 ?player))
+    (true (cell 1 2 ?player))
+    )
+
+(<= (tritt ?player)
+    (true (cell 1 1 ?player))
+    (true (cell 3 1 ?player))
+    (true (cell 2 3 ?player))
+    )
+
+(<= (tritt ?player)
+    (true (cell 1 3 ?player))
+    (true (cell 3 3 ?player))
+    (true (cell 2 1 ?player))
+    )
+
+(<= open (true (cell ?x ?y o)))
+
+(<= (distinctCell ?x ?y ?m ?n)
+    (distinct ?x ?m))
+    
+(<= (distinctCell ?x ?y ?m ?n)
+    (distinct ?y ?n))
+    
+(<= (distinctPlayer ?player1 ?player2 ?player3)
+    (distinct ?player1 ?player2)
+    (distinct ?player2 ?player3)
+    (distinct ?player3 ?player1))
+
+;;; Legal Moves
+
+(<= (legal ?player (mark ?x ?y))
+    (true (cell ?x ?y o))
+    (true (control ?player)))
+    
+(<= (legal ?player1 noop)
+    (true (control ?player2))
+    (distinct ?player1 ?player2))
+
+;;; Goals
+
+(<= (goal ?player 100)
+    (tritt ?player))
+
+(<= (goal ?player1 0)
+    (tritt ?player2)
+    (distinct ?player1 ?player2))
+
+(<= (goal ?player 50)
+    (line ?player))
+
+(<= (goal ?player1 25)
+    (line ?player2)
+    (distinct ?player1 ?player2)
+    (not open))
+
+(<= (goal ?player 33)
+    (not (line a))
+    (not (line b))
+    (not (line c))
+    (not (tritt a))
+    (not (tritt b))
+    (not (tritt c))
+    (not open)
+    )
+
+(<= (goal ?player1 0)
+    (not (tritt ?player2))
+    (not (tritt ?player3))
+    (distintPlayer ?player1 ?player2 ?player3)
+    open)
+    
+;;; Terminal
+
+(<= terminal 
+    (tritt a))
+
+(<= terminal 
+    (tritt b))
+
+(<= terminal 
+    (tritt c))
+    
+(<= terminal 
+    (not open))
+    
+;;; end

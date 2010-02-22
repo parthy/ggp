@@ -1,0 +1,305 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Endgame
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  (role white)
+  (role black)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  (init (cell a 1 b))
+  (init (cell a 2 b))
+  (init (cell a 3 b))
+  (init (cell a 4 b))
+  (init (cell a 5 b))
+  (init (cell a 6 b))
+  (init (cell a 7 b))
+  (init (cell a 8 b))
+  (init (cell b 1 b))
+  (init (cell b 2 b))
+  (init (cell b 3 b))
+  (init (cell b 4 b))
+  (init (cell b 5 b))
+  (init (cell b 6 b))
+  (init (cell b 7 b))
+  (init (cell b 8 b))
+  (init (cell c 1 b))
+  (init (cell c 2 b))
+  (init (cell c 3 b))
+  (init (cell c 4 b))
+  (init (cell c 5 b))
+  (init (cell c 6 b))
+  (init (cell c 7 b))
+  (init (cell c 8 b))
+  (init (cell d 1 b))
+  (init (cell d 2 b))
+  (init (cell d 3 b))
+  (init (cell d 4 b))
+  (init (cell d 5 b))
+  (init (cell d 6 b))
+  (init (cell d 7 b))
+  (init (cell d 8 bk))
+  (init (cell e 1 wk))
+  (init (cell e 2 b))
+  (init (cell e 3 b))
+  (init (cell e 4 b))
+  (init (cell e 5 b))
+  (init (cell e 6 b))
+  (init (cell e 7 b))
+  (init (cell e 8 b))
+  (init (cell f 1 b))
+  (init (cell f 2 b))
+  (init (cell f 3 b))
+  (init (cell f 4 b))
+  (init (cell f 5 b))
+  (init (cell f 6 b))
+  (init (cell f 7 b))
+  (init (cell f 8 b))
+  (init (cell g 1 b))
+  (init (cell g 2 b))
+  (init (cell g 3 b))
+  (init (cell g 4 b))
+  (init (cell g 5 b))
+  (init (cell g 6 b))
+  (init (cell g 7 b))
+  (init (cell g 8 b))
+  (init (cell h 1 wr))
+  (init (cell h 2 b))
+  (init (cell h 3 b))
+  (init (cell h 4 b))
+  (init (cell h 5 b))
+  (init (cell h 6 b))
+  (init (cell h 7 b))
+  (init (cell h 8 b))
+  (init (control white))
+  (init (step 1))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  (<= (next (cell ?x ?y ?p))
+      (does ?player (move ?p ?u ?v ?x ?y)))
+
+  (<= (next (cell ?u ?v b))
+      (does ?player (move ?p ?u ?v ?x ?y)))
+
+  (<= (next (cell ?w ?z b))
+      (does ?player (move ?p ?u ?v ?x ?y))
+      (true (cell ?w ?z b))
+      (or (distinct ?w ?x) (distinct ?z ?y)))
+
+  (<= (next (cell ?w ?z ?q))
+      (does ?player (move ?p ?u ?v ?x ?y))
+      (true (cell ?w ?z ?q))
+      (or (distinct ?x ?w) (distinct ?y ?z))
+      (distinct ?p ?q))
+
+
+  (<= (next (control white))
+      (true (control black)))
+
+  (<= (next (control black))
+      (true (control white)))
+
+
+  (<= (next (step ?y))
+      (true (step ?x))
+      (succ ?x ?y))
+
+
+  (succ 1 2)
+  (succ 2 3)
+  (succ 3 4)
+  (succ 4 5)
+  (succ 5 6)
+  (succ 6 7)
+  (succ 7 8)
+  (succ 8 9)
+  (succ 9 10)
+  (succ 10 11)
+  (succ 11 12)
+  (succ 12 13)
+  (succ 13 14)
+  (succ 14 15)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  (<= (legal white (move wk ?u ?v ?x ?y))
+      (true (control white))
+      (true (cell ?u ?v wk))
+      (kingmove ?u ?v ?x ?y)
+      (true (cell ?x ?y b))
+      (not (restricted ?x ?y)))
+
+  (<= (legal white (move wr ?u ?v ?x ?y))
+      (true (control white))
+      (true (cell ?u ?v wr))
+      (rookmove ?u ?v ?x ?y)
+      (true (cell ?x ?y b))
+      (not (restricted ?x ?y)))
+
+  (<= (legal white noop)
+      (true (control black)))
+
+
+  (<= (legal black (move bk ?u ?v ?x ?y))
+      (true (control black))
+      (true (cell ?u ?v bk))
+      (kingmove ?u ?v ?x ?y)
+      (true (cell ?x ?y b))
+      (not (attacked ?x ?y))
+      (not (guarded ?x ?y)))
+
+  (<= (legal black noop)
+      (true (control white)))
+
+
+  (<= (kingmove ?u ?v ?u ?y)
+      (or (adjacent ?v ?y) (adjacent ?y ?v))
+      (coordinate ?u))
+
+  (<= (kingmove ?u ?v ?x ?v)
+      (or (nextcolumn ?u ?x) (nextcolumn ?x ?u))
+      (coordinate ?v))
+
+  (<= (kingmove ?u ?v ?x ?y)
+      (or (nextcolumn ?u ?x) (nextcolumn ?x ?u))
+      (or (adjacent ?v ?y) (adjacent ?y ?v)))
+
+  (<= (rookmove ?u ?v ?u ?y)
+      (clearcolumn ?u ?v ?y))
+
+  (<= (rookmove ?u ?v ?u ?y)
+      (clearcolumn ?u ?y ?v))
+
+  (<= (rookmove ?u ?v ?x ?v)
+      (clearrow ?u ?x ?v))
+
+  (<= (rookmove ?u ?v ?x ?v)
+      (clearrow ?x ?u ?v))
+
+
+  (<= checkmate
+      check
+      stuck)
+
+  (<= check
+      (true (cell ?u ?v bk))
+      (attacked ?u ?v))
+
+  (<= stuck
+      (not canmove))
+
+  (<= canmove
+      (true (cell ?u ?v bk))
+      (true (cell ?x ?y b))
+      (kingmove ?u ?v ?x ?y)
+      (not (attacked ?x ?y))
+      (not (guarded ?x ?y)))
+
+
+  (<= (restricted ?x ?y)
+      (true (cell ?u ?v bk))
+      (kingmove ?u ?v ?x ?y))
+
+
+  (<= (guarded ?x ?y)
+      (true (cell ?u ?v wk))
+      (kingmove ?u ?v ?x ?y))
+
+
+  (<= (attacked ?u ?w)
+      (true (cell ?u ?v wr))
+      (clearcolumn ?u ?v ?w))
+
+  (<= (attacked ?u ?v)
+      (true (cell ?u ?w wr))
+      (clearcolumn ?u ?v ?w))
+
+  (<= (attacked ?u ?v)
+      (true (cell ?x ?v wr))
+      (clearrow ?u ?x ?v))
+
+  (<= (attacked ?u ?v)
+      (true (cell ?x ?v wr))
+      (clearrow ?x ?u ?v))
+
+
+  (<= (clearcolumn ?u ?v ?y)
+      (adjacent ?v ?y)
+      (coordinate ?u))
+
+  (<= (clearcolumn ?u ?v ?y)
+      (adjacent ?v ?w)
+      (or (true (cell ?u ?w b)) (true (cell ?u ?w bk)))
+      (clearcolumn ?u ?w ?y))
+
+  (<= (clearrow ?u ?x ?v)
+      (nextcolumn ?u ?x)
+      (coordinate ?v))
+
+  (<= (clearrow ?u ?x ?v)
+      (nextcolumn ?u ?w)
+      (or (true (cell ?w ?v b)) (true (cell ?w ?v bk)))
+      (clearrow ?w ?x ?v))
+
+
+  (adjacent 1 2)
+  (adjacent 2 3)
+  (adjacent 3 4)
+  (adjacent 4 5)
+  (adjacent 5 6)
+  (adjacent 6 7)
+  (adjacent 7 8)
+
+  (nextcolumn a b)
+  (nextcolumn b c)
+  (nextcolumn c d)
+  (nextcolumn d e)
+  (nextcolumn e f)
+  (nextcolumn f g)
+  (nextcolumn g h)
+
+; BOARD COORDINATES
+
+(coordinate 1)
+(coordinate 2)
+(coordinate 3)
+(coordinate 4)
+(coordinate 5)
+(coordinate 6)
+(coordinate 7)
+(coordinate 8)
+(coordinate a)
+(coordinate b)
+(coordinate c)
+(coordinate d)
+(coordinate e)
+(coordinate f)
+(coordinate g)
+(coordinate h)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  (<= (goal white 100)
+      checkmate)
+
+  (<= (goal white 0)
+      (not checkmate))
+
+  (<= (goal black 100)
+      (not checkmate))
+
+  (<= (goal black 0)
+      checkmate)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  (<= terminal
+      (true (step 15)))
+
+  (<= terminal
+      stuck)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,0 +1,381 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; O An Quan - The Game of Squares
+;;; by team GlaDOS (2008/09 class of GGP at TU-Dresden)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Roles
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(role aplayer)
+(role bplayer)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Initial State
+;; p: pebble
+;; m: mandarin
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(init (square 1 5))
+(init (square 2 5))
+(init (square 3 5))
+(init (square 4 5))
+(init (square 5 5))
+(init (square 6 0))
+(init (square 7 5))
+(init (square 8 5))
+(init (square 9 5))
+(init (square 10 5))
+(init (square 11 5))
+(init (square 12 0))
+
+(init (control aplayer))
+
+; number of pebbles one player wins: mandarins and pebbles
+(init (numofpebwon aplayer 0))
+(init (numofpebwon bplayer 0))
+(init (flipplayer 1))
+(init (numofpebleft 0))
+(init (prevstartsq 0))
+(init (prevdir clkwise))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Control / View
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(<= (next (flipplayer 1))
+	(true (control ?player))
+	(true (must_stop ?player)))
+
+(<= (next (flipplayer 0))
+	(true (control ?player))
+	(not (must_stop ?player)))
+
+(<= (next (control aplayer))
+	(true (control bplayer)) 
+	(must_stop bplayer))
+
+(<= (next (control aplayer))
+	(true (control aplayer))
+	(not (must_stop aplayer))) 
+	
+(<= (next (control bplayer))
+	(true (control aplayer)) 
+	(must_stop aplayer))
+
+(<= (next (control bplayer))
+	(true (control bplayer))
+	(not (must_stop bplayer))) 
+
+(<= (must_stop ?player)
+	(true (control ?player))
+	(or (stop_next_to_mandarin ?player)
+		(or (stop_next_to_two_empty_squares ?player)
+			(square_winable ?player))))
+
+(<= (stop_next_to_mandarin ?player)
+	(true (control ?player))
+	(or (does ?player (movepeb 0 5 clkwise))
+	 	(or (does ?player (movepeb 0 7 cclkwise))
+			(or (does ?player (movepeb 0 11 clkwise))
+				(does ?player (movepeb 0 1 cclkwise))))))
+	
+(<= (stop_next_to_two_empty_squares ?player)
+	(true (control ?player))
+	(does ?player (movepeb 0 ?sq1 ?dir))
+	(nextcell ?sq1 ?sq2 ?dir)
+	(nextcell ?sq2 ?sq3 ?dir)
+	(true (square ?sq2 0))
+	(true (square ?sq3 0)))
+
+(<= (square_winable ?player)
+	(true (control ?player))
+	(does ?player (movepeb 0 ?sq1 ?dir))
+	(nextcell ?sq1 ?sq2 ?dir)
+	(nextcell ?sq2 ?sqwon ?dir)
+	(true (square ?sq2 0))
+	(true (square ?sqwon ?numofpeb))
+	(distinct ?numofpeb 0)) 
+
+(<= (home_squares_empty ?player)
+	(true (homesq ?player ?sq))
+	(true (square ?sq 0)))
+	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Legal moves
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; move number of pebbles starting from a square in a direction
+(<= (legal ?player (movepeb ?numofpeb ?startsq ?dir))
+	(true (control ?player))
+	(homesq ?player ?startsq)
+	(true (square ?startsq ?numofpeb))
+	(distinct ?numofpeb 0)
+	(direction ?dir)
+	(true (flipplayer 1)))
+		
+(<= (legal ?player (movepeb ?numofpebmove ?nextstartsq ?dir))
+	(true (control ?player))
+	(true (flipplayer 0))
+	(true (prevdir ?dir))
+	(true (prevstartsq ?prevsq))
+	(true (numofpebleft ?numofpebmove))
+	(distinct ?numofpebmove 0)
+	(nextcell ?prevsq ?nextstartsq ?dir)
+)
+
+(<= (legal ?player (movepeb ?numofpebmove ?nextstartsq ?dir))
+	(true (control ?player))
+	(true (flipplayer 0))
+	(true (prevdir ?dir))
+	(true (prevstartsq ?prevsq))
+	(true (numofpebleft 0))
+	(nextcell ?prevsq ?sqtemp ?dir)
+	(nextcell ?sqtemp ?nextstartsq ?dir)
+	(true (square ?nextstartsq ?numofpebmove))
+	(distinct ?numofpebmove 0)
+)
+
+; win pebbles in a square if possible
+(<= (legal ?player (winpeb ?sqwon))
+	(true (control ?player))
+	(true (flipplayer 0))
+	(true (prevdir ?dir))
+	(true (prevstartsq ?prevsq))
+	(true (numofpebleft 0))
+	(nextcell ?prevsq ?sq1 ?dir)
+	(nextcell ?sq1 ?sq2 ?dir)
+	(nextcell ?sq2 ?sqwon ?dir)
+	(true (square ?sq2 0))
+	(true (square ?sqwon ?numofpeb))
+	(distinct ?numofpeb 0))
+
+(<= (legal aplayer noop)
+	(true (control bplayer)))
+	
+(<= (legal bplayer noop)
+	(true (control aplayer)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Update state
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(<= (next (square ?nextsq ?newnumofpeb))
+	(does ?player (movepeb ?numofpebmove ?startsq ?dir))
+	(distinct ?numofpebmove 0)
+	(nextcell ?startsq ?nextsq ?dir)
+	(true (square ?nextsq ?oldnumofpeb))
+	(succ ?oldnumofpeb ?newnumofpeb))
+
+(<= (next (square ?sq 0))
+	(does ?player (movepeb ?numofpebmove ?sq ?dir))
+	(true (flipplayer 1)))
+	
+(<= (next (square ?sq ?numofpeb))
+	(true (square ?sq ?numofpeb))
+	(does ?player (movepeb ?numofpebmove ?startsq ?dir))
+	(nextcell ?startsq ?succsq ?dir)
+	(distinct ?startsq ?sq)
+	(distinct ?succsq ?sq))
+	
+(<= (next numofpebwon ?player ?newpebwon)
+	(true (numofpebwon ?player ?oldpebwon))
+	(does ?player (winpeb ?sqwon))
+	(true (square ?sqwon ?pebwon))
+	(add ?oldpebwon ?pebwon ?newpebwon)) 
+
+(<= (next (square ?sqwon 0))
+	(true (control ?player))
+	(does ?player (winpeb ?sqwon)))
+	
+(<= (next (numofpebleft ?pebleft))
+	(true (control ?player))
+	(does ?player (movepeb ?numofpebmove ?sq ?d))
+	(succ ?pebleft ?numofpebmove))
+	
+(<= (next (prevstartsq ?sq))
+	(true (control ?player))
+	(does ?player (movepeb ?num ?sq ?dir)))
+	
+(<= (next (prevdir ?dir))
+	(does ?player (movepeb ?num ?sq ?dir)))
+	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Terminal 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(<= terminal
+	(true (square 6 0))
+	(true (square 12 0)))
+	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Goal
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(<= (goal ?player ?score)
+	(true (numofpebwon ?player ?n))
+	(map_peb_to_score ?n ?score))
+
+(<= (map_peb_to_score ?n ?score)
+	(add ?n ?n ?score))
+
+;; Move count successor
+(nextcell 1 2 clkwise)
+(nextcell 2 3 clkwise)
+(nextcell 3 4 clkwise)
+(nextcell 4 5 clkwise)
+(nextcell 5 6 clkwise)
+(nextcell 6 7 clkwise)
+(nextcell 7 8 clkwise)
+(nextcell 8 9 clkwise)
+(nextcell 9 10 clkwise)
+(nextcell 10 11 clkwise)
+(nextcell 11 12 clkwise)
+(nextcell 12 1 clkwise)
+
+(nextcell 12 11 cclkwise)
+(nextcell 11 10 cclkwise)
+(nextcell 10 9 cclkwise)
+(nextcell 9 8 cclkwise)
+(nextcell 8 7 cclkwise)
+(nextcell 7 6 cclkwise)
+(nextcell 6 5 cclkwise)
+(nextcell 5 4 cclkwise)
+(nextcell 4 3 cclkwise)
+(nextcell 3 2 cclkwise)
+(nextcell 2 1 cclkwise)
+(nextcell 1 12 cclkwise)
+
+;; add function
+(<= (add 0 ?x ?x)
+	(number ?x))
+
+(<= (add ?x ?y ?sum)
+	(succ ?predx ?x)
+	(succ ?y ?succy)
+	(add ?predx ?succy ?sum))
+
+(<= (number ?x)
+	(succ ?x ?y))
+(<= (number ?x)
+	(succ ?y ?x))
+
+
+;; Squares allowed for each player to start - home squares
+(homesq aplayer 1)
+(homesq aplayer 2)
+(homesq aplayer 3)
+(homesq aplayer 4)
+(homesq aplayer 5)
+
+(homesq bplayer 7)
+(homesq bblayer 8)
+(homesq bplayer 9)
+(homesq bplayer 10)
+(homesq bplayer 11)
+
+;; Direction
+(direction clkwise)
+(direction cclkwise)
+
+;; Successor
+(succ 0 1)
+(succ 1 2)
+(succ 2 3)
+(succ 3 4)
+(succ 4 5)
+(succ 5 6)
+(succ 6 7)
+(succ 7 8)
+(succ 8 9)
+(succ 9 10)
+(succ 10 11)
+(succ 11 12)
+(succ 12 13)
+(succ 13 14)
+(succ 14 15)
+(succ 15 16)
+(succ 16 17)
+(succ 17 18)
+(succ 18 19)
+(succ 19 20)
+(succ 20 21)
+(succ 21 22)
+(succ 22 23)
+(succ 23 24)
+(succ 24 25)
+(succ 25 26)
+(succ 26 27)
+(succ 27 28)
+(succ 28 29)
+(succ 29 30)
+(succ 30 31)
+(succ 31 32)
+(succ 32 33)
+(succ 33 34)
+(succ 34 35)
+(succ 35 36)
+(succ 36 37)
+(succ 37 38)
+(succ 38 39)
+(succ 39 40)
+(succ 40 41)
+(succ 41 42)
+(succ 42 43)
+(succ 43 44)
+(succ 44 45)
+(succ 45 46)
+(succ 46 47)
+(succ 47 48)
+(succ 48 49)
+(succ 49 50)
+(succ 50 51)
+(succ 51 52)
+(succ 52 53)
+(succ 53 54)
+(succ 54 55)
+(succ 55 56)
+(succ 56 57)
+(succ 57 58)
+(succ 58 59)
+(succ 59 60)
+(succ 60 61)
+(succ 61 62)
+(succ 62 63)
+(succ 63 64)
+(succ 64 65)
+(succ 65 66)
+(succ 66 67)
+(succ 67 68)
+(succ 68 69)
+(succ 69 70)
+(succ 70 71)
+(succ 71 72)
+(succ 72 73)
+(succ 73 74)
+(succ 74 75)
+(succ 75 76)
+(succ 76 77)
+(succ 77 78)
+(succ 78 79)
+(succ 79 80)
+(succ 80 81)
+(succ 81 82)
+(succ 82 83)
+(succ 83 84)
+(succ 84 85)
+(succ 85 86)
+(succ 86 87)
+(succ 87 88)
+(succ 88 89)
+(succ 89 90)
+(succ 90 91)
+(succ 91 92)
+(succ 92 93)
+(succ 93 94)
+(succ 94 95)
+(succ 95 96)
+(succ 96 97)
+(succ 97 98)
+(succ 98 99)
+(succ 99 100)
