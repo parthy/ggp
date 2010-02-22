@@ -59,7 +59,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
                 // end time is set from outside
 		
-		currentDepthLimit = 0;
+		currentDepthLimit = 11;
 		try {
 			// set the game root node
 			IGameNode root = game.getTree().getRootNode();
@@ -275,8 +275,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		*/		// search a bit more, from the node arg0.
 				// nope -> try to search the same depth like we did in the last search
 				// but this time one from one step deeper, so ...
-				currentDepthLimit=current.getDepth()+1;
-				
+				//currentDepthLimit=current.getDepth()+1;
+				currentDepthLimit--;
+
 				IDS(endTime, current);
 			//if max = 2
 			Boolean foundMove = true;
