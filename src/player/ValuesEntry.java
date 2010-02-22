@@ -1,15 +1,10 @@
 package player;
 
-import java.io.Serializable;
-
 /**
  *
  * @author konrad
  */
-class ValuesEntry implements Serializable {
-	
-	private static final long serialVersionUID = 8239692783219098472L;
-	
+class ValuesEntry {
 	private int[] values;
 	private int occ;
 
