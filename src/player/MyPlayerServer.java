@@ -22,13 +22,16 @@ public class MyPlayerServer extends PlayerServer {
     public static void main(String[] args){
 
     	/* create and start player server */
-    	try {    		
+    	try {
     		Map<String, String> options = getOptions(args);
             new MyPlayerServer(new MyPlayer(), options).waitForExit();
+          // test simplex solver:
         } catch (IOException ex) {
             ex.printStackTrace();
             System.exit(-1);
         }
-    }
+ /*           SimplexSolver solver = new SimplexSolver();
+            solver.test();
+ */   }
 
 }
