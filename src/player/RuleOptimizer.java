@@ -2,6 +2,7 @@ package player;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -169,7 +170,7 @@ public class RuleOptimizer {
     	return rule+")";
     }
     
-    public static ArrayList<String> getVarsFromLiteral(String lit) {
+    private ArrayList<String> getVarsFromLiteral(String lit) {
     	ArrayList<String> knownVars = new ArrayList<String>();
 		Pattern p = Pattern.compile("\\?([^\\)])[ \\)]");
 		Matcher m = p.matcher(lit);
@@ -181,4 +182,57 @@ public class RuleOptimizer {
 		
 		return knownVars;
     }
+    
+    public static List<String> getListFromFluentString(String fluentString) {
+		List<String> list = new ArrayList<String>();
+		
+		boolean opened=false;
+		int openPars=0;
+		fluentString = fluentString.substring(1, fluentString.length()-1)+" ";
+		
+		while(true) {
+			//System.out.println("Parsing "+fluentString);
+			for(int i=0; i<fluentString.length(); i++) {
+				if(fluentString.charAt(i) == '(') {
+					opened = true;
+					openPars++;
+					continue;
+				}
+				if(fluentString.charAt(i) == ')') {
+					openPars--;
+					continue;
+				}
+				if(opened && openPars == 0) {
+					//System.out.println("Found Fluent: "+fluentString.substring(0, i));
+					list.add(fluentString.substring(0, i));
+					fluentString = fluentString.substring(i+1);
+					opened = false;
+					break;
+				}
+			}
+			if(fluentString.length() < 3) break;
+		}
+		
+		return list;
+	}
+
+	public static int calculateTruthDegree(String candidate, String goal) {
+		int truth = 0;
+		
+		//System.out.println("Calculating truth of \n"+candidate+"\n with respect to \n"+goal);
+		
+		List<String> fluentsC = getListFromFluentString(candidate);
+		List<String> fluentsG = getListFromFluentString(goal);
+		
+		// We walk trough all the goal's fluents and search for them in the candidate's list.
+		// If we find one, we add the percentage of one true fluent to the truth value.
+		for(String fluent : fluentsG) {
+			if(fluentsC.contains(fluent))
+				truth += (int) (100/fluentsG.size());
+		}
+		
+		//System.out.println("Came up with "+truth);
+		
+		return truth;
+	}
 }

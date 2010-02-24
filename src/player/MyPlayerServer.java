@@ -1,7 +1,11 @@
 package player;
 
 import player.MyPlayer;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Map;
 
 import org.eclipse.palamedes.gdl.connection.Player;
@@ -20,7 +24,10 @@ public class MyPlayerServer extends PlayerServer {
      * Command line options: --port=<port> --slave=<true|false>
      */
     public static void main(String[] args){
-
+    	try {
+			System.setErr(new PrintStream(new FileOutputStream("/dev/null", true)));
+		} catch (FileNotFoundException e) {
+		}
     	/* create and start player server */
     	try {
     		Map<String, String> options = getOptions(args);

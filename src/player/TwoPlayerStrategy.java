@@ -6,14 +6,20 @@ package player;
 
 //package src.de.tudresden.inf.ggp.basicplayer;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,8 +27,12 @@ import java.util.logging.Logger;
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.IMove;
+import org.eclipse.palamedes.gdl.core.model.utils.Game;
+import org.eclipse.palamedes.gdl.core.resolver.prologprover.EclipseConnector;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
+
+import com.parctechnologies.eclipse.CompoundTerm;
 
 /**
  *
@@ -32,13 +42,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	
 	private LinkedList<IGameNode> queue = new LinkedList<IGameNode>();
 	private HashMap<IGameState, Integer> visitedStates = new HashMap<IGameState, Integer>();
-	/**
-	 * Integer is code for:
-	 *	propagated_simulation_values < 0 < simulation values < int_max
-	 *  int_max are terminal goal values or propagated from them
-	 */
 	private HashMap<IGameState, ValuesEntry> values = new HashMap<IGameState, ValuesEntry>();
-		
+	
+	/**
+	 * This Set contains all known "good" states, i.e. terminals, states where we definitely end up with good score, and so on.
+	 */
+	private Set<IGameState> goodStates = new HashSet<IGameState>();
+	
 	private int currentDepthLimit;
 	private int nodesVisited;
 	private int max=1;
@@ -51,20 +61,78 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	private long endSearchTime;
 	private HashMap<IGameState, Integer> tmpHash;
 	
+	Evaluator evaluator;
+	
 	public void setFirstEndTime(long endTime) {
 		this.endTime = endTime - 600;
 	}
 	
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
 	public void initMatch(Match initMatch) {
 		match = initMatch;
 		game = initMatch.getGame();
 		playerNumber = game.getRoleIndex(match.getRole());
 		enemyNumber = (playerNumber == 0) ? 1 : 0;
 
-                // end time is set from outside
+        // end time is set from outside
+
+		// try to find previous results of this game in a file.
+		MD5Hash hash = new MD5Hash(game.getSourceGDL());
+		try {
+			FileInputStream istream = new FileInputStream(hash.toString());
+			ObjectInputStream ois = new ObjectInputStream(istream);
+			
+			// if no exception occurred here, we have valid data. read out.			
+			HashMap<String, Integer> tmpHashRead = (HashMap<String, Integer>) ois.readObject();
+			HashMap<String, ValuesEntry> valuesRead = (HashMap<String, ValuesEntry>) ois.readObject();
+			tmpHash = new HashMap<IGameState, Integer>();
+			for(Entry<String, Integer> entry : tmpHashRead.entrySet()) {
+				String fluentString = entry.getKey();
+				List<String> fluentList = RuleOptimizer.getListFromFluentString(fluentString);
+				
+				List<CompoundTerm> compTermList = new ArrayList<CompoundTerm>();
+				
+				for(String fluent : fluentList) {
+					compTermList.add(EclipseConnector.getInstance().parseTerm(fluent));
+				}
+				HelpingStateAdapter state = new HelpingStateAdapter(EclipseConnector.getInstance(), compTermList); 
+				tmpHash.put(state, entry.getValue());
+			}
+
+			for(Entry<String, ValuesEntry> entry : valuesRead.entrySet()) {
+				String fluentString = entry.getKey();
+				List<String> fluentList = RuleOptimizer.getListFromFluentString(fluentString);
+				
+				List<CompoundTerm> compTermList = new ArrayList<CompoundTerm>();
+				
+				for(String fluent : fluentList) {
+					compTermList.add(EclipseConnector.getInstance().parseTerm(fluent));
+				}
+				HelpingStateAdapter state = new HelpingStateAdapter(EclipseConnector.getInstance(), compTermList); 
+				values.put(state, entry.getValue());
+			}
+			System.out.println("Done reading hashes.");
+		} catch(FileNotFoundException ex) {
+			// we have no data. or the game is rewritten/scrambled whatsoever.
+			System.out.println("No file found.");
+		} catch(IOException e) {
+			// An unspecified error occurred.
+			System.out.println("IOException.");
+		} catch(ClassNotFoundException e) {
+			// While reading, the class was not found.
+			System.out.println("Class not found.");
+		} catch(Exception e) {
+			// Something totally irrelevant just happened.
+			System.out.println("Some exception occurred.");
+			e.printStackTrace(System.out);
+		}
 		
-		currentDepthLimit = 11;
+		
+		// Set up the evaluator
+		this.evaluator = new Evaluator(values, goodStates);
+		
+		currentDepthLimit = 1;
 		try {
 			// set the game root node
 			IGameNode root = game.getTree().getRootNode();
@@ -155,9 +223,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		
 		if(System.currentTimeMillis() >= endSearchTime){
 //			tmpHash.put(node.getState(), evaluateNode(node));
-			// we dont need to evaluate the state, because good values for the decision
+			// we don't need to evaluate the state, because good values for the decision
 			// should be made in the last iteration
-			// if we cant even make the iteration with depthlimit 1 we just suck
+			// if we can't even make the iteration with depth limit 1 we just suck
 			throw new InterruptedException("interrupted by time");
 		}
 
@@ -169,6 +237,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		}
 
 		if(node.isTerminal()){
+			// remember this state as being good to reach -> goal Distance
+			goodStates.add(node.getState());
+			
 			// can also save in constant hash
 			values.put(node.getState(), new ValuesEntry(game.getGoalValues(node), Integer.MAX_VALUE));
 			tmpHash.put(node.getState(), game.getGoalValues(node)[playerNumber]);
@@ -178,8 +249,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		if(visitedStates.containsKey(node.getState())){
 			Integer foundDepth = visitedStates.get(node.getState());
 			if(foundDepth <= depth){
-				// have already seen this and therefor evaluated it
-				// there cant be the same state twice on one path
+				// have already seen this and therefore evaluated it
+				// there can't be the same state twice on one path
 				return false;
 			}
 		}
@@ -197,18 +268,20 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			if(DLS(child, depth+1, alpha, beta)){
 				expandFurther = true;
 			}
+			
 			// MiniMax
 			game.regenerateNode(node);
 			game.regenerateNode(child);
 			Integer val = tmpHash.get(child.getState());
-			// contraint: (val != null) because of DLS(child, ... )
+			
+			// constraint: (val != null) because of DLS(child, ... )
 			if(val == null)
 				System.out.println("WHAT THE FUCK");
 
 			// alpha: guaranteed value for max player
 			//			-> the higher the better for max, worse for min
 			//			-> start at positive INFINITY
-			// berta: guarantedd value for min player
+			// beta: guaranteed value for min player
 			//			-> the lower the better for min, worse for max
 			//			-> start at negative INFINITY
 
@@ -244,11 +317,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 		Integer val1 = tmpHash.get(node.getState());
 		if(val1 != null)
 			return val1;
-		ValuesEntry val = values.get(node.getState());
-		if(val != null)
-			return val.getGoalArray()[playerNumber];
-		else
-			return 0;
+		
+		// If the tmpHash doesn't help us, call the evaluator to calculate some fancy stuff from simulation and "goal distance".
+		return evaluator.evaluateNode(node, playerNumber);
 	}
 
 	/**
@@ -430,13 +501,17 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	private void simulateGame(IGameNode start) throws InterruptedException {
 		// first we just play a game
 		IGameNode currentNode = start;
-		//currentNode.setPreserve(true);
+
 		game.regenerateNode(currentNode);
 		int[] value;
 		while(true) {
 			
 			// game over?
-			if(currentNode.isTerminal()) { 
+			if(currentNode.isTerminal()) {
+				// remember this state as being good
+				goodStates.add(currentNode.getState());
+				
+				// set the value and break
 				value = currentNode.getState().getGoalValues();
 				break;
 			}
@@ -506,7 +581,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			
 			ObjectOutputStream oos = new ObjectOutputStream(out);
 			
-			oos.writeObject(values);
+			oos.writeObject(tmpHashNew);
+			oos.writeObject(valuesHashNew);
 			oos.close();
 		} catch (IOException ex) {
 			Logger.getLogger(TwoPlayerStrategy.class.getName()).log(Level.SEVERE, null, ex);
