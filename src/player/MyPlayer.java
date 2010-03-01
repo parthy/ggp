@@ -1,4 +1,5 @@
 package player;
+
 import java.util.Arrays;
 
 import org.eclipse.palamedes.gdl.connection.Message;
@@ -9,10 +10,13 @@ import org.eclipse.palamedes.gdl.core.model.utils.Game;
 import org.eclipse.palamedes.gdl.core.simulation.IStrategy;
 
 public final class MyPlayer extends Player {
-	public static IStrategy strategy;
+
+    public static IStrategy strategy;
+    private final Boolean OPTIMIZE_RULES = false;
+
     /**
      * This method is called when a new match begins.
-	 *
+     *
      * <br/>
      * msg="(START MATCHID ROLE GAMEDESCRIPTION STARTCLOCK PLAYCLOCK)"<br/>
      * e.g. msg="(START tictactoe1 white ((role white) (role black) ...) 1800 120)" means:
@@ -26,16 +30,16 @@ public final class MyPlayer extends Player {
      *   <li>for each move you have 120 seconds</li>
      * </ul>
      */
-    public void commandStart(Message msg){
+    public void commandStart(Message msg) {
 
         // create the clock
-        int playClock  = msg.getPlayClock()  - 1;
+        int playClock = msg.getPlayClock() - 1;
         int startClock = msg.getStartClock() - 1;
-        
-        long endTime = System.currentTimeMillis() + 1000*startClock;
 
-        System.out.println( "Start Clock " + startClock );
-        System.out.println( "Play  Clock " + playClock  );
+        long endTime = System.currentTimeMillis() + 1000 * startClock;
+
+        System.out.println("Start Clock " + startClock);
+        System.out.println("Play  Clock " + playClock);
 
         // get the game from the database
         /** XXX: You can change here between GameFactory.JAVAPROVER, GameFactory.JOCULAR
@@ -45,37 +49,33 @@ public final class MyPlayer extends Player {
          *       GameFactory.PROLOG is probably the fastest option, but you need
          *       to have Eclipse-Prolog installed (http://www.eclipse-clp.org/). */
         GameFactory factory = GameFactory.getInstance();
-        RuleOptimizer ruleOptimizer = new RuleOptimizer();
-        IGame runningGame = factory.createGame( GameFactory.PROLOGPROVER,
-                                                ruleOptimizer.reorderGDL(msg.getGameDescription()));
-		System.out.println("MyPlayer created the game.");
+        String rules = msg.getGameDescription();
 
-        
+        if (OPTIMIZE_RULES) {
+            RuleOptimizer ruleOptimizer = new RuleOptimizer();
+            rules = ruleOptimizer.reorderGDL(msg.getGameDescription());
+        }
+
+        IGame runningGame = factory.createGame(GameFactory.PROLOGPROVER, rules);
+        System.out.println("MyPlayer created the game.");
+
+
         /** XXX: If you implement another strategy here is the place to instantiate it */
-		/** and if you wanna use a heuristic here is also the place to put it in */
-
+        /** and if you wanna use a heuristic here is also the place to put it in */
         strategy = new MainStrategy(endTime);
 
-        System.out.println( "MyPlayer created the strategy "      +
-                            strategy.getClass().getSimpleName() +
-                            "." );
-
-        System.out.println( "MyPlayer starts contemplate while doing yoga." );
-
         // create a match
-        realMatch = createRealMatch( msg.getMatchId(),
-                                   	 runningGame,
-                                   	 strategy,
-                                   	 msg.getRole(),
-                                   	 startClock,
-                                   	 playClock );
-        
-        System.out.println( "MyPlayer created the match." );
-        System.out.println( "MyPlayer is prepared to start the game." );
-        System.out.println("stats:"+runningGame.getStatistic());
+        realMatch = createRealMatch(msg.getMatchId(),
+                runningGame,
+                strategy,
+                msg.getRole(),
+                startClock,
+                playClock);
+
+        System.out.println("stats:" + runningGame.getStatistic());
     }
-    
-	/**
+
+    /**
      * This method is called once for each move<br/>
      * <br/>
      * msg = "(PLAY MATCHID JOINTMOVE)<br/>
@@ -86,23 +86,23 @@ public final class MyPlayer extends Player {
      *   and black did a "noop".<br/>
      * @return the move of this player
      */
-    public String commandPlay(Message msg){
+    public String commandPlay(Message msg) {
         checkMatchId(msg);
 
         // only make a turn if the move list is not empty
         // is it empty it means we hit the first play message, setting the
         // initial state is done while constructing the match object
-        if ( msg.hasMoves() ){
-            System.out.println( "Moves from GameMaster: " +
-                                Arrays.toString(msg.getMoves()) );
-           
+        if (msg.hasMoves()) {
+            System.out.println("Moves from GameMaster: "
+                    + Arrays.toString(msg.getMoves()));
+
             String[] prepared = prepareMoves(msg);
 
             // got the initial NIL in case of length == 0
-            if (prepared.length != 0)
-
-                // prepare moves
-                realMatch.makeTurn( prepared );
+            if (prepared.length != 0) // prepare moves
+            {
+                realMatch.makeTurn(prepared);
+            }
 
         }
 
@@ -110,49 +110,47 @@ public final class MyPlayer extends Player {
         String move = realMatch.getMove().getMove().toUpperCase();
 
         // logging the resulting move
-        System.out.println( "Our move: " + move );
-        System.out.println("stats:"+((Game)realMatch.getGame()).getStatistic());
+        System.out.println("Our move: " + move);
+        System.out.println("stats:" + ((Game) realMatch.getGame()).getStatistic());
         return move;
     }
-
 
     /**
      * This method is called if the match is over
      *
      * msg="(STOP MATCHID JOINTMOVE)
      */
-    public void commandStop(Message msg){
+    @Override
+    public void commandStop(Message msg) {
         checkMatchId(msg);
 
         // adds the moves to the match
-        if ( msg.hasMoves() )
-
-            // real work is done here
-            realMatch.makeTurn( prepareMoves(msg) );
+        if (msg.hasMoves()) // real work is done here
+        {
+            realMatch.makeTurn(prepareMoves(msg));
+        }
 
         // check if we agree to be in a final state and log the result
-        if ( !realMatch.getCurrentNode().isTerminal() )
-            System.out.println( "Game stopped but not finished" );
-        else{
-            System.out.println( "Game finished" );
-			try {
-	        	int[] goalvalues;
-				goalvalues = realMatch.getGame().getGoalValues(realMatch.getCurrentNode());
-	        	System.out.println( "goal:" );
-	        	for(int i=0;i<goalvalues.length;++i){
-	        		System.out.print( goalvalues[i]+" " );
-	        	}
-	        	System.out.println();
-			} catch (InterruptedException e) {
-				System.out.println("Timeout while computing goal values:");
-				e.printStackTrace();
-			}
+        if (!realMatch.getCurrentNode().isTerminal()) {
+            System.out.println("Game stopped but not finished");
+        } else {
+            System.out.println("Game finished");
+            try {
+                int[] goalvalues;
+                goalvalues = realMatch.getGame().getGoalValues(realMatch.getCurrentNode());
+                System.out.println("goal:");
+                for (int i = 0; i < goalvalues.length; ++i) {
+                    System.out.print(goalvalues[i] + " ");
+                }
+                System.out.println();
+            } catch (InterruptedException e) {
+                System.out.println("Timeout while computing goal values:");
+                e.printStackTrace();
+            }
         }
-        
+
         // destroy everything in the strategy and the strategy itself
         strategy.dispose();
         strategy = null;
     }
-
-
 }

@@ -25,6 +25,7 @@ public class MainStrategy implements IStrategy {
 	}
 	
 	public void initMatch(Match initMatch) {
+            System.out.println("ROLECOUNT "+initMatch.getGame().getRoleCount());
 		if(initMatch.getGame().getRoleCount() == 1){
 			this.myStrategy = new OnePlayerSearch();
 			((OnePlayerSearch) myStrategy).setFirstEndTime(firstEndTime);

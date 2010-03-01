@@ -1,7 +1,7 @@
 /*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
-*/
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package player;
 
 import java.util.LinkedList;
@@ -9,24 +9,26 @@ import java.util.List;
 import java.util.Random;
 
 /**
-*
-* ok, this is game theory
-* input as matrix -> the winvalues for player1 -> between 0-100
+ *
+ * ok, this is game theory
+ * input as matrix -> the winvalues for player1 -> between 0-100
+ * player1 chooses the column
+ * player2 chooses the row
  * a b
  * c d
  * is list of lists:
  * {{a, c}, {b, d}}
+ * so its a list of moves by player1
  *
+ * only zero-sum games
+ * the output will be 2 vectors
+ * if one value in this vector is > 1.0 {
+ * another value is exactly 1.0
+ * take the value with 1.0 and treat the other (> 1.0) like 0
+ * }
  *
-* only zero-sum games
-* the output will be 2 vectors
-* if one value in this vector is > 1.0 {
-* another value is exactly 1.0
-* take the value with 1.0 and treat the other (> 1.0) like 0
-* }
-*
-* @author konrad
-*/
+ * @author konrad
+ */
 public class SimplexSolver {
 
     private Integer pivotX;
@@ -40,17 +42,24 @@ public class SimplexSolver {
     private List<Integer> visitedPivotX = new LinkedList<Integer>();
     private LinkedList<Boolean> dominatedX;
     private LinkedList<Boolean> dominatedY;
+    private final Boolean OUTPUT = false;
 
     public void test() {
 
         for (int i = 0; i < 1; i++) {
 
-            System.out.println("\n|||||||||||| new problem |||||||||||||\n");
+            if (OUTPUT) {
+                System.out.println("\n|||||||||||| new problem |||||||||||||\n");
+            }
 
             LinkedList<LinkedList<Float>> problem = make2PlayerProblem(5, 4);
 
-            System.out.println(problem);
-            System.out.println("calculated value " + solve(problem));
+            if (OUTPUT) {
+                System.out.println(problem);
+            }
+            if (OUTPUT) {
+                System.out.println("calculated value " + solve(problem));
+            }
         }
     }
 
@@ -60,19 +69,19 @@ public class SimplexSolver {
         for (int row = 0; row < movesI; row++) {
             LinkedList<Float> line = new LinkedList<Float>();
             /* for (int column = 0; column < movesII; column++) {
-line.add(new Float(random.nextInt(101)));
-}
-*/
+            line.add(new Float(random.nextInt(101)));
+            }
+             */
             switch (row) {
-/*                case 0:
-                    line.add(7f);
-                    line.add(7f);
-                    break;
+                /*                case 0:
+                line.add(7f);
+                line.add(7f);
+                break;
                 case 1:
-                    line.add(8f);
-                    line.add(8f);
-                    break;
-    */            case 0:
+                line.add(8f);
+                line.add(8f);
+                break;
+                 */ case 0:
                     line.add(10f);
                     line.add(10f);
                     line.add(9f);
@@ -111,41 +120,57 @@ line.add(new Float(random.nextInt(101)));
     }
 
     public Float solve(LinkedList<LinkedList<Float>> problem) {
-// System.out.println(problem);
+// if (OUTPUT) System.out.println(problem);
 
         // dont forget regenerateDimated at the end
-         removeDominated(problem);
-        // System.out.println("remove dominated: "+problem);
+        removeDominated(problem);
+        // if (OUTPUT) System.out.println("remove dominated: "+problem);
 
         LinkedList<LinkedList<Float>> matrix = transpose(problem);
- System.out.println("transposed: "+problem);
+        if (OUTPUT) {
+            System.out.println("transposed: " + problem);
+        }
         matrix = preprocess(matrix);
 
- System.out.println("preprocessed: "+matrix);
- System.out.println("vectorY " + vectorY + " vectorX " + vectorX);
+        if (OUTPUT) {
+            System.out.println("preprocessed: " + matrix);
+        }
+        if (OUTPUT) {
+            System.out.println("vectorY " + vectorY + " vectorX " + vectorX);
+        }
 
         //clear for each problem
         visitedPivot.clear();
 
         while (!isSolved(matrix)) {
- System.out.println("======= next step ===========");
+            if (OUTPUT) {
+                System.out.println("======= next step ===========");
+            }
 
             //set pivotX, pivotY, pivotValue
             choosePivot(matrix);
- System.out.println("x: " + pivotX + " y: " + pivotY + " val: " + pivotVal);
+            if (OUTPUT) {
+                System.out.println("x: " + pivotX + " y: " + pivotY + " val: " + pivotVal);
+            }
 
             if (pivotVal == null) {
                 return 0f;
             }
 
             switchVectors(matrix);
- System.out.println("vectorY " + vectorY + " vectorX " + vectorX);
+            if (OUTPUT) {
+                System.out.println("vectorY " + vectorY + " vectorX " + vectorX);
+            }
             matrix = oneStep(matrix);
- System.out.println(matrix);
+            if (OUTPUT) {
+                System.out.println(matrix);
+            }
         }
 
         makeResult(matrix);
-        System.out.println("playerI " + movesI + " playerII " + movesII);
+        if (OUTPUT) {
+            System.out.println("playerI " + movesI + " playerII " + movesII);
+        }
 
         LinkedList<Float> tmp = movesI;
         movesI = movesII;
@@ -153,8 +178,10 @@ line.add(new Float(random.nextInt(101)));
 
         Float result = calcValue(problem);
 
-         regenerateDominated(problem);
-         System.out.println("playerI " + movesI + " playerII " + movesII);
+        regenerateDominated(problem);
+        if (OUTPUT) {
+            System.out.println("playerI " + movesI + " playerII " + movesII);
+        }
         return result;
     }
 
@@ -164,12 +191,12 @@ line.add(new Float(random.nextInt(101)));
     }
 
     /**
-*
-* the value of the parent node
-*
-* @param problem
-* @return
-*/
+     *
+     * the value of the parent node
+     *
+     * @param problem
+     * @return
+     */
     private Float calcValue(LinkedList<LinkedList<Float>> problem) {
         Float value = 0f;
         for (int j = 0; j < movesI.size(); j++) {
@@ -192,22 +219,24 @@ line.add(new Float(random.nextInt(101)));
         visitedPivotX.clear();
 
         while (pivotX == null || pivotY == null) {
-// System.out.println(visitedPivotX);
+// if (OUTPUT) System.out.println(visitedPivotX);
 
             Float min = null;
 
             for (int i = 0; i < (lastline.size() - 1); i++) {
-                // System.out.println(i+" contains "+visitedPivotX.contains(i));
+                // if (OUTPUT) System.out.println(i+" contains "+visitedPivotX.contains(i));
                 if (!visitedPivotX.contains(i) && (min == null || lastline.get(i) < min)) {
                     pivotX = i;
                     min = lastline.get(i);
                 }
             }
 
-// System.out.println(pivotX);
+// if (OUTPUT) System.out.println(pivotX);
             if (pivotX == null) {
                 //cant solve the problem
-                System.out.println("cant solve the problem " + problem);
+                if (OUTPUT) {
+                    System.out.println("cant solve the problem " + problem);
+                }
                 pivotVal = null;
                 return;
             }
@@ -217,7 +246,7 @@ line.add(new Float(random.nextInt(101)));
             //each row
             for (int j = 0; j < (problem.size() - 1); j++) {
                 Float valY = problem.get(j).get(problem.get(j).size() - 1) / (-problem.get(j).get(pivotX));
-// System.out.println("valY " + valY + " " + visitedPivot.contains(problem.get(j).get(pivotX)));
+// if (OUTPUT) System.out.println("valY " + valY + " " + visitedPivot.contains(problem.get(j).get(pivotX)));
                 if (!visitedPivot.contains(problem.get(j).get(pivotX)) && (valY > 0) && (min == null || valY < min)) {
                     pivotY = j;
                     min = valY;
@@ -233,8 +262,10 @@ line.add(new Float(random.nextInt(101)));
 
         // calculate it
         pivotVal = problem.get(pivotY).get(pivotX);
+        if (pivotVal == null)
+            System.out.println("WARNING: SimplexSolver is exploding");
         visitedPivot.add(pivotVal);
-// System.out.println("visited " + visitedPivot);
+// if (OUTPUT) System.out.println("visited " + visitedPivot);
     }
 
     private boolean isSolved(LinkedList<LinkedList<Float>> problem) {
@@ -314,9 +345,12 @@ line.add(new Float(random.nextInt(101)));
 
 
         Float gameValue = -lastline.get(lastline.size() - 1);
+        if(gameValue == null)
+            System.out.println("WARNING: null game in SimplexSolver");
         for (int i = 0; i < (problem.size() - 1); i++) {
             Float value = problem.get(i).get(problem.get(i).size() - 1);
-            //System.out.println(value/gameValue);
+            //if (OUTPUT)
+            System.out.println(value+" "+gameValue);
             if (vectorY.get(i) < 0) {
                 //add to player I
                 movesI.set(-vectorY.get(i) - 1, value / gameValue);
@@ -327,7 +361,7 @@ line.add(new Float(random.nextInt(101)));
         for (int j = 0; j < (lastline.size() - 1); j++) {
             if (vectorX.get(j) < 0) {
                 //add to player I
-                //System.out.println(vectorX.get(j));
+                //if (OUTPUT) System.out.println(vectorX.get(j));
                 movesI.set(-vectorX.get(j) - 1, lastline.get(j) / gameValue);
             } else {
                 movesII.set(vectorX.get(j) - 1, lastline.get(j) / gameValue);
@@ -353,17 +387,17 @@ line.add(new Float(random.nextInt(101)));
     }
 
     /**
-* make the tableau complete
-* also make 2 lines for the vectors
-* -> player I is negative values
-* -> player 2 is positive values
-*
-* +1 to every value to avoid zero
-* -> a constant addition does not affect the optimization-values
-*
-* @param problem
-* @return
-*/
+     * make the tableau complete
+     * also make 2 lines for the vectors
+     * -> player I is negative values
+     * -> player 2 is positive values
+     *
+     * +1 to every value to avoid zero
+     * -> a constant addition does not affect the optimization-values
+     *
+     * @param problem
+     * @return
+     */
     private LinkedList<LinkedList<Float>> preprocess(LinkedList<LinkedList<Float>> problem) {
 
         Integer length = null;
@@ -437,7 +471,7 @@ line.add(new Float(random.nextInt(101)));
                         // remove this row
                         problem.remove(row);
                         somethingChanged = true;
-                        // System.out.println("removeDominated: "+problem);
+                        // if (OUTPUT) System.out.println("removeDominated: "+problem);
                         // calculate and save which row it is
                         // check whether something before row was already taken out
                         for (int count = 0; count <= row; count++) {
@@ -446,7 +480,7 @@ line.add(new Float(random.nextInt(101)));
                             }
                         }
                         dominatedX.set(row, true);
-                        // System.out.println("dominatedX "+dominatedX);
+                        // if (OUTPUT) System.out.println("dominatedX "+dominatedX);
                         break;
                     }
                 }
@@ -472,21 +506,21 @@ line.add(new Float(random.nextInt(101)));
                         for (int row = 0; row < problem.size(); row++) {
                             problem.get(row).remove(column);
                         }
-                        // System.out.println("removeDominated: "+problem);
+                        // if (OUTPUT) System.out.println("removeDominated: "+problem);
                         for (int count = 0; count <= column; count++) {
                             if (count < dominatedY.size() && dominatedY.get(count)) {
                                 column++;
                             }
                         }
                         dominatedY.set(column, true);
-                        // System.out.println("dominatedY "+dominatedY);
+                        // if (OUTPUT) System.out.println("dominatedY "+dominatedY);
                         break;
                     }
                 }
             }
         }
-// System.out.println("dominatedX "+dominatedX);
-// System.out.println("dominatedY "+dominatedY);
+// if (OUTPUT) System.out.println("dominatedX "+dominatedX);
+// if (OUTPUT) System.out.println("dominatedY "+dominatedY);
 
 
     }

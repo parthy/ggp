@@ -66,6 +66,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	}
 	
 	public void initMatch(Match arg0) {
+            System.out.println("\nINIT: MultiPlayerStrategy.");
 		// Initialize game variables
 		match = arg0;
 		game = match.getGame();
@@ -259,6 +260,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 
 	@Override
 	public IMove getMove(IGameNode arg0) {
+            System.out.println("\n");
 		// first search for the time we have
 		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 1200;
 		queue.clear();
