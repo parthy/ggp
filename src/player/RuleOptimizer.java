@@ -11,55 +11,49 @@ public class RuleOptimizer {
     	ArrayList<String> facts = new ArrayList<String>();
     	ArrayList<String> rules = new ArrayList<String>();
     	String rulesString = gameDescription;
-    	
+    	System.out.println("Optimizing: \n"+gameDescription);
     	// Search string for facts and init statements
-    	Pattern p = Pattern.compile("(\\(init \\([^\\(]*\\)\\)) ");
-    	Matcher m = p.matcher(rulesString);
+    	String regex_init = "^[ ]*(\\(init \\([^\\(]*\\)\\))[ ]*";
+    	String regex_fact = "^[ ]*(\\([^\\(\\?\\)<]*\\))[ ]*";
+    	
     	//System.out.println("--- INIT ---");
-    	while(m.find()) {
-    		//System.out.println(rulesString.substring(m.start(1), m.end(1)));
-    		facts.add(rulesString.substring(m.start(1), m.end(1)));
-    		if(m.start(1) > 0 && m.end(1) < rulesString.length())
-    			rulesString = rulesString.substring(0, m.start(1)-1).concat(rulesString.substring(m.end(1)));
-    		else if(m.start(1) > 0 && m.end(1) >= rulesString.length())
-    			rulesString = rulesString.substring(0, m.start(1)-1);
-    		else if(m.start(1) <= 0 && m.end(1) < rulesString.length())
-    			rulesString = rulesString.substring(m.end(1));
-    		m = p.matcher(rulesString);
+    	while(rulesString.length() > 0) {
+	    	// Get the next part
+	    	int opens = 0;
+	    	boolean started=false;
+	    	String part="";
+	    	if(rulesString.substring(0, 1).equals(" ")) rulesString = rulesString.substring(1); 
+	    	for(int i=0; i<rulesString.length(); i++) {
+	    		if(rulesString.substring(i, i+1).equals("(")) {
+	    			if(!started) started = true;
+	    			opens++;
+	    			continue;
+	    		}
+	    		if(rulesString.substring(i, i+1).equals(")")) { 
+	    			if(!started) started = true; 
+	    			opens--;
+	    			continue;
+	    		}
+	    		if(opens == 0 && started) { // one section done
+	    			part = rulesString.substring(0, i);
+	    			break;
+	    		}
+	    	}
+	    	if(part.equals("")) part = rulesString;
+	    	System.out.println("Part = "+part);
+    		// look what kind of stuff we have
+    		if(part.matches(regex_init)) {
+    			System.out.println("Found init fact:\n"+part);
+    			facts.add(0, part);
+    		} else if(part.matches(regex_fact)) {
+    			System.out.println("Found other fact:\n"+part);
+    			facts.add(part);
+        	} else {
+        		System.out.println("Found rule:\n"+part);
+    			rules.add(part);
+    		}
+    		rulesString = rulesString.substring(part.length());
     	}
-    	//System.out.println("--- OTHER FACTS ---");
-    	p = Pattern.compile("^[ ]*(\\([^\\(\\?\\)]*\\)) ");
-    	m = p.matcher(rulesString);
-    	while(m.find()) {
-    		//System.out.println(rulesString.substring(m.start(1), m.end(1))+", "+m.start(1)+":"+m.end(1));
-    		facts.add(rulesString.substring(m.start(1), m.end(1)));
-    		if(m.start(1) > 0 && m.end(1) < rulesString.length())
-    			rulesString = rulesString.substring(0, m.start(1)-1).concat(rulesString.substring(m.end(1)));
-    		else if(m.start(1) > 0 && m.end(1) >= rulesString.length())
-    			rulesString = rulesString.substring(0, m.start(1)-1);
-    		else if(m.start(1) <= 0 && m.end(1) < rulesString.length())
-    			rulesString = rulesString.substring(m.end(1));
-    		m = p.matcher(rulesString);
-    	}
-    	
-    	// Now we only have rules. Iterate them and try to reorder there
-    	p = Pattern.compile("(\\(<= [^<=]*\\)) \\(<=");
-    	m = p.matcher(rulesString);
-    	//System.out.println("--- RULES ---");
-    	while(m.find()) {
-    		//System.out.println(rulesString.substring(m.start(1), m.end(1)));
-    		rules.add(rulesString.substring(m.start(1), m.end(1)));
-    		if(m.start(1) > 0 && m.end(1) < rulesString.length())
-    			rulesString = rulesString.substring(0, m.start(1)-1).concat(rulesString.substring(m.end(1)));
-    		else if(m.start(1) > 0 && m.end(1) >= rulesString.length())
-    			rulesString = rulesString.substring(0, m.start(1)-1);
-    		else if(m.start(1) <= 0 && m.end(1) < rulesString.length())
-    			rulesString = rulesString.substring(m.end(1));
-    		m = p.matcher(rulesString);
-    	}
-    	// what remains is the last rule with a space at the beginning.
-    	rules.add(rulesString.substring(1));
-    	
     	// add facts to the game string
     	rulesString = "";
     	for(String fact : facts) {
@@ -70,7 +64,7 @@ public class RuleOptimizer {
     		rulesString += " "+optimizeRule(rule);
     	}
 		
-    	System.out.println(rulesString);
+    	//System.out.println(rulesString);
     	return rulesString;
 	}
     
