@@ -42,6 +42,7 @@ public class MainStrategy implements IStrategy {
 	
 	@Override
 	public IMove getMove(IGameNode arg0) {
+            System.out.println("\n");
 		return this.myStrategy.getMove(arg0);
 	}
 

@@ -45,7 +45,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
     /**
      * This Set contains all known "good" states, i.e. terminals, states where we definitely end up with good score, and so on.
      */
-    private Set<IGameState> goodStates = new HashSet<IGameState>();
+    private Set<MemorizeState> memorizeStates = new HashSet<MemorizeState>();
     private int currentDepthLimit;
     private int nodesVisited;
     private int max = 1;
@@ -127,7 +127,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
 
         // Set up the evaluator
-        this.evaluator = new Evaluator(values, goodStates);
+        this.evaluator = new Evaluator(values, memorizeStates);
 
         currentDepthLimit = 1;
         try {
@@ -237,8 +237,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
         if (node.isTerminal()) {
             // remember this state as being good to reach -> goal Distance
-            goodStates.add(node.getState());
-
+            if (game.getGoalValues(node)[playerNumber] <= 20 || game.getGoalValues(node)[playerNumber] >= 80) {
+                memorizeStates.add(new MemorizeState(node.getState(), game.getGoalValues(node)[playerNumber]));
+            }
             // can also save in constant hash
             values.put(node.getState(), new ValuesEntry(game.getGoalValues(node), Integer.MAX_VALUE));
             propagatedHash.put(node.getState(), game.getGoalValues(node)[playerNumber]);
@@ -377,7 +378,6 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
     @Override
     public IMove getMove(IGameNode current) {
-        System.out.println("\n");
         IGameNode best = null;
         try {
             game.regenerateNode(current);
@@ -394,7 +394,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             // nope -> try to search the same depth like we did in the last search
             // but this time one from one step deeper, so ...
             //currentDepthLimit=current.getDepth()+1;
-            currentDepthLimit--;
+            currentDepthLimit = current.getDepth() + 1;
 
             IDS(endTime, current);
 
@@ -460,8 +460,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         IMove move = null;
         for (int i = 0; i < moves.size(); i++) {
             if ((moves.get(i) >= 0f) && moves.get(i) <= 1f) {
-                System.out.println("Possible Move: " + myMoves[i] + " if (" + currentSpace
-                        + " <= " + rand + " < " + (currentSpace + moves.get(i) * 1000)+" ).");
+                System.out.println("Possible Move: " + myMoves[i] + " if (" + currentSpace + " <= " + rand + " < " + (currentSpace + moves.get(i) * 1000) + " ).");
                 if (move == null && (currentSpace <= rand) && (rand < (currentSpace + moves.get(i) * 1000))) {
                     move = myMoves[i];
                 }
@@ -511,7 +510,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             // game over?
             if (currentNode.isTerminal()) {
                 // remember this state as being good
-                goodStates.add(currentNode.getState());
+                if (game.getGoalValues(currentNode)[playerNumber] <= 20 || game.getGoalValues(currentNode)[playerNumber] >= 80) {
+                    memorizeStates.add(new MemorizeState(currentNode.getState(), game.getGoalValues(currentNode)[playerNumber]));
+                }
 
                 // set the value and break
                 value = currentNode.getState().getGoalValues();
@@ -605,5 +606,6 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         this.values = null;
         this.visitedStates.clear();
         this.visitedStates = null;
+        memorizeStates = null;
     }
 }
