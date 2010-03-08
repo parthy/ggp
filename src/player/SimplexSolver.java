@@ -52,7 +52,7 @@ public class SimplexSolver {
                 System.out.println("\n|||||||||||| new problem |||||||||||||\n");
             }
 
-            LinkedList<LinkedList<Float>> problem = make2PlayerProblem(3, 3);
+            LinkedList<LinkedList<Float>> problem = make2PlayerProblem(4, 4);
 
             if (OUTPUT) {
                 System.out.println(problem);
@@ -73,70 +73,69 @@ public class SimplexSolver {
             }
              */
             switch (row) {
-                /*     case 0:
-                line.add(4f);
-                line.add(2f);
-                line.add(80f);
+//P: [[0.0, 50.0, 0.0, 50.0], [0.0, 0.0, 50.0, 0.0], [50.0, 0.0, 0.0, 0.0], [0.0, 50.0, 50.0, 0.0]]
+                case 0:
+                    line.add(0f);
+                    line.add(50f);
+                    line.add(0f);
+                    line.add(50f);
+                    break;
+                case 1:
+                    line.add(0f);
+                    line.add(0f);
+                    line.add(50f);
+                    line.add(0f);
+                    break;
+                case 2:
+                    line.add(50f);
+                    line.add(0f);
+                    line.add(0f);
+                    line.add(0f);
+                    break;
+                case 3:
+                    line.add(0f);
+                    line.add(50f);
+                    line.add(50f);
+                    line.add(0f);
+                    break;
+                /* case 0:
+                line.add(5f);
+                line.add(3f);
+                line.add(7f);
                 break;
                 case 1:
-                line.add(2f);
-                line.add(3f);
-                line.add(100f);
-                break;
-                case 2:
-                line.add(5f);
+                line.add(7f);
+                line.add(9f);
                 line.add(1f);
-                line.add(75f);
                 break;
-                case 3:
-                line.add(-12f);
-                line.add(-8f);
-                line.add(0f);
-                break;
-                 */ case 0:
-                    line.add(5f);
-                    line.add(3f);
-                    line.add(7f);
-                    break;
-                case 1:
-                    line.add(7f);
-                    line.add(9f);
-                    line.add(1f);
-                    break;
                 case 2:
-                    line.add(10f);
-                    line.add(6f);
-                    line.add(2f);
-                    break;
-                /*  case 0:
                 line.add(10f);
-                line.add(10f);
-                line.add(9f);
+                line.add(6f);
                 line.add(2f);
                 break;
-                case 1:
-                line.add(7f);
-                line.add(4f);
+                case 0:
+                line.add(10f);
                 line.add(7f);
                 line.add(6f);
+                line.add(9f);
+                break;
+                case 1:
+                line.add(10f);
+                line.add(4f);
+                line.add(6f);
+                line.add(9f);
                 break;
                 case 2:
-                line.add(6f);
-                line.add(6f);
                 line.add(9f);
-                line.add(4f);
+                line.add(7f);
+                line.add(9f);
+                line.add(8f);
                 break;
                 case 3:
-                line.add(9f);
-                line.add(9f);
-                line.add(8f);
+                line.add(2f);
+                line.add(6f);
+                line.add(4f);
                 line.add(3f);
-                break;
-                case 4:
-                line.add(8f);
-                line.add(5f);
-                line.add(8f);
-                line.add(7f);
                 break;
                  */            }
 
@@ -148,17 +147,9 @@ public class SimplexSolver {
     }
 
     public Float solve(LinkedList<LinkedList<Float>> problem) {
-// if (OUTPUT) System.out.println(problem);
-
         // dont forget regenerateDimated at the end
         //      removeDominated(problem);
         // if (OUTPUT) System.out.println("remove dominated: "+problem);
-
-        /*      LinkedList<LinkedList<Float>> matrix = transpose(problem);
-        if (OUTPUT) {
-        System.out.println("transposed: " + problem);
-        }
-         */
         LinkedList<LinkedList<Float>> matrix = copy(problem);
 
         preprocess(matrix);
@@ -200,7 +191,7 @@ public class SimplexSolver {
 
         makeResult(matrix);
         if (OUTPUT) {
-            System.out.println("movesMin " + movesMin+" movesMax " + movesMax);
+            System.out.println("movesMin " + movesMin + " movesMax " + movesMax);
         }
 
         /*              regenerateDominated(problem);
@@ -208,11 +199,12 @@ public class SimplexSolver {
         System.out.println("regenerated playerI " + movesMax + " playerII " + movesMin);
         }
          */
-        return 1/gameValue;
+        // minus the 1 added in copy
+        return 1 / gameValue - 1;
     }
 
     LinkedList<Float> getMoves(LinkedList<LinkedList<Float>> problem) {
-        solve(problem);
+        //    solve(problem);
         return movesMax;
     }
 
@@ -560,7 +552,8 @@ public class SimplexSolver {
         for (int i = 0; i < problem.size(); i++) {
             LinkedList<Float> line = new LinkedList<Float>();
             for (int j = 0; j < problem.get(0).size(); j++) {
-                line.add(problem.get(i).get(j));
+                // add 1 to avoid 0
+                line.add(problem.get(i).get(j) + 1);
             }
             matrix.add(line);
         }

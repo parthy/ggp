@@ -353,6 +353,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
         game.regenerateNode(node);
         propagatedHash.put(node.getState(), Math.round(value));
+//        System.out.println("value: "+value);
 
         return expandFurther;
     }
@@ -457,6 +458,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             problem.add(line);
         }
         System.out.println("P: " + problem);
+        Float gameValue = solver.solve(problem);
+        System.out.println("guaranteed value: "+gameValue);
         LinkedList<Float> moves = solver.getMoves(problem);
 
         // choose the move randomly
