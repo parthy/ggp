@@ -50,14 +50,19 @@ public class Evaluator {
             }
         }
 
-        if (assumedTruth >= 0.9) {
+        if (assumedTruth >= 90) {
+            //System.out.println("\ntruth: "+assumedTruth+"between\n"+node.getState()+"\nand\n"+best.getState());
             return best.getValue();
 
-                    //		System.out.println("Evaluator val: "+val+ " assumed truth: "+assumedTruth);
+            //		System.out.println("Evaluator val: "+val+ " assumed truth: "+assumedTruth);
 
         }
         if (val == null) {
-            return best.getValue();
+            if (best != null) {
+                return best.getValue();
+            } else {
+                return -1;
+            }
         } else {
             return val;
         }
