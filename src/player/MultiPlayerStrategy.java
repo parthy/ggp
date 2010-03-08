@@ -1,9 +1,11 @@
 package player;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
@@ -28,30 +30,29 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	//  - [0] contains the actual goal/simulation/heuristic values
 	//  - [1] looks like: { 0 => counter for simulator, 1 => source of value, one of the constants}
 	private HashMap<IGameState, int[][]> values = new HashMap<IGameState, int[][]>();
+	private Set<MemorizeState> memorizeStates = new HashSet<MemorizeState>();
 	
 	private MultiPlayerHeuristic heuristic;
 
 	// maps a state we visited to the depth where we found it 
 	private HashMap<IGameState, Integer> visitedStates = new HashMap<IGameState, Integer>();
 	
-	// not yet instantiated, because we can specify a domain-specific comparator
-	private PriorityQueue<IGameNode> queue;
-	
 	// the current depth limit for IDS (not needed right now)
-	// private int currentDepthLimit;
+	private int currentDepthLimit;
 	
 	// the root node of our game tree
 	IGameNode root;
 	
 	private long endTime;
+	private long endSearchTime;
 	private int nodesVisited;
 	
 	// flags for game properties. by optimistic assumption we set these initially to true and try to refute this in simulation.
 	private boolean turntaking = true;
 	private boolean zerosum = true;
 	private boolean searchFinished = false;
-
-	// constants describing where node evaluations come from
+	
+	 // constants describing where node evaluations come from
 	// SIM means we calculated the values using a monte carlo approach
 	private static int SIM = 0;
 	// GOAL means we actually _know_ that this is the value
@@ -83,162 +84,149 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			} catch(InterruptedException e) {}
 		}
 		System.out.println("While simulating, we got "+values.size()+" values.");
-		// Set the heuristic we want to use
-		this.heuristic = new MultiPlayerHeuristic(values, playerNumber, game.getRoleCount());
-		
-		// Set up the queue for search
-		this.queue = new PriorityQueue<IGameNode>(50, new MultiPlayerComparator(values, playerNumber));
 		
 		// And start search
-		//currentDepthLimit = 1;
-		queue.add(root);
+		currentDepthLimit = 1;
+		
 		try {
-			DFS(0);
+			IDS(endTime, root);
 		} catch(InterruptedException e) {}
 	}
 
-	/**
-	 * Search function for iterative deepening search.
-	 * @param makeValueLimit The minimum depth to which we propagate values to.
-	 */
-	private void DFS(int makeValueLimit) throws InterruptedException {
-		IGameNode currentNode;
-		List<IGameNode> children = new LinkedList<IGameNode>();
-		
-		visitedStates.clear();
-		
-		while(!queue.isEmpty() && System.currentTimeMillis() < endTime) {
-			// get next element from queue
-			currentNode = queue.poll();
-			game.regenerateNode(currentNode);
-			nodesVisited++;
-			//if(nodesVisited % 1000 == 0) System.out.println("visited: "+nodesVisited);
-			
-			// check if we get a value for the values hash
-			if(currentNode.isTerminal()){
-				int[] value = game.getGoalValues(currentNode);
-				values.put(currentNode.getState(), new int[][]{value.clone(), {0, GOAL}});
-				makeValue(currentNode, makeValueLimit);
-				continue;
-			}
-			// Set the value according to a heuristic.
-			//values.put(currentNode.getState(), new int[][]{heuristic.getHeurArray(currentNode), {0, HEUR}});
-			//makeValue(currentNode, makeValueLimit);
-			// leave tracing infos
-			visitedStates.put(currentNode.getState(), currentNode.getDepth()-1);
-			
-			children.clear();
-			
-			// find out possible successors
-			List<IMove[]> allMoves = game.getCombinedMoves(currentNode);
-			IMove[] combMoves;
-			
-			for(int i=0; i<allMoves.size(); ++i) {
-				// watch out for the endTime
-				if(System.currentTimeMillis() >= endTime){
-					//System.err.println("stop search because of time");
-					return;
-				}
-				
-				combMoves = allMoves.get(i);
-				IGameNode next = game.getNextNode(currentNode, combMoves);
-				//next.setPreserve(true);
-				Integer foundDepth = visitedStates.get(next.getState());
-				
-				if(foundDepth == null || foundDepth > currentNode.getDepth()){
-					queue.add(next);
-				}
-				children.add(next);
-			}
+	public boolean IDS(long endSearchTime, IGameNode start) throws InterruptedException {
+	        this.endSearchTime = endSearchTime;
+	        Boolean finishedSearch = false;
 
-		}
-		if(System.currentTimeMillis() >= endTime){
-			//System.err.println("stop search because of time");
-			return;
-		}
-		if(queue.isEmpty()) searchFinished = true;
-		//System.out.println("Search finished, values: "+values.size()+", visited "+nodesVisited+" nodes.");
-	}
+	        try {
+	            boolean canSearchDeeper = true;
+	            while (canSearchDeeper) {
+
+	                System.out.println("currentDepth " + currentDepthLimit);
+	                System.out.println("Now: " + System.currentTimeMillis() + ", endTime: " + endSearchTime);
+	                System.out.println("Visited: " + nodesVisited);
+
+	                visitedStates.clear();
+	                canSearchDeeper = DLS(start, 0);
+	                currentDepthLimit++;
+	            }
+
+	            finishedSearch = true;
+	        } catch (InterruptedException e) {
+	            System.out.println("couldnt finish search because of time");
+	        }
+
+	        System.out.println("stopped search and visited " + nodesVisited + " nodes.");
+
+	        return finishedSearch;
+	    }
 	
 	/**
-	 * Make value function for propagating values we found.
-	 * Follows the strategy determined by zerosum and turntaking flags.
-	 * @param node The node to start with
-	 * @param minDepth The lower limit for tree depth
-	 */
-	private void makeValue(IGameNode node, int minDepth) throws InterruptedException {
-		if(node == null || node.getDepth() < minDepth) {
-			return;
-		}
-		
-		// watch out for the endTime
-		if(System.currentTimeMillis() >= endTime){
-			//System.err.println("stop search because of time");
-			return;
-		}
-		
-		// regenerate node
+	     *
+	     * also uses:
+	     *	- currentDepthLimit
+	     *	- endSearchTime
+	     *	-
+	     *	- evaluation()
+	     *	- visitedStates
+	     *
+	     *	values.get(start_node) == max_int if search finished
+	     *
+	     * @param node to expand
+	     * @param depth < depthLimit
+	     * @return true if it could expand further but depthLimit stopped it
+	     */
+	private Boolean DLS(IGameNode node, int depth) throws InterruptedException {
 		game.regenerateNode(node);
-		
-		// We already have a value for a terminal
-		if(values.get(node.getState()) != null && node.isTerminal()){
-			makeValue(node.getParent(), minDepth);
-			return;
+		nodesVisited++;
+
+		if (System.currentTimeMillis() >= endSearchTime) {
+			// propagatedHash.put(node.getState(), evaluateNode(node));
+			// we don't need to evaluate the state, because good values for the decision
+			// should be made in the last iteration
+			// if we can't even make the iteration with depth limit 1 we just suck
+			throw new InterruptedException("interrupted by time");
 		}
-		
-		// If it is no terminal, we adjust the value.
+
+		if (depth >= currentDepthLimit) {
+			// reached the fringe -> ask for a evaluation
+			values.put(node.getState(), evaluateNode(node));
+			// we can expand in the next iteration
+			return true;
+		}
+
+		if (node.isTerminal()) {
+			// remember this state as being good to reach -> goal Distance
+			if (game.getGoalValues(node)[playerNumber] <= 20 || game.getGoalValues(node)[playerNumber] >= 80) {
+				memorizeStates.add(new MemorizeState(node.getState(), game.getGoalValues(node)[playerNumber]));
+			}
+			// save in hash
+			values.put(node.getState(), evaluateNode(node));
+			return false;
+		}
+
+		if (visitedStates.containsKey(node.getState())) {
+			Integer foundDepth = visitedStates.get(node.getState());
+			if (foundDepth <= depth) {
+				// have already seen this and therefore evaluated it
+				// there can't be the same state twice on one path
+				return false;
+			}
+		}
+
+		visitedStates.put(node.getState(), node.getDepth() - 1);
+		// recursion
+
+		// do not work with global variables in a recursive function
 		List<IGameNode> children = new LinkedList<IGameNode>();
-		List<IMove[]> allMoves = game.getCombinedMoves(node);
-		
-		for(IMove[] move : allMoves)
-			children.add(game.getNextNode(node, move));
-		
-		// Determine player whose turn it is, if possible.
-		int player = 0;
-		if(turntaking)
-			player = whoseTurn(node);
-		
-		int[] value = new int[game.getRoleCount()];
-		for(IGameNode child : children) {
-			// watch out for the endTime
-			if(System.currentTimeMillis() >= endTime){
-				//System.err.println("stop search because of time");
-				return;
+		List<IMove[]> moves = game.getCombinedMoves(node);
+		Boolean expandFurther = false;
+		for (IMove[] move : moves) {
+			IGameNode child = game.getNextNode(node, move);
+			children.add(child);
+			if (DLS(child, depth + 1)) {
+				expandFurther = true;
 			}
-			
-			// regenerate node
+
+			// MaxN
+			game.regenerateNode(node);
 			game.regenerateNode(child);
+			int[][] childVal = values.get(child.getState());
+			int[][] parVal = values.get(node.getState());
 			
-			// if the value for one child is missing, we can't proceed
-			if(values.get(child.getState()) == null) {
-				return;
-			}
-			
-			// propagate the child's value up to our current node.
-			if(turntaking && zerosum) { // in this case we apply maxN.
-				// in this case we maximize the value of the current player
-				if(values.get(child.getState())[0][player] > value[player]) {
-					value = values.get(child.getState())[0].clone();
+			// propagate values
+			if(!turntaking) {
+				// no turntaking game, we assume the worst outcome for us
+				if(parVal == null || childVal[0][playerNumber] < parVal[0][playerNumber]) {
+					values.put(node.getState(), new int[][]{childVal[0].clone(), {0, PROP}});
 				}
-			} else { // not turntaking, which is bad. for now we assume the worst for us.
-				/*
-				 * if(zerosum) {
-				 * 	useKonradsSimplexForMorePlayers();
-				 * }
-				 */
-				if(value[0] == -1 || values.get(child.getState())[0][playerNumber] < value[playerNumber]) { // if nothing set yet, just set one value. otherwise minimize our score.
-					value = values.get(child.getState())[0].clone();
+			} else {
+				// turntaking, find player in action
+				int player = whoseTurn(node);
+				if(parVal == null || childVal[0][player] < parVal[0][player]) {
+					values.put(node.getState(), new int[][]{childVal[0].clone(), {0, PROP}});
 				}
 			}
+		}
+		return expandFurther;
+	}
+
+	private int[][] evaluateNode(IGameNode node) {
+	        // if the node is terminal, return its goal value
+		if(node.isTerminal()) 
+			return new int[][]{node.getState().getGoalValues(), {0, GOAL}};
+		
+		int[][] val = values.get(node.getState());
+		if(val != null) {
+			return val;
 		}
 		
-		if(value[0] != -1 && value[1] != -1){
-			values.put(node.getState(), new int[][]{value, {0, PROP}});
-			if(node.getParent() != null) {
-				makeValue(node.getParent(), minDepth);
-			}
+		System.out.println("Bad: Didn't find any values. Returning 42.");
+		int[] values = new int[game.getRoleCount()];
+		for(int i=0; i<game.getRoleCount(); i++) {
+			values[i] = 42;
 		}
-	}
+		return new int[][]{values.clone(), {0, HEUR}};
+        }
 	
 	/**
 	 * Given a node this function determines which index is the player whose turn it is.
@@ -263,16 +251,16 @@ public class MultiPlayerStrategy extends AbstractStrategy {
             System.out.println("\n");
 		// first search for the time we have
 		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 1200;
-		queue.clear();
+		
 		//arg0.setPreserve(true);
-		queue.add(arg0);
+		
 		try {
 			if(!searchFinished) {
 				endTime = realEndTime - match.getPlayTime()*450;
 				while(System.currentTimeMillis() < endTime)
 					simulateGame(arg0);
 				endTime = realEndTime;
-				DFS(arg0.getDepth());
+				IDS(endTime, arg0);
 			}
 			// search finished or end of time, now we have to decide.
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MultiPlayerComparator(values, playerNumber));
@@ -384,11 +372,6 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			}
 		}
 	}
-
-	@Override
-	public double getHeuristicValue(IGameNode arg0) {
-		return heuristic.calculateHeuristic(arg0);
-	}
 	
 	private String aryToString(int[][] ary) {
 		if(ary == null) return "{}";
@@ -410,8 +393,6 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	 * seemingly our destroy function
 	 */
 	public void dispose() {
-		this.queue.clear();
-		this.queue = null;
 		this.values.clear();
 		this.values = null;
 		this.visitedStates.clear();
