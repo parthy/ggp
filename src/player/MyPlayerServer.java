@@ -14,6 +14,7 @@ import org.eclipse.palamedes.gdl.connection.PlayerServer;
 public class MyPlayerServer extends PlayerServer {
 
     private static final Boolean DEBUG = false;
+    private static final Boolean TEST_SIMPLEX = false;
 
     public MyPlayerServer(Player player, Map<String, String> options)
             throws IOException {
@@ -32,16 +33,17 @@ public class MyPlayerServer extends PlayerServer {
             }
         }
         /* create and start player server */
-        try {
-            Map<String, String> options = getOptions(args);
-            new MyPlayerServer(new MyPlayer(), options).waitForExit();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            System.exit(-1);
+        if (!TEST_SIMPLEX) {
+            try {
+                Map<String, String> options = getOptions(args);
+                new MyPlayerServer(new MyPlayer(), options).waitForExit();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                System.exit(-1);
+            }
+        } else {
+            SimplexSolver solver = new SimplexSolver();
+            solver.test();
         }
-
-        SimplexSolver solver = new SimplexSolver();
-        solver.test();
-
     }
 }
