@@ -359,18 +359,18 @@ public class SimplexSolver {
             Float value = problem.get(i).get(problem.get(i).size() - 1);
             if (VectorRow.get(i) > 0) {
                 //add 0 to Min
-                movesMin.set(VectorRow.get(i) - 1, 0f);
+                movesMax.set(VectorRow.get(i) - 1, 0f);
             } else {
-                movesMax.set(-VectorRow.get(i) - 1, value / gameValue);
+                movesMin.set(-VectorRow.get(i) - 1, value / gameValue);
             }
         }
         // go through Column
         for (int j = 0; j < (lastline.size() - 1); j++) {
-            if (VectorColumn.get(j) < 0) {
+            if (VectorColumn.get(j) > 0) {
                 // add 0 to Max
-                movesMax.set(-VectorColumn.get(j) - 1, 0f);
+                movesMax.set(VectorColumn.get(j) - 1, lastline.get(j) / gameValue);
             } else {
-                movesMin.set(VectorColumn.get(j) - 1, lastline.get(j) / gameValue);
+                movesMin.set(-VectorColumn.get(j) - 1, 0f);
             }
         }
     }
