@@ -574,11 +574,15 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         HashMap<String, ValuesEntry> valuesHashNew = new HashMap<String, ValuesEntry>();
 
         for (Entry<IGameState, Integer> entry : propagatedHash.entrySet()) {
-            propagatedHashNew.put(entry.getKey().toString(), entry.getValue());
+        	if(entry == null || entry.getKey() == null || entry.getValue() == null) 
+        		continue;
+        	propagatedHashNew.put(entry.getKey().toString(), entry.getValue());
         }
 
         for (Entry<IGameState, ValuesEntry> entry : values.entrySet()) {
-            valuesHashNew.put(entry.getKey().toString(), entry.getValue());
+        	if(entry == null || entry.getKey() == null || entry.getValue() == null) 
+        		continue;
+        	valuesHashNew.put(entry.getKey().toString(), entry.getValue());
         }
 
 
@@ -596,8 +600,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             oos.writeObject(propagatedHashNew);
             oos.writeObject(valuesHashNew);
             oos.close();
-        } catch (IOException ex) {
-            Logger.getLogger(TwoPlayerStrategy.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+        	System.out.println("Exception occurred while writing out values: ");
+        	ex.printStackTrace(System.out);
+        	Logger.getLogger(TwoPlayerStrategy.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         this.queue.clear();
