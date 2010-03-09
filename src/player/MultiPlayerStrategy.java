@@ -32,7 +32,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	private HashMap<IGameState, int[][]> values = new HashMap<IGameState, int[][]>();
 	private Set<MemorizeState> memorizeStates = new HashSet<MemorizeState>();
 	
-	private MultiPlayerHeuristic heuristic;
+	private Evaluator evaluator;
 
 	// maps a state we visited to the depth where we found it 
 	private HashMap<IGameState, Integer> visitedStates = new HashMap<IGameState, Integer>();
@@ -54,13 +54,13 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	
 	 // constants describing where node evaluations come from
 	// SIM means we calculated the values using a monte carlo approach
-	private static int SIM = 0;
+	public final static int SIM = 0;
 	// GOAL means we actually _know_ that this is the value
-	private static int GOAL = 1;
+	public final static int GOAL = 1;
 	// HEUR means we calculated the value using a heuristic function
-	private static int HEUR = 2;
+	public final static int HEUR = 2;
 	// PROP means we propagated the value using e.g. maxN
-	private static int PROP = 3;
+	public final static int PROP = 3;
 	
 	public void setFirstEndTime(long endTime) {
 		this.endTime = endTime - 600;
@@ -87,6 +87,9 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		
 		// And start search
 		currentDepthLimit = 1;
+		
+		// Set up the evaluator
+	        this.evaluator = new Evaluator(values, memorizeStates, true);
 		
 		try {
 			IDS(endTime, root);
@@ -215,17 +218,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		if(node.isTerminal()) 
 			return new int[][]{node.getState().getGoalValues(), {0, GOAL}};
 		
-		int[][] val = values.get(node.getState());
-		if(val != null) {
-			return val;
-		}
-		
-		System.out.println("Bad: Didn't find any values. Returning 42.");
-		int[] values = new int[game.getRoleCount()];
-		for(int i=0; i<game.getRoleCount(); i++) {
-			values[i] = 42;
-		}
-		return new int[][]{values.clone(), {0, HEUR}};
+		return evaluator.evaluateNodeMP(node, game.getRoleCount());
         }
 	
 	/**
@@ -256,17 +249,19 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		
 		try {
 			if(!searchFinished) {
-				endTime = realEndTime - match.getPlayTime()*450;
+				endTime = realEndTime - match.getPlayTime()*550;
 				while(System.currentTimeMillis() < endTime)
 					simulateGame(arg0);
-				endTime = realEndTime;
+				endTime = realEndTime-500;
+				currentDepthLimit = arg0.getDepth()+1;
 				IDS(endTime, arg0);
 			}
 			// search finished or end of time, now we have to decide.
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MultiPlayerComparator(values, playerNumber));
 			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
-				if(System.currentTimeMillis() > endTime) {
+				if(System.currentTimeMillis() > endTime+500) {
 					// we have no time left, just return random move
+					System.out.println("No time left!");
 					return game.getRandomMove(arg0)[playerNumber];
 				}
 				IGameNode next = game.getNextNode(arg0, combMove);
@@ -274,7 +269,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 				// regenerate node
 				game.regenerateNode(next);
 				
-				//System.out.println("Possible move: "+combMove[playerNumber]+", values "+aryToString(values.get(next.getState())));
+				System.out.println("Possible move: "+combMove[playerNumber]+", values "+aryToString(values.get(next.getState())));
 				childs.add(next);
 			}
 			IGameNode best = childs.peek();
