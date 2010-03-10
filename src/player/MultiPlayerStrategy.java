@@ -62,6 +62,9 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	// PROP means we propagated the value using e.g. maxN
 	public final static int PROP = 3;
 	
+	// maximum score sum, to be found out by simulation
+	private int max_score = 0;
+	
 	public void setFirstEndTime(long endTime) {
 		this.endTime = endTime - 600;
 	}
@@ -84,6 +87,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			} catch(InterruptedException e) {}
 		}
 		System.out.println("While simulating, we got "+values.size()+" values.");
+		System.out.println("And we found a maximum score sum of "+max_score);
 		
 		// And start search
 		currentDepthLimit = 1;
@@ -109,7 +113,13 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	                System.out.println("Visited: " + nodesVisited);
 
 	                visitedStates.clear();
-	                canSearchDeeper = DLS(start, 0);
+	                
+	                // prepare the lower bounds
+	                int[] lower_bounds = new int[game.getRoleCount()];
+	                for(int i=0; i<game.getRoleCount(); i++)
+	                	lower_bounds[i] = Integer.MIN_VALUE;
+	                
+	                canSearchDeeper = DLS(start, 0, lower_bounds);
 	                currentDepthLimit++;
 	            }
 
@@ -138,10 +148,12 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	     * @param depth < depthLimit
 	     * @return true if it could expand further but depthLimit stopped it
 	     */
-	private Boolean DLS(IGameNode node, int depth) throws InterruptedException {
+	private Boolean DLS(IGameNode node, int depth, int[] lower_bounds) throws InterruptedException {
 		game.regenerateNode(node);
 		nodesVisited++;
 
+		int[] new_bounds = lower_bounds.clone();
+		
 		if (System.currentTimeMillis() >= endSearchTime) {
 			// propagatedHash.put(node.getState(), evaluateNode(node));
 			// we don't need to evaluate the state, because good values for the decision
@@ -182,11 +194,13 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		// do not work with global variables in a recursive function
 		List<IGameNode> children = new LinkedList<IGameNode>();
 		List<IMove[]> moves = game.getCombinedMoves(node);
+		int player = whoseTurn(node);
+		
 		Boolean expandFurther = false;
 		for (IMove[] move : moves) {
 			IGameNode child = game.getNextNode(node, move);
 			children.add(child);
-			if (DLS(child, depth + 1)) {
+			if (DLS(child, depth + 1, new_bounds)) {
 				expandFurther = true;
 			}
 
@@ -204,8 +218,10 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 				}
 			} else {
 				// turntaking, find player in action
-				int player = whoseTurn(node);
-				if(parVal == null || childVal[0][player] < parVal[0][player]) {
+				if(childVal[0][player] > new_bounds[player]) {
+					new_bounds[player] = childVal[0][player];
+				}
+				if(parVal == null || childVal[0][player] > parVal[0][player]) {
 					values.put(node.getState(), new int[][]{childVal[0].clone(), {0, PROP}});
 				}
 			}
@@ -234,7 +250,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		
 		IMove[][] moves = game.getLegalMoves(node);
 		for(int i=0; i<moves.length; i++) {
-			if(moves[i].length > 1) return i;
+			if(moves[i].length > 1 || (moves[i].length == 1 && !moves[i][0].getMove().equals("noop"))) return i;
 		}
 		return index;
 	}
@@ -321,6 +337,9 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 					this.zerosum = false;
 					//System.out.println("We found out that the game is not zero-sum!");
 				}
+				// adjust the maximum score
+				if(sum > max_score)
+					max_score = sum;
 				//System.out.println("Played a game and got score "+value[playerNumber]);
 				break;
 			}

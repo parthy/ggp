@@ -1,0 +1,37 @@
+(role row)
+(role column)
+
+(init (reward r1 c1 100 100))
+(init (reward r1 c2  60  50))
+(init (reward r1 c3  40   0))
+(init (reward r2 c1  50  60))
+(init (reward r2 c2  60  60))
+(init (reward r2 c3  50   0))
+(init (reward r3 c1   0  40))
+(init (reward r3 c2   0  50))
+(init (reward r3 c3   45   45))
+
+(<= (legal row ?m1)
+	(true (reward ?m1 ?m2 ?r1 ?r2)))
+(<= (legal column ?m2)
+	(true (reward ?m1 ?m2 ?r1 ?r2)))
+
+(<= (next (did ?p ?m))
+	(does ?p ?m))
+
+(<= (next (reward ?m1 ?m2 ?r1 ?r2))
+	(true (reward ?m1 ?m2 ?r1 ?r2)))
+	
+(<= (goal row ?r1)
+	(true (did row ?m1))
+	(true (did column ?m2))
+	(true (reward ?m1 ?m2 ?r1 ?r2)))
+
+(<= (goal column ?r2)
+	(true (did row ?m1))
+	(true (did column ?m2))
+	(true (reward ?m1 ?m2 ?r1 ?r2)))
+
+(<= terminal
+	(true (did ?p ?m)))
+

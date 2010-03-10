@@ -72,12 +72,14 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         System.out.println("\nINIT: 2playerStrategy.");
 
         // try to find previous results of this game in a file.
-        MD5Hash hash = new MD5Hash(game.getSourceGDL());
+        MD5Hash hash = new MD5Hash(game.getSourceGDL().concat(String.valueOf(playerNumber)));
         try {
             FileInputStream istream = new FileInputStream(hash.toString());
             ObjectInputStream ois = new ObjectInputStream(istream);
 
             // if no exception occurred here, we have valid data. read out.
+            int prevRole = (Integer) ois.readObject();
+            
             HashMap<String, Integer> propagatedHashRead = (HashMap<String, Integer>) ois.readObject();
             HashMap<String, ValuesEntry> valuesRead = (HashMap<String, ValuesEntry>) ois.readObject();
             propagatedHash = new HashMap<IGameState, Integer>();
@@ -603,7 +605,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
          * -> if we are the other player the values are 100-x actually
          */
         try {
-            MD5Hash hash = new MD5Hash(game.getSourceGDL());
+            MD5Hash hash = new MD5Hash(game.getSourceGDL().concat(String.valueOf(playerNumber)));
             FileOutputStream out = new FileOutputStream(hash.toString());
 
             ObjectOutputStream oos = new ObjectOutputStream(out);
