@@ -63,6 +63,8 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	public final static int PROP = 3;
 	
 	// maximum score sum, to be found out by simulation
+	private final static boolean PRUNING_ENABLED = true;
+	private String noop_name = "";
 	private int max_score = 0;
 	
 	public void setFirstEndTime(long endTime) {
@@ -211,7 +213,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			int[][] parVal = values.get(node.getState());
 			
 			// propagate values
-			if(!turntaking) {
+			if(!turntaking || player == -1) {
 				// no turntaking game, we assume the worst outcome for us
 				if(parVal == null || childVal[0][playerNumber] < parVal[0][playerNumber]) {
 					values.put(node.getState(), new int[][]{childVal[0].clone(), {0, PROP}});
@@ -220,6 +222,21 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 				// turntaking, find player in action
 				if(childVal[0][player] > new_bounds[player]) {
 					new_bounds[player] = childVal[0][player];
+				}
+				// if all lower bound are present and they add up to more than max_score, cut off
+				boolean all_present = true;
+				int sum=0;
+				for(int i=0; i<new_bounds.length; i++) {
+					if(new_bounds[i] == Integer.MIN_VALUE) {
+						all_present = false;
+						break;
+					} else {
+						sum += new_bounds[i];
+					}
+				}
+				if(all_present && sum > max_score && PRUNING_ENABLED) {
+					values.put(node.getState(), evaluateNode(node));
+					return expandFurther;
 				}
 				if(parVal == null || childVal[0][player] > parVal[0][player]) {
 					values.put(node.getState(), new int[][]{childVal[0].clone(), {0, PROP}});
@@ -250,7 +267,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		
 		IMove[][] moves = game.getLegalMoves(node);
 		for(int i=0; i<moves.length; i++) {
-			if(moves[i].length > 1 || (moves[i].length == 1 && !moves[i][0].getMove().equals("noop"))) return i;
+			if(moves[i].length > 1 || (moves[i].length == 1 && !moves[i][0].getMove().equals(this.noop_name))) return i;
 		}
 		return index;
 	}
@@ -309,6 +326,8 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		// regenerate node
 		game.regenerateNode(currentNode);
 		
+		//System.out.println("Turntaking: "+turntaking+", Noop name is "+noop_name);
+		
 		int[] value;
 		while(true) {
 			// regenerate node
@@ -316,18 +335,27 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			if(System.currentTimeMillis() >= endTime) return;
 			// try to prove that we have simultaneous moves
 			int turns = 0;
+			String noop = "noop";
 			IMove[][] legalMoves = game.getLegalMoves(currentNode);
 			for(int i=0; i<legalMoves.length; i++) {
-				if(legalMoves[i].length > 1) turns++;
+				if(legalMoves[i].length > 1) 
+					turns++;
+				else if(legalMoves[i].length == 1) 
+					noop = legalMoves[i][0].getMove();
 			}
 			if(turntaking && turns > 1) {
 				this.turntaking = false;
 				//System.out.println("We found out that the game is not turn-taking!");
 			}
+			if(turntaking && noop_name.equals("")) {
+				System.out.println("Found out that noop has the name "+noop);
+				this.noop_name = noop;
+			}
 			
 			// game over?
 			if(currentNode.isTerminal()) { 
 				value = currentNode.getState().getGoalValues();
+				values.put(currentNode.getState(), new int[][]{value, {Integer.MAX_VALUE, GOAL}});
 				// try to prove that we don't have zero sum games.
 				int sum = 0;
 				for(int i=0; i<value.length; i++) {

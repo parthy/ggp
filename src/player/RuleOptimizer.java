@@ -7,65 +7,68 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RuleOptimizer {
+	
+	public String noop_name;
+	
 	public String reorderGDL(String gameDescription) {
-    	ArrayList<String> facts = new ArrayList<String>();
-    	ArrayList<String> rules = new ArrayList<String>();
-    	String rulesString = gameDescription;
-    	System.out.println("Optimizing: \n"+gameDescription);
-    	// Search string for facts and init statements
-    	String regex_init = "^[ ]*(\\(init \\([^\\(]*\\)\\))[ ]*";
-    	String regex_fact = "^[ ]*(\\([^\\(\\?\\)<]*\\))[ ]*";
-    	
-    	//System.out.println("--- INIT ---");
-    	while(rulesString.length() > 0) {
-	    	// Get the next part
-	    	int opens = 0;
-	    	boolean started=false;
-	    	String part="";
-	    	if(rulesString.substring(0, 1).equals(" ")) rulesString = rulesString.substring(1); 
-	    	for(int i=0; i<rulesString.length(); i++) {
-	    		if(rulesString.substring(i, i+1).equals("(")) {
-	    			if(!started) started = true;
-	    			opens++;
-	    			continue;
+	    	ArrayList<String> facts = new ArrayList<String>();
+	    	ArrayList<String> rules = new ArrayList<String>();
+	    	String rulesString = gameDescription;
+	    	System.out.println("Optimizing: \n"+gameDescription);
+	    	// Search string for facts and init statements
+	    	String regex_init = "^[ ]*(\\(init \\([^\\(]*\\)\\))[ ]*";
+	    	String regex_fact = "^[ ]*(\\([^\\(\\?\\)<]*\\))[ ]*";
+	    	
+	    	//System.out.println("--- INIT ---");
+	    	while(rulesString.length() > 0) {
+		    	// Get the next part
+		    	int opens = 0;
+		    	boolean started=false;
+		    	String part="";
+		    	if(rulesString.substring(0, 1).equals(" ")) rulesString = rulesString.substring(1); 
+		    	for(int i=0; i<rulesString.length(); i++) {
+		    		if(rulesString.substring(i, i+1).equals("(")) {
+		    			if(!started) started = true;
+		    			opens++;
+		    			continue;
+		    		}
+		    		if(rulesString.substring(i, i+1).equals(")")) { 
+		    			if(!started) started = true; 
+		    			opens--;
+		    			continue;
+		    		}
+		    		if(opens == 0 && started) { // one section done
+		    			part = rulesString.substring(0, i);
+		    			break;
+		    		}
+		    	}
+		    	if(part.equals("")) part = rulesString;
+		    	System.out.println("Part = "+part);
+	    		// look what kind of stuff we have
+	    		if(part.matches(regex_init)) {
+	    			System.out.println("Found init fact:\n"+part);
+	    			facts.add(0, part);
+	    		} else if(part.matches(regex_fact)) {
+	    			System.out.println("Found other fact:\n"+part);
+	    			facts.add(part);
+	        	} else {
+	        		System.out.println("Found rule:\n"+part);
+	    			rules.add(part);
 	    		}
-	    		if(rulesString.substring(i, i+1).equals(")")) { 
-	    			if(!started) started = true; 
-	    			opens--;
-	    			continue;
-	    		}
-	    		if(opens == 0 && started) { // one section done
-	    			part = rulesString.substring(0, i);
-	    			break;
-	    		}
+	    		rulesString = rulesString.substring(part.length());
 	    	}
-	    	if(part.equals("")) part = rulesString;
-	    	System.out.println("Part = "+part);
-    		// look what kind of stuff we have
-    		if(part.matches(regex_init)) {
-    			System.out.println("Found init fact:\n"+part);
-    			facts.add(0, part);
-    		} else if(part.matches(regex_fact)) {
-    			System.out.println("Found other fact:\n"+part);
-    			facts.add(part);
-        	} else {
-        		System.out.println("Found rule:\n"+part);
-    			rules.add(part);
-    		}
-    		rulesString = rulesString.substring(part.length());
-    	}
-    	// add facts to the game string
-    	rulesString = "";
-    	for(String fact : facts) {
-    		rulesString += fact+" ";
-    	}
-    	
-    	for(String rule : rules) {
-    		rulesString += " "+optimizeRule(rule);
-    	}
-		
-    	//System.out.println(rulesString);
-    	return rulesString;
+	    	// add facts to the game string
+	    	rulesString = "";
+	    	for(String fact : facts) {
+	    		rulesString += fact+" ";
+	    	}
+	    	
+	    	for(String rule : rules) {
+	    		rulesString += " "+optimizeRule(rule);
+	    	}
+			
+	    	//System.out.println(rulesString);
+	    	return rulesString;
 	}
     
     private String optimizeRule(String rule) {
@@ -161,6 +164,7 @@ public class RuleOptimizer {
     		}
     		//System.out.println("Returning "+rule+")");
     	}
+    	
     	return rule+")";
     }
     

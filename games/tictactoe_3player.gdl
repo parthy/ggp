@@ -173,7 +173,7 @@
       (true (cell ?x ?y b))
       (true (control ?w)))
 
-  (<= (legal ?p noop)
+  (<= (legal ?p nop)
       (role ?p)
       (not (true (control ?p))))
 

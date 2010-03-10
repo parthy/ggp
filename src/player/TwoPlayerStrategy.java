@@ -78,8 +78,6 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             ObjectInputStream ois = new ObjectInputStream(istream);
 
             // if no exception occurred here, we have valid data. read out.
-            int prevRole = (Integer) ois.readObject();
-            
             HashMap<String, Integer> propagatedHashRead = (HashMap<String, Integer>) ois.readObject();
             HashMap<String, ValuesEntry> valuesRead = (HashMap<String, ValuesEntry>) ois.readObject();
             propagatedHash = new HashMap<IGameState, Integer>();
@@ -489,8 +487,25 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         }
 
         // shall not come until here
-        System.out.println("WARNING: getMovesimultaneous() did something unexpected: random move");
-        return match.getGame().getRandomMove(node)[playerNumber];
+        System.out.println("WARNING: getMovesimultaneous() did something unexpected: Just take the move with the highest potential");
+        IMove bestmove = null;
+        int bestVal = -1;
+        for(IMove[] possibleMove : game.getCombinedMoves(node)) {
+        	int val=-1;
+        	try {
+        		val = values.get(game.getNextNode(node, possibleMove).getState()).getGoalArray()[playerNumber];
+        	} catch(Exception e) {
+        		continue;
+        	}
+        	if(bestmove == null || val > bestVal) {
+        		bestmove = possibleMove[playerNumber];
+        		bestVal = val;
+        	}
+        }
+        if(bestmove == null)
+        	return game.getRandomMove(node)[playerNumber];
+        else
+        	return bestmove;
     }
 
     /**
