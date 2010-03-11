@@ -385,6 +385,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
     @Override
     public IMove getMove(IGameNode current) {
+    	if(Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+			visitedStates.clear();
+			values.clear();
+			propagatedHash.clear();
+		}
         IGameNode best = null;
         try {
             game.regenerateNode(current);

@@ -68,7 +68,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	private int max_score = 0;
 	
 	public void setFirstEndTime(long endTime) {
-		this.endTime = endTime - 600;
+		this.endTime = endTime - 1000;
 	}
 	
 	public void initMatch(Match arg0) {
@@ -274,11 +274,15 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 
 	@Override
 	public IMove getMove(IGameNode arg0) {
-            System.out.println("\n");
 		// first search for the time we have
-		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 1200;
+		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2000;
 		
-		//arg0.setPreserve(true);
+		// if we there is the threat of memory exceed coming, clear visitedStates.
+		// by the time this happens, it is not a that big problem, anyway.
+		if(Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+			visitedStates.clear();
+			values.clear();
+		}
 		
 		try {
 			if(!searchFinished) {
@@ -292,11 +296,11 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			// search finished or end of time, now we have to decide.
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MultiPlayerComparator(values, playerNumber));
 			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
-				if(System.currentTimeMillis() > endTime+500) {
+				/*if(System.currentTimeMillis() > endTime+800) {
 					// we have no time left, just return random move
 					System.out.println("No time left!");
 					return game.getRandomMove(arg0)[playerNumber];
-				}
+				}*/
 				IGameNode next = game.getNextNode(arg0, combMove);
 				
 				// regenerate node

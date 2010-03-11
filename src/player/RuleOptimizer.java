@@ -9,12 +9,13 @@ import java.util.regex.Pattern;
 public class RuleOptimizer {
 	
 	public String noop_name;
+	public List<String> goalRules = new ArrayList<String>();
 	
 	public String reorderGDL(String gameDescription) {
 	    	ArrayList<String> facts = new ArrayList<String>();
 	    	ArrayList<String> rules = new ArrayList<String>();
 	    	String rulesString = gameDescription;
-	    	System.out.println("Optimizing: \n"+gameDescription);
+	    	//System.out.println("Optimizing: \n"+gameDescription);
 	    	// Search string for facts and init statements
 	    	String regex_init = "^[ ]*(\\(init \\([^\\(]*\\)\\))[ ]*";
 	    	String regex_fact = "^[ ]*(\\([^\\(\\?\\)<]*\\))[ ]*";
@@ -43,16 +44,16 @@ public class RuleOptimizer {
 		    		}
 		    	}
 		    	if(part.equals("")) part = rulesString;
-		    	System.out.println("Part = "+part);
+		    	//System.out.println("Part = "+part);
 	    		// look what kind of stuff we have
 	    		if(part.matches(regex_init)) {
-	    			System.out.println("Found init fact:\n"+part);
+	    			//System.out.println("Found init fact:\n"+part);
 	    			facts.add(0, part);
 	    		} else if(part.matches(regex_fact)) {
-	    			System.out.println("Found other fact:\n"+part);
+	    			//System.out.println("Found other fact:\n"+part);
 	    			facts.add(part);
 	        	} else {
-	        		System.out.println("Found rule:\n"+part);
+	        		//System.out.println("Found rule:\n"+part);
 	    			rules.add(part);
 	    		}
 	    		rulesString = rulesString.substring(part.length());
@@ -164,7 +165,10 @@ public class RuleOptimizer {
     		}
     		//System.out.println("Returning "+rule+")");
     	}
-    	
+    	boolean found = head.matches("\\(<=[ ]*\\(goal (.*) 100\\)");
+    	if(found) {
+    		goalRules.addAll(body);
+    	}
     	return rule+")";
     }
     
