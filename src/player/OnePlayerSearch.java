@@ -33,6 +33,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 	private HashMap<String, Integer> domainSizes = new HashMap<String, Integer>();
 	private int maxDepth = 0;
 	private String stepcounter = "";
+	private boolean REMOVE_STEPCOUNTER = true;
 	
 	private OnePlayerHeuristic heuristic;
 
@@ -112,9 +113,10 @@ public class OnePlayerSearch extends AbstractStrategy {
 				PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values, false, this));
 				for(IMove[] move : allMoves) {
 					IGameNode next = game.getNextNode(node, move);
-					HashMap<Integer, Integer> val = values.get(next.getState());
+					String k = makeKeyString(next.getState());
+					HashMap<Integer, Integer> val = values.get(k);
 					String str = "";
-					if(val != null) str += values.get(makeKeyString(next.getState()));
+					if(val != null) str += val;
 					System.out.println("Possible move "+move[0].getMove()+" has value: "+str);
 					if(next.isTerminal()){
 						if(game.getGoalValues(next)[0] == 100){
@@ -130,8 +132,16 @@ public class OnePlayerSearch extends AbstractStrategy {
 					}
 					children.add(next);
 				}
-				if(!children.isEmpty())
-						return children.poll().getMoves()[0];
+				if(!children.isEmpty()) {
+					IGameNode next = game.getNextNode(node, children.peek().getMoves());
+					game.regenerateNode(next);
+					HashMap<Integer, Integer> val = values.get(makeKeyString(next.getState()));
+					if(val != null && (Integer) val.keySet().toArray()[0] == 0) {
+						// random is better than loss
+						return game.getRandomMove(node)[0];
+					}
+					return children.poll().getMoves()[0];
+				}
 				return game.getRandomMove(node)[0]; // should not happen
 			} catch (InterruptedException ex) {
 				Logger.getLogger(OnePlayerSearch.class.getName()).log(Level.SEVERE, null, ex);
@@ -171,7 +181,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			} else {
 				// put a value calculated by the heuristic in our hash.
 				int occ = -1;
-				HashMap<Integer, Integer> entry = values.get(node.getState());
+				HashMap<Integer, Integer> entry = values.get(makeKeyString(node.getState()));
 				if(entry != null) {
 					if(entry.values().iterator().hasNext())
 						occ = entry.values().iterator().next();
@@ -189,7 +199,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 				//next.setPreserve(true);
 				game.regenerateNode(next);
 				
-				String key = makeKeyString(node.getState());
+				String key = makeKeyString(next.getState());
 				
 				if(!visitedStates.containsKey(key) || visitedStates.get(key) > next.getDepth()){
 					children.add(next);
@@ -215,7 +225,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 
 	public String makeKeyString(IGameState state) {
 		String key = "";
-		if(!stepcounter.equals("")) {
+		if(!stepcounter.equals("") && REMOVE_STEPCOUNTER) {
 			List<IFluent> fluents = state.getFluents();
 			Iterator<IFluent> it = fluents.iterator();
 			while(it.hasNext()) {
@@ -322,7 +332,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 		}
 		
 		// since the game is over, we can now go all the way back and fiddle around with the goals
-		HashMap<Integer, Integer> existingValue = values.get(currentNode.getState());
+		HashMap<Integer, Integer> existingValue = values.get(makeKeyString(currentNode.getState()));
 		
 		//System.out.println("Existing Value in Hash: "+existingValue);
 		
@@ -344,17 +354,17 @@ public class OnePlayerSearch extends AbstractStrategy {
 			
 			node = node.getParent();
 			game.regenerateNode(node);
-			HashMap<Integer, Integer> entry = values.get(node.getState());
+			HashMap<Integer, Integer> entry = values.get(makeKeyString(node.getState()));
 			Integer tempVal = null;
 			if(entry != null) {
-				tempVal = (Integer) values.get(node.getState()).keySet().toArray()[0];
+				tempVal = (Integer) values.get(makeKeyString(node.getState())).keySet().toArray()[0];
 			}
 			if(entry == null || tempVal == null) { // no value in there yet, so we just set the achieved goal value
 				HashMap<Integer, Integer> temp = new HashMap<Integer, Integer>();
 				temp.put(value[0], 1);
 				values.put(makeKeyString(node.getState()), temp);
 			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
-				Integer newCount = ((Integer) values.get(node.getState()).values().toArray()[0])+1;
+				Integer newCount = ((Integer) values.get(makeKeyString(node.getState())).values().toArray()[0])+1;
 				if(newCount == 0) newCount++;
 				tempVal = ((newCount-1)*tempVal+value[0])/newCount;
 				HashMap<Integer, Integer> temp = new HashMap<Integer, Integer>();

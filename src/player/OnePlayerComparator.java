@@ -20,6 +20,11 @@ public class OnePlayerComparator implements Comparator<IGameNode> {
 	
 	@Override
 	public int compare(IGameNode arg0, IGameNode arg1) {
+		try {
+			strategy.getGame().regenerateNode(arg0);
+	                strategy.getGame().regenerateNode(arg1);
+                } catch (InterruptedException e) { }
+                
 		if(values.get(strategy.makeKeyString(arg0.getState())) != null && values.get(strategy.makeKeyString(arg1.getState())) != null) {
 			HashMap<Integer, Integer> val1 = this.values.get(strategy.makeKeyString(arg0.getState()));
 			HashMap<Integer, Integer> val2 = this.values.get(strategy.makeKeyString(arg1.getState()));

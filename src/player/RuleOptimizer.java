@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 public class RuleOptimizer {
 	
 	public String noop_name;
+
 	public List<String> goalRules = new ArrayList<String>();
 	
 	public String reorderGDL(String gameDescription) {
@@ -74,6 +75,7 @@ public class RuleOptimizer {
     
     private String optimizeRule(String rule) {
     	//System.out.println("Optimizing "+rule);
+    	if(rule.equals("") || rule.equals(" ")) return "";
     	int opens = -1, lastPos=-1;
     	boolean started=false;
     	String head="";
@@ -82,14 +84,24 @@ public class RuleOptimizer {
     		if(rule.substring(i, i+1).equals(" ")) continue;
     		if(rule.substring(i, i+1).equals("(")) opens++;
     		if(rule.substring(i, i+1).equals(")")) { if(!started) started = true; opens--; }
-    		if(opens == 0 && started) { // one section done
-    			if(head.equals("")) { // we are done with the head 
+    		
+    		if((opens == 0 && started) || i == rule.length()-1) { // one section done
+    			if(head.equals("")) { // we are not yet done with the head 
     				head = rule.substring(0, i+1);
     				lastPos = i+2;
     				//System.out.println("Found head: "+head);
+    				started = false;
     			} else { // we found a literal
-    				body.add(rule.substring(lastPos, i+1));
-    				//System.out.println("Found body literal: "+rule.substring(lastPos, i+1));
+    				if(!(opens==0)) {
+    					// this is the literal that finishes the rule. that means it has one ")" too much at the end. search that
+    					if(lastPos >= rule.length())
+    						break;
+    					body.add(rule.substring(lastPos, rule.length()-1));
+    					//System.out.println("Found body literal that ends rule: "+rule.substring(lastPos, rule.length()-1));
+    				} else {
+    					body.add(rule.substring(lastPos, i+1));
+    					//System.out.println("Found body literal: "+rule.substring(lastPos, i+1));
+    				}
     				lastPos = i+2;
     			}
     		}
@@ -169,6 +181,14 @@ public class RuleOptimizer {
     	if(found) {
     		goalRules.addAll(body);
     	}
+    	// see if goal rules are composed
+    	for(String goal : goalRules) {
+    		if(rule.matches(".*"+goal+".*")) {
+    			goalRules.addAll(body);
+    			break;
+    		}
+    	}
+    	//System.out.println("Return "+rule+")");
     	return rule+")";
     }
     

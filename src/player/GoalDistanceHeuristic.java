@@ -27,6 +27,7 @@ public class GoalDistanceHeuristic implements IHeuristic {
 		String rules = ruler.reorderGDL(this.gdl);
 		
 		List<String> toHave = ruler.goalRules;
+
 		int count = 0;
 		int fulfilled = 0;
 		for(String rule : toHave) {
@@ -37,16 +38,16 @@ public class GoalDistanceHeuristic implements IHeuristic {
 				//System.out.println("test");
 				if(rule.matches("\\(true (.*)\\)"))
 					rule = rule.substring(5, rule.length()-1);
-				if(rule.substring(0, 1).equals(" "))
+				if(rule.length() > 0 && rule.substring(0, 1).equals(" "))
 					rule = rule.substring(1);
 				//System.out.println("Does "+"\\(.*"+rule+".*\\)"+" match "+state+" ?");
-				if(state.matches("\\(.*"+rule+".*\\)"))
+				if(state.matches("\\(.*"+rule+".*\\)") ^ rule.matches(".*not.*"))
 					fulfilled++;
-				else
-					System.out.println("no");
 			}
 		}
+		
 		int value = (int) ((new Float(fulfilled))/(new Float(count))*100.0);
+
 		return value;
 	}
 

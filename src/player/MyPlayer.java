@@ -54,6 +54,7 @@ public final class MyPlayer extends Player {
         if (OPTIMIZE_RULES) {
             RuleOptimizer ruleOptimizer = new RuleOptimizer();
             rules = ruleOptimizer.reorderGDL(msg.getGameDescription());
+            System.out.println(rules);
         }
 
         IGame runningGame = factory.createGame(GameFactory.PROLOGPROVER, rules);
