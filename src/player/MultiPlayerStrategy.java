@@ -214,8 +214,8 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			
 			// propagate values
 			if(!turntaking || player == -1) {
-				// no turntaking game, we assume the worst outcome for us
-				if(parVal == null || childVal[0][playerNumber] < parVal[0][playerNumber]) {
+				// no turntaking game, we assume the best for us
+				if(parVal == null || childVal[0][playerNumber] > parVal[0][playerNumber]) {
 					values.put(node.getState(), new int[][]{childVal[0].clone(), {0, PROP}});
 				}
 			} else {

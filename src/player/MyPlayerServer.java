@@ -28,7 +28,7 @@ public class MyPlayerServer extends PlayerServer {
     public static void main(String[] args) {
         if (!DEBUG) {
             try {
-                System.setErr(new PrintStream(new FileOutputStream("/dev/null", true)));
+                System.setErr(new PrintStream(new FileOutputStream("faillog", true)));
             } catch (FileNotFoundException e) {
             }
         }

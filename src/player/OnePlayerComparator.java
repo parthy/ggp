@@ -44,8 +44,8 @@ public class OnePlayerComparator implements Comparator<IGameNode> {
 				return 0;
 			}
 		}
-		if(values.get(strategy.makeKeyString(arg0.getState())) != null && values.get(strategy.makeKeyString(arg1.getState())) == null) return (reverse) ? -1 : 1;
-		if(values.get(strategy.makeKeyString(arg0.getState())) == null && values.get(strategy.makeKeyString(arg1.getState())) != null) return (reverse) ? 1 : -1;
+		if(values.get(strategy.makeKeyString(arg0.getState())) != null && values.get(strategy.makeKeyString(arg1.getState())) == null) return (reverse) ? 1 : -1;
+		if(values.get(strategy.makeKeyString(arg0.getState())) == null && values.get(strategy.makeKeyString(arg1.getState())) != null) return (reverse) ? -1 : 1;
 		return 0;
 	}
 
