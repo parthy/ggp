@@ -106,9 +106,9 @@ public class RuleOptimizer {
     			}
     		}
     	}
-    	if(body.size() == 1) {
-    		//System.out.println("Nothing to optimize, returning: "+head.concat(" "+body.get(0))+")");
-    		rule = head.concat(" "+body.get(0));
+    	if(body.size() < 2) {
+    		// nothing to optimize or something went wrong. safely return the untouched rule.
+    		return rule;
     	}
     	else {
     		rule = head;
