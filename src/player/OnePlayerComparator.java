@@ -42,6 +42,11 @@ public class OnePlayerComparator implements Comparator<IGameNode> {
 			if(((Integer) val1.keySet().toArray()[0]) == ((Integer) val2.keySet().toArray()[0])) {
 				// the values bring us the same score -> equal
 				//System.out.println("val1 is equal to val2: "+((int[]) val1.keySet().toArray()[0])[0]+", "+((int[]) val2.keySet().toArray()[0])[0]);
+				if(((Integer) val1.values().toArray()[0]) > ((Integer) val2.values().toArray()[0]))
+					return (reverse) ? -1 : 1;
+				if(((Integer) val1.values().toArray()[0]) < ((Integer) val2.values().toArray()[0]))
+					return (reverse) ? 1 : -1;
+				
 				return 0;
 			}
 		}

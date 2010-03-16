@@ -52,7 +52,7 @@ public final class MyPlayer extends Player {
         String rules = msg.getGameDescription();
 
         if (OPTIMIZE_RULES) {
-            RuleOptimizer ruleOptimizer = new RuleOptimizer();
+            RuleOptimizer ruleOptimizer = RuleOptimizer.getInstance();
             rules = ruleOptimizer.reorderGDL(msg.getGameDescription());
             System.out.println(rules);
         }

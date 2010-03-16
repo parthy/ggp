@@ -10,7 +10,23 @@ public class RuleOptimizer {
 	
 	public String noop_name;
 
+	private static RuleOptimizer instance = null;
+	
 	public List<String> goalRules = new ArrayList<String>();
+	public List<String> negGoalRules = new ArrayList<String>();
+	
+	public  boolean optimized;
+	
+	private RuleOptimizer() {
+		
+	}
+	
+	public static RuleOptimizer getInstance() {
+		if(instance == null)  {
+			instance = new RuleOptimizer();
+		}
+		return instance;
+	}
 	
 	public String reorderGDL(String gameDescription) {
 	    	ArrayList<String> facts = new ArrayList<String>();
@@ -70,21 +86,52 @@ public class RuleOptimizer {
 	    	}
 			
 	    	//System.out.println(rulesString);
+	    	optimized = true;
+	    	
 	    	return rulesString;
 	}
     
     private String optimizeRule(String rule) {
     	//System.out.println("Optimizing "+rule);
     	if(rule.equals("") || rule.equals(" ")) return "";
-    	int opens = -1, lastPos=-1;
+    	String backup = rule.toString();
+    	int opens = 0, lastPos=-1;
     	boolean started=false;
     	String head="";
     	ArrayList<String> body = new ArrayList<String>();
+    	boolean nullary_head = false;
+    	
+    	if(rule.matches("\\(<= \\(.*\\).*\\)")) {
+    		rule = rule.substring(4, rule.length()-1);
+    	} else if(!rule.matches("\\(<= [^\\(]* \\(.*\\)\\)")) {
+    		return backup;
+    	} else {
+    		rule = rule.substring(4, rule.length()-1);
+    		nullary_head = true;
+    	}
+    	
     	for(int i=0; i<rule.length(); i++) {
-    		if(rule.substring(i, i+1).equals(" ")) continue;
-    		if(rule.substring(i, i+1).equals("(")) opens++;
-    		if(rule.substring(i, i+1).equals(")")) { if(!started) started = true; opens--; }
-    		
+    		if(nullary_head && head.equals("") && !rule.substring(i, i+1).equals("(")) {
+    			started = true;
+    			continue;
+    		}
+    		if(rule.substring(i, i+1).equals(" ")) 
+    			continue;
+    		else if(rule.substring(i, i+1).equals("(")) {
+    			opens++;
+    		}
+    		else if(rule.substring(i, i+1).equals(")")) { 
+    			if(!started) 
+    				started = true; 
+    			opens--; 
+    		}
+    		if(head.equals("") && nullary_head && opens == 1) {
+    			// we just found the nullary head
+    			head = rule.substring(0, i);
+    			lastPos = i;
+    			started = false;
+    			continue;
+    		}
     		if((opens == 0 && started) || i == rule.length()-1) { // one section done
     			if(head.equals("")) { // we are not yet done with the head 
     				head = rule.substring(0, i+1);
@@ -108,7 +155,54 @@ public class RuleOptimizer {
     	}
     	if(body.size() < 2) {
     		// nothing to optimize or something went wrong. safely return the untouched rule.
-    		return rule;
+    		boolean foundSomething = true;
+    		while(foundSomething) {
+    			foundSomething = false;
+    			boolean found = head.matches("\\(goal (.*) 100\\)");
+    	    	    	if(found) {
+    	    	    		// walk through all goal rules and collect positive as well as negative ones
+    	    	    		for(String r : body) {
+    	    	    			if(r.matches("\\(not .*\\)")) {
+    	    	    				negGoalRules.add(r.substring(5, r.length()-1));
+    	    	    			} else {
+    	    	    				goalRules.add(r);
+    	    	    			}
+    	    	    		}
+    	    	    	} else {
+    	    	    		// see if goal rules are composed
+    	    	    		ArrayList<String> collector = new ArrayList<String>();
+    	    	    		ArrayList<String> collector2 = new ArrayList<String>();
+    	    		    	for(String goal : goalRules) {
+    	    		    		for(String r : body) {
+    	    		    			if(!head.matches(".*"+goal+".*")) 
+    	    		    				continue;
+    	    		    			if(r.matches("\\(not .*\\)")) {
+    	    		    				collector2.add(r.substring(5, r.length()-1));
+    	    		    			} else {
+    	    		    				collector.add(r);
+    	    		    			}
+    	    		    		}
+    	    		    	}
+    	    		    	for(String goal : negGoalRules) {
+    	    		    		for(String r : body) {
+    	    		    			if(!head.matches(".*"+goal+".*")) 
+    	    		    				continue;
+    	    		    			if(r.matches("\\(not .*\\)")) {
+    	    		    				collector.add(r.substring(5, r.length()-1));
+    	    		    			} else {
+    	    		    				collector2.add(r);
+    	    		    			}
+    	    		    		}
+    	    		    	}
+    	    		    	if(!(collector.size() == 0 && collector2.size() == 0))
+    	    		    		foundSomething = true;
+    	    		    	
+    	    		    	goalRules.addAll(collector);
+    	    		    	goalRules.addAll(collector2);
+    	    	    	}
+    		}
+    		
+    		return backup;
     	}
     	else {
     		rule = head;
@@ -177,19 +271,58 @@ public class RuleOptimizer {
     		}
     		//System.out.println("Returning "+rule+")");
     	}
-    	boolean found = head.matches("\\(<=[ ]*\\(goal (.*) 100\\)");
-    	if(found) {
-    		goalRules.addAll(body);
-    	}
-    	// see if goal rules are composed
-    	for(String goal : goalRules) {
-    		if(rule.matches(".*"+goal+".*")) {
-    			goalRules.addAll(body);
-    			break;
-    		}
-    	}
+    	boolean foundSomething = true;
+		while(foundSomething) {
+			foundSomething = false;
+			boolean found = head.matches("\\(goal (.*) 100\\)");
+	    	    	if(found) {
+	    	    		// walk through all goal rules and collect positive as well as negative ones
+	    	    		for(String r : body) {
+	    	    			if(r.matches("\\(not .*\\)")) {
+	    	    				negGoalRules.add(r.substring(5, r.length()-1));
+	    	    			} else {
+	    	    				goalRules.add(r);
+	    	    			}
+	    	    		}
+	    	    	} else {
+	    	    		// see if goal rules are composed
+	    	    		ArrayList<String> collector = new ArrayList<String>();
+	    	    		ArrayList<String> collector2 = new ArrayList<String>();
+	    		    	for(String goal : goalRules) {
+	    		    		for(String r : body) {
+	    		    			if(!head.matches(".*"+goal+".*")) 
+	    		    				continue;
+	    		    			if(r.matches("\\(not .*\\)")) {
+	    		    				collector2.add(r.substring(5, r.length()-1));
+	    		    			} else {
+	    		    				collector.add(r);
+	    		    			}
+	    		    		}
+	    		    	}
+	    		    	for(String goal : negGoalRules) {
+	    		    		for(String r : body) {
+	    		    			if(!head.matches(".*"+goal+".*")) 
+	    		    				continue;
+	    		    			if(r.matches("\\(not .*\\)")) {
+	    		    				collector.add(r.substring(5, r.length()-1));
+	    		    			} else {
+	    		    				collector2.add(r);
+	    		    			}
+	    		    		}
+	    		    	}
+	    		    	collector.removeAll(goalRules);
+	    		    	collector2.removeAll(negGoalRules);
+	    		    	
+	    		    	if(!(collector.size() == 0 && collector2.size() == 0))
+	    		    		foundSomething = true;
+	    		    	
+	    		    	goalRules.addAll(collector);
+	    		    	negGoalRules.addAll(collector2);
+	    	    	}
+		}
     	//System.out.println("Return "+rule+")");
-    	return rule+")";
+    	    	
+    	return "(<= "+rule+")";
     }
     
     private ArrayList<String> getVarsFromLiteral(String lit) {
