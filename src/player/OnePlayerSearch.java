@@ -21,7 +21,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 	private List<IGameNode> queue = new ArrayList<IGameNode>();
 	private List<IGameNode> currentWay = new ArrayList<IGameNode>();
 	private Map<String, Integer> visitedStates = new HashMap<String, Integer>();
-	private HashMap<String, HashMap<Integer, Integer>> values = new HashMap<String, HashMap<Integer, Integer>>();
+	private HashMap<String, ValuesEntry> values = new HashMap<String, ValuesEntry>();
 	private PriorityQueue<IGameNode> children;
 	private boolean foundSolution = false;
 	private int nodesVisited;
@@ -114,10 +114,8 @@ public class OnePlayerSearch extends AbstractStrategy {
 				for(IMove[] move : allMoves) {
 					IGameNode next = game.getNextNode(node, move);
 					String k = makeKeyString(next.getState());
-					HashMap<Integer, Integer> val = values.get(k);
-					String str = "";
-					if(val != null) str += val;
-					System.out.println("Possible move "+move[0].getMove()+" has value: "+str);
+					ValuesEntry val = values.get(k);
+					System.out.println("Possible move "+move[0].getMove()+" has value: "+val);
 					if(next.isTerminal()){
 						if(game.getGoalValues(next)[0] == 100){
 							//if we can reach the goal -> do it
@@ -135,8 +133,8 @@ public class OnePlayerSearch extends AbstractStrategy {
 				if(!children.isEmpty()) {
 					IGameNode next = game.getNextNode(node, children.peek().getMoves());
 					game.regenerateNode(next);
-					HashMap<Integer, Integer> val = values.get(makeKeyString(next.getState()));
-					if(val != null && (Integer) val.keySet().toArray()[0] == 0) {
+					ValuesEntry val = values.get(makeKeyString(next.getState()));
+					if(val != null && (Integer) val.getGoalArray()[0] == 0) {
 						// random is better than loss
 						return game.getRandomMove(node)[0];
 					}
@@ -170,8 +168,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			
 			if(node.isTerminal()) {
 				// set the goal value as a value you can totally rely on -> treated as it occurred MAX_VALUE times
-				tmp.put(game.getGoalValues(node)[0], Integer.MAX_VALUE); 
-				this.values.put(makeKeyString(node.getState()), tmp);
+				this.values.put(makeKeyString(node.getState()), new ValuesEntry(game.getGoalValues(node), Integer.MAX_VALUE));
 				if(node.getState().getGoalValue(0) == 100) {
     					foundSolution = true;
     					this.solution = node;
@@ -181,14 +178,13 @@ public class OnePlayerSearch extends AbstractStrategy {
 			} else {
 				// put a value calculated by the heuristic in our hash.
 				int occ = -1;
-				HashMap<Integer, Integer> entry = values.get(makeKeyString(node.getState()));
+				ValuesEntry entry = values.get(makeKeyString(node.getState()));
 				if(entry != null) {
-					if(entry.values().iterator().hasNext())
-						occ = entry.values().iterator().next();
+					occ = entry.getOccurences();
 				}
 
-				tmp.put(heuristic.calculateHeuristic(node, stepcounter), occ);
-				this.values.put(makeKeyString(node.getState()), tmp);
+				int[] goalValues = {heuristic.calculateHeuristic(node, stepcounter)};
+				this.values.put(makeKeyString(node.getState()), new ValuesEntry(goalValues, occ));
 			}
 
 			// add successor nodes to queue
@@ -334,15 +330,13 @@ public class OnePlayerSearch extends AbstractStrategy {
 		}
 		
 		// since the game is over, we can now go all the way back and fiddle around with the goals
-		HashMap<Integer, Integer> existingValue = values.get(makeKeyString(currentNode.getState()));
+		ValuesEntry existingValue = values.get(makeKeyString(currentNode.getState()));
 		
 		//System.out.println("Existing Value in Hash: "+existingValue);
 		
 		// if there is no value yet, we put it in
 		if(existingValue == null) {
-			HashMap<Integer, Integer> temp = new HashMap<Integer, Integer>();
-			temp.put(value[0], 1);
-			values.put(makeKeyString(currentNode.getState()), temp);
+			values.put(makeKeyString(currentNode.getState()), new ValuesEntry(value, 1));
 		}
 		// now we look at the parent of the goal state.
 		IGameNode node = currentNode;
@@ -356,22 +350,18 @@ public class OnePlayerSearch extends AbstractStrategy {
 			
 			node = node.getParent();
 			game.regenerateNode(node);
-			HashMap<Integer, Integer> entry = values.get(makeKeyString(node.getState()));
+			ValuesEntry entry = values.get(makeKeyString(node.getState()));
 			Integer tempVal = null;
 			if(entry != null) {
-				tempVal = (Integer) values.get(makeKeyString(node.getState())).keySet().toArray()[0];
+				tempVal = (Integer) values.get(makeKeyString(node.getState())).getGoalArray()[0];
 			}
 			if(entry == null || tempVal == null) { // no value in there yet, so we just set the achieved goal value
-				HashMap<Integer, Integer> temp = new HashMap<Integer, Integer>();
-				temp.put(value[0], 1);
-				values.put(makeKeyString(node.getState()), temp);
+				values.put(makeKeyString(node.getState()), new ValuesEntry(value, 1));
 			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
-				Integer newCount = ((Integer) values.get(makeKeyString(node.getState())).values().toArray()[0])+1;
+				Integer newCount = values.get(makeKeyString(node.getState())).getOccurences();
 				if(newCount == 0) newCount++;
-				tempVal = Math.round((new Float(((newCount-1)*tempVal+value[0]))/new Float(newCount)));
-				HashMap<Integer, Integer> temp = new HashMap<Integer, Integer>();
-				temp.put(tempVal, newCount);
-				values.put(makeKeyString(node.getState()), temp);
+				int[] goalValues = { Math.round((new Float(((newCount-1)*tempVal+value[0]))/new Float(newCount))) };
+                                values.put(makeKeyString(node.getState()), new ValuesEntry(goalValues, newCount));
 			}
 		}
 	}
@@ -379,7 +369,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 	/*
 	 * Hand out a value from our Hash
 	 */
-	public HashMap<Integer, Integer> getValue(IGameState state) {
+	public ValuesEntry getValue(IGameState state) {
 		return this.values.get(state);
 	}
 	
