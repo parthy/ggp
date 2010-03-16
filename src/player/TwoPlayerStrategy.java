@@ -237,7 +237,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
         if (node.isTerminal()) {
             // remember this state as being good to reach -> goal Distance
-            if (game.getGoalValues(node)[playerNumber] <= 20 || game.getGoalValues(node)[playerNumber] >= 80) {
+            if (game.getGoalValues(node)[playerNumber] >= 80) {
                 memorizeStates.add(new MemorizeState(node.getState(), game.getGoalValues(node)[playerNumber]));
             }
             // can also save in constant hash

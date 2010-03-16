@@ -91,7 +91,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			try {
 				// if no way is there, just do something
 				// first search a little
-				long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2500;
+				long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 1200;
 				endTime = System.currentTimeMillis() + match.getPlayTime()*500;
 				try {
 					while(System.currentTimeMillis() < endTime) {
@@ -162,7 +162,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			//System.out.println("Current state: "+node.getState().getFluents().toString());
 			// track our way of states so we don't visit states multiple times
 			
-			visitedStates.put(makeKeyString(node.getState()), node.getDepth());
+			visitedStates.put(node.getState().toString(), node.getDepth());
 			
 
 			// put some value in the values hash, maybe at first just heuristic guesses
@@ -199,7 +199,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 				//next.setPreserve(true);
 				game.regenerateNode(next);
 				
-				String key = makeKeyString(next.getState());
+				String key = next.getState().toString();
 				
 				if(!visitedStates.containsKey(key) || visitedStates.get(key) > next.getDepth()){
 					children.add(next);
@@ -210,8 +210,10 @@ public class OnePlayerSearch extends AbstractStrategy {
 					return;
 				}
 			}
+
 			while(!children.isEmpty()) {
-				queue.add(0, children.poll());
+				IGameNode n = children.poll();
+				queue.add(0, n);
 			}
 			//System.out.println("Queue size: "+queue.size());
 			children.clear();
@@ -366,7 +368,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
 				Integer newCount = ((Integer) values.get(makeKeyString(node.getState())).values().toArray()[0])+1;
 				if(newCount == 0) newCount++;
-				tempVal = ((newCount-1)*tempVal+value[0])/newCount;
+				tempVal = Math.round((new Float(((newCount-1)*tempVal+value[0]))/new Float(newCount)));
 				HashMap<Integer, Integer> temp = new HashMap<Integer, Integer>();
 				temp.put(tempVal, newCount);
 				values.put(makeKeyString(node.getState()), temp);
