@@ -71,6 +71,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         // end time is set from outside
         System.out.println("\nINIT: 2playerStrategy.");
 
+        /*
         // try to find previous results of this game in a file.
         MD5Hash hash = new MD5Hash(game.getSourceGDL().concat(String.valueOf(playerNumber)));
         try {
@@ -124,7 +125,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
         System.out.println("read " + propagatedHash.size() + " propagated values successfully.");
         System.out.println("read " + values.size() + " simulated values successfully.");
-
+	*/
 
         // Set up the evaluator
         this.evaluator = new Evaluator(values, memorizeStates);
@@ -623,7 +624,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
          * this will probably get mixed up if we take only the GDL as hash without
          * our player number
          * -> if we are the other player the values are 100-x actually
-         */
+         
         try {
             MD5Hash hash = new MD5Hash(game.getSourceGDL().concat(String.valueOf(playerNumber)));
             FileOutputStream out = new FileOutputStream(hash.toString());
@@ -638,7 +639,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             ex.printStackTrace(System.out);
             Logger.getLogger(TwoPlayerStrategy.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+	*/
         this.queue.clear();
         this.queue = null;
         this.values.clear();
