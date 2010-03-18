@@ -42,6 +42,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
     private HashMap<IGameState, Integer> propagatedHash = new HashMap<IGameState, Integer>();
     Evaluator evaluator;
 
+    boolean getmove = false;
+    
     public void setFirstEndTime(long endTime) {
         this.endTime = endTime - 600;
     }
@@ -174,7 +176,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 System.out.println("Visited: " + nodesVisited);
 
                 visitedStates.clear();
-                canSearchDeeper = DLS(start, 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                canSearchDeeper = DLS(start, start.getDepth(), Integer.MIN_VALUE, Integer.MAX_VALUE);
                 currentDepthLimit++;
             }
 
@@ -205,6 +207,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
      */
     private Boolean DLS(IGameNode node, int depth, Integer alpha, Integer beta) throws InterruptedException {
         game.regenerateNode(node);
+        if(getmove)
+        	System.out.println(node);
         nodesVisited++;
 
         if (System.currentTimeMillis() >= endSearchTime) {
@@ -377,6 +381,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			values.clear();
 			propagatedHash.clear();
 		}
+    	if(current.getDepth() == 4)
+    		getmove = true;
         IGameNode best = null;
         try {
             game.regenerateNode(current);

@@ -100,8 +100,8 @@ public class OnePlayerSearch extends AbstractStrategy {
 			try {
 				// if no way is there, just do something
 				// first search a little
-				long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 1200;
-				endTime = System.currentTimeMillis() + match.getPlayTime()*350;
+				long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 800;
+				endTime = System.currentTimeMillis() + match.getPlayTime()*400;
 				try {
 					while(System.currentTimeMillis() < endTime) {
 						simulateGame(node);
