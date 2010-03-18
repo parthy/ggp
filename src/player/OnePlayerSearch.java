@@ -177,7 +177,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 
 	                visitedStates.clear();
 	                
-	                canSearchDeeper = DLS(start, 0);
+	                canSearchDeeper = DLS(start, start.getDepth());
 	                currentDepthLimit++;
 	            }
 	        } catch (InterruptedException e) {

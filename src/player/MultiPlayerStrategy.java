@@ -121,7 +121,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	                for(int i=0; i<game.getRoleCount(); i++)
 	                	lower_bounds[i] = Integer.MIN_VALUE;
 	                
-	                canSearchDeeper = DLS(start, 0, lower_bounds);
+	                canSearchDeeper = DLS(start, start.getDepth(), lower_bounds);
 	                currentDepthLimit++;
 	            }
 
