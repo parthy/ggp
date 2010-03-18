@@ -183,8 +183,12 @@ public class RuleOptimizer {
 								if(!negGoalRules.contains(r.substring(5, r.length()-1)))
 									collector2.add(r.substring(5, r.length()-1));
 							} else {
-								if(!goalRules.contains(r))
-									collector.add(r);
+								if(!goalRules.contains(r)) {
+									if(r.substring(0, 1).equals(" ")) 
+										collector.add(r.substring(1));
+									else
+										collector.add(r);
+								}
 							}
 						}
 					}
@@ -196,8 +200,12 @@ public class RuleOptimizer {
 								if(!goalRules.contains(r.substring(5, r.length()-1)))
 									collector.add(r.substring(5, r.length()-1));
 							} else {
-								if(!negGoalRules.contains(r))
-									collector2.add(r);
+								if(!negGoalRules.contains(r)) {
+									if(r.substring(0, 1).equals(" ")) 
+										collector.add(r.substring(1));
+									else
+										collector.add(r);
+								}
 							}
 						}
 					}
@@ -307,8 +315,12 @@ public class RuleOptimizer {
 							if(!negGoalRules.contains(r.substring(5, r.length()-1)))
 								collector2.add(r.substring(5, r.length()-1));
 						} else {
-							if(!goalRules.contains(r))
-								collector.add(r);
+							if(!goalRules.contains(r)) {
+								if(r.substring(0, 1).equals(" ")) 
+									collector.add(r.substring(1));
+								else
+									collector.add(r);
+							}
 						}
 					}
 				}
@@ -318,10 +330,14 @@ public class RuleOptimizer {
 							continue;
 						if(r.matches("\\(not .*\\)")) {
 							if(!goalRules.contains(r.substring(5, r.length()-1)))
-									collector.add(r.substring(5, r.length()-1));
+								collector.add(r.substring(5, r.length()-1));
 						} else {
-							if(!negGoalRules.contains(r))
-								collector2.add(r);
+							if(!negGoalRules.contains(r)) {
+								if(r.substring(0, 1).equals(" ")) 
+									collector.add(r.substring(1));
+								else
+									collector.add(r);
+							}
 						}
 					}
 				}

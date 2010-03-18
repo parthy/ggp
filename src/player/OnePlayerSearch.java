@@ -195,7 +195,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 
 		if (depth >= currentDepthLimit) {
 			// reached the fringe -> ask for a evaluation
-			values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(node)}, 1));
+			values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(node, stepcounter)}, 1));
 			// we can expand in the next iteration
 			return true;
 		}
@@ -395,9 +395,13 @@ public class OnePlayerSearch extends AbstractStrategy {
 				Integer newCount = values.get(makeKeyString(node.getState())).getOccurences();
 				if(newCount < Integer.MAX_VALUE) { 
 					newCount++;
-					if(newCount == 0)
-						newCount++;
-					int[] goalValues = { Math.round((new Float(((newCount-1)*tempVal+value[0]))/new Float(newCount))) };
+					int[] goalValues;
+					if(newCount == 0) {
+						// means the value was heuristic, count a bit more on that one
+						goalValues = new int[]{ Math.round((new Float(((newCount-1)*3*tempVal+7*value[0])*0.1))) };
+					} else {
+						goalValues = new int[]{ Math.round((new Float(((newCount-1)*tempVal+value[0]))/new Float(newCount))) };
+					}
 					values.put(makeKeyString(node.getState()), new ValuesEntry(goalValues, newCount));
 				}
 			}
