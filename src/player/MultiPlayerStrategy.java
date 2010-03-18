@@ -95,7 +95,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		currentDepthLimit = 1;
 		
 		// Set up the evaluator
-	        this.evaluator = new Evaluator(values, memorizeStates, true);
+	    this.evaluator = new Evaluator(values, memorizeStates, true);
 		
 		try {
 			IDS(endTime, root);
@@ -412,7 +412,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
 				Integer newCount = existingValue[1][0]+1;
 				for(int i=0; i<tempVal.length; i++) {
-					tempVal[i] = (tempVal[i]*(newCount-1) + value[i])/newCount;
+					tempVal[i] = Math.round(new Float((tempVal[i]*(newCount-1) + value[i]))/new Float(newCount));
 				}
 				values.put(node.getState(), new int[][]{tempVal, {newCount, SIM}});
 			}

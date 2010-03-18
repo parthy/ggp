@@ -178,9 +178,11 @@ public class RuleOptimizer {
 							if(!newHead.matches(".*"+goal+".*") && !goal.matches(".*"+newHead+".*")) 
 								continue;
 							if(r.matches("\\(not .*\\)")) {
-								collector2.add(r.substring(5, r.length()-1));
+								if(!negGoalRules.contains(r.substring(5, r.length()-1)))
+									collector2.add(r.substring(5, r.length()-1));
 							} else {
-								collector.add(r);
+								if(!goalRules.contains(r))
+									collector.add(r);
 							}
 						}
 					}
@@ -189,9 +191,11 @@ public class RuleOptimizer {
 							if(!newHead.matches(".*"+goal+".*") && !goal.matches(".*"+newHead+".*")) 
 								continue;
 							if(r.matches("\\(not .*\\)")) {
-								collector.add(r.substring(5, r.length()-1));
+								if(!goalRules.contains(r.substring(5, r.length()-1)))
+									collector.add(r.substring(5, r.length()-1));
 							} else {
-								collector2.add(r);
+								if(!negGoalRules.contains(r))
+									collector2.add(r);
 							}
 						}
 					}
@@ -202,7 +206,7 @@ public class RuleOptimizer {
 						foundSomething = true;
 
 					goalRules.addAll(collector);
-					goalRules.addAll(collector2);
+					negGoalRules.addAll(collector2);
 				}
 			}
 
@@ -298,21 +302,24 @@ public class RuleOptimizer {
 						if(!newHead.matches(".*"+goal+".*") && !goal.matches(".*"+newHead+".*")) 
 							continue;
 						if(r.matches("\\(not .*\\)")) {
-							collector2.add(r.substring(5, r.length()-1));
+							if(!negGoalRules.contains(r.substring(5, r.length()-1)))
+								collector2.add(r.substring(5, r.length()-1));
 						} else {
-							collector.add(r);
+							if(!goalRules.contains(r))
+								collector.add(r);
 						}
 					}
 				}
-
 				for(String goal : negGoalRules) {
 					for(String r : body) {
 						if(!newHead.matches(".*"+goal+".*") && !goal.matches(".*"+newHead+".*")) 
 							continue;
 						if(r.matches("\\(not .*\\)")) {
-							collector.add(r.substring(5, r.length()-1));
+							if(!goalRules.contains(r.substring(5, r.length()-1)))
+									collector.add(r.substring(5, r.length()-1));
 						} else {
-							collector2.add(r);
+							if(!negGoalRules.contains(r))
+								collector2.add(r);
 						}
 					}
 				}

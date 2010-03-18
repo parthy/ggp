@@ -5,14 +5,6 @@ package player;
  */
 
 //package src.de.tudresden.inf.ggp.basicplayer;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -20,18 +12,12 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.palamedes.gdl.core.model.IGameNode;
 import org.eclipse.palamedes.gdl.core.model.IGameState;
 import org.eclipse.palamedes.gdl.core.model.IMove;
-import org.eclipse.palamedes.gdl.core.model.utils.Game;
-import org.eclipse.palamedes.gdl.core.resolver.prologprover.EclipseConnector;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
-
-import com.parctechnologies.eclipse.CompoundTerm;
 
 /**
  *
@@ -397,7 +383,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 //			if(!searchFinished) {
             //       propagatedHash.clear();
 
-            endTime = System.currentTimeMillis() + match.getPlayTime() * 1000;
+            endTime = System.currentTimeMillis() + match.getPlayTime() * 1000 - 1200;
             // a little simulation doesn't harm
             while (System.currentTimeMillis() < (endTime - match.getPlayTime() * 500)) {
                 simulateGame(current);

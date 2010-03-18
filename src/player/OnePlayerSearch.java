@@ -4,17 +4,20 @@ package player;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.eclipse.palamedes.gdl.core.model.*;
+import org.eclipse.palamedes.gdl.core.model.IFluent;
+import org.eclipse.palamedes.gdl.core.model.IGame;
+import org.eclipse.palamedes.gdl.core.model.IGameNode;
+import org.eclipse.palamedes.gdl.core.model.IGameState;
+import org.eclipse.palamedes.gdl.core.model.IMove;
+import org.eclipse.palamedes.gdl.core.resolver.prologprover.FluentAdapter;
 import org.eclipse.palamedes.gdl.core.simulation.Match;
 import org.eclipse.palamedes.gdl.core.simulation.strategies.AbstractStrategy;
-import org.eclipse.palamedes.gdl.core.resolver.prologprover.*;
 
 import com.parctechnologies.eclipse.Atom;
 
@@ -56,7 +59,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 
 		try {
 			// simulate for half of the time, then use the experience to search
-			while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*550 && !foundSolution) {
+			while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*600 && !foundSolution) {
 				simulateGame(game.getTree().getRootNode());
 			}
 			for(String fluent : domainSizes.keySet()) {
@@ -174,6 +177,9 @@ public class OnePlayerSearch extends AbstractStrategy {
 	}
 	
 	private boolean DLS(IGameNode node, int depth) throws InterruptedException {
+		if(foundSolution)
+			return false;
+		
 		game.regenerateNode(node);
 		
 		nodesVisited++;
@@ -191,6 +197,11 @@ public class OnePlayerSearch extends AbstractStrategy {
 		}
 
 		if (node.isTerminal()) {
+			if(node.getState().getGoalValues()[0] == 100) {
+				foundSolution = true;
+				solution = node;
+				fillCurrentWay();
+			}
 			// save in hash
 			values.put(makeKeyString(node.getState()), new ValuesEntry(node.getState().getGoalValues(), Integer.MAX_VALUE));
 			return false;
@@ -209,7 +220,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 		// recursion
 
 		// do not work with global variables in a recursive function
-		PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values, false, this));
+		//PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values, false, this));
 		List<IMove[]> moves = game.getCombinedMoves(node);
 		
 		Boolean expandFurther = false;
@@ -217,7 +228,6 @@ public class OnePlayerSearch extends AbstractStrategy {
 			IGameNode child = game.getNextNode(node, move);
 			if(values.get(makeKeyString(child.getState())) == null)
 				values.put(makeKeyString(child.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(child)}, -1));
-			children.add(child);
 			
 			// Max
 			game.regenerateNode(node);
@@ -225,15 +235,13 @@ public class OnePlayerSearch extends AbstractStrategy {
 			ValuesEntry childVal = values.get(makeKeyString(child.getState()));
 			ValuesEntry parVal = values.get(makeKeyString(node.getState()));
 			
+			if (DLS(child, depth + 1)) {
+				expandFurther = true;
+			}
+			
 			// propagate values
 			if((parVal == null && childVal != null) || (childVal != null && parVal != null && childVal.getGoalArray()[0] > parVal.getGoalArray()[0])) {
 				values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{childVal.getGoalArray()[0]}, 1));
-			}
-		}
-		
-		while(!children.isEmpty()) {
-			if (DLS(children.poll(), depth + 1)) {
-				expandFurther = true;
 			}
 		}
 		
@@ -273,6 +281,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 
 	void fillCurrentWayLimited(int limit) {
 		IGameNode cur = solution;
+		currentWay.clear();
 		while(cur.getParent() != null && cur.getDepth() > limit) {
 			System.out.println(cur);
 			currentWay.add(0, cur);
@@ -295,6 +304,8 @@ public class OnePlayerSearch extends AbstractStrategy {
 			// remember for each fluent, how many different occurrences it had
 			List<IFluent> fluents = currentNode.getState().getFluents();
 			for(IFluent f : fluents) {
+				if(((FluentAdapter) f).getNativeTerm().arity() == 0)
+					continue;
 				// get current entries in hashes
 				Integer size = domainSizes.get(f.getName());
 				if(size == null)
