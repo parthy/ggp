@@ -87,6 +87,10 @@ public class OnePlayerSearch extends AbstractStrategy {
 		/*
 		 * return the head element of currentWay and remove it from the list
 		 */
+		if(Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+			visitedStates.clear();
+			values.clear();
+		}
 		System.out.println(node);
 		if(!currentWay.isEmpty()) {
 			//System.out.println("Doing move "+currentWay.get(0).getMoves()[0].getMove()+" has value: "+values.get(currentWay.get(0).getState()).toString());

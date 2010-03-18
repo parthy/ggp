@@ -45,10 +45,10 @@ public class OnePlayerComparator implements Comparator<IGameNode> {
                 // take the one with more occurences
                 //System.out.println("val1 is equal to val2: "+((int[]) val1.keySet().toArray()[0])[0]+", "+((int[]) val2.keySet().toArray()[0])[0]);
                 if (val1.getOccurences() > val2.getOccurences()) {
-                    return (reverse) ? -1 : 1;
+                    return (reverse) ? 1 : -1;
                 }
                 if (val1.getOccurences() < val2.getOccurences()) {
-                    return (reverse) ? 1 : -1;
+                    return (reverse) ? -1 : 1;
                 }
 
                 return 0;
