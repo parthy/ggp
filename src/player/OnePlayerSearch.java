@@ -398,7 +398,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 					int[] goalValues;
 					if(newCount == 0) {
 						// means the value was heuristic, count a bit more on that one
-						goalValues = new int[]{ Math.round((new Float((tempVal+7*value[0])*0.1))) };
+						goalValues = new int[]{ Math.round((new Float((6*tempVal+4*value[0])*0.1))) };
 						newCount = -1;
 					} else {
 						goalValues = new int[]{ Math.round((new Float(((newCount-1)*tempVal+value[0]))/new Float(newCount))) };
