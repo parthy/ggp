@@ -144,9 +144,13 @@ public class OnePlayerSearch extends AbstractStrategy {
 					IGameNode next = game.getNextNode(node, children.peek().getMoves());
 					game.regenerateNode(next);
 					ValuesEntry val = values.get(makeKeyString(next.getState()));
-					if(val != null && (Integer) val.getGoalArray()[0] == 0) {
-						// random is better than loss
-						return game.getRandomMove(node)[0];
+					if(val != null && val.getGoalArray()[0] == 0 && val.getOccurences() == Integer.MAX_VALUE) {
+						// we take the 0 with the least certainty
+						IMove last = null;
+						while(children.isEmpty())
+							last = children.poll().getMoves()[0];
+						
+						return last;
 					}
 					return children.poll().getMoves()[0];
 				}
