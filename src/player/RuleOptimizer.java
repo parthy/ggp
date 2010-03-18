@@ -92,7 +92,7 @@ public class RuleOptimizer {
 	}
 
 	private String optimizeRule(String rule) {
-		//System.out.println("Optimizing "+rule);
+		System.out.println("Optimizing "+rule);
 		if(rule.equals("") || rule.equals(" ")) return "";
 		String backup = rule.toString();
 		int opens = 0, lastPos=-1;
@@ -136,7 +136,7 @@ public class RuleOptimizer {
 				if(head.equals("")) { // we are not yet done with the head 
 					head = rule.substring(0, i+1);
 					lastPos = i+2;
-					//System.out.println("Found head: "+head);
+					System.out.println("Found head: "+head);
 					started = false;
 				} else { // we found a literal
 					if(!(opens==0)) {
@@ -144,10 +144,12 @@ public class RuleOptimizer {
 						if(lastPos >= rule.length())
 							break;
 						body.add(rule.substring(lastPos, rule.length()-1));
-						//System.out.println("Found body literal that ends rule: "+rule.substring(lastPos, rule.length()-1));
+						System.out.println("Found body literal that ends rule: "+rule.substring(lastPos, rule.length()-1));
+						started = false;
 					} else {
 						body.add(rule.substring(lastPos, i+1));
-						//System.out.println("Found body literal: "+rule.substring(lastPos, i+1));
+						System.out.println("Found body literal: "+rule.substring(lastPos, i+1));
+						started = false;
 					}
 					lastPos = i+2;
 				}
@@ -277,7 +279,7 @@ public class RuleOptimizer {
 			for(String b : body) {
 				rule += " "+b;
 			}
-			//System.out.println("Returning "+rule+")");
+			System.out.println("Returning "+rule+")");
 		}
 		boolean foundSomething = true;
 		while(foundSomething) {
