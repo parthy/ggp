@@ -383,7 +383,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 //			if(!searchFinished) {
             //       propagatedHash.clear();
 
-            endTime = System.currentTimeMillis() + match.getPlayTime() * 1000 - 1200;
+            endTime = System.currentTimeMillis() + match.getPlayTime() * 1000 - 800;
             // a little simulation doesn't harm
             while (System.currentTimeMillis() < (endTime - match.getPlayTime() * 500)) {
                 simulateGame(current);
@@ -411,7 +411,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
                 System.out.print("   Value: (" + evaluateNode(next) + " ,");
                 System.out.print(evaluator.evaluateNode(next, playerNumber) + " ,");
-                System.out.println(values.get(next.getState()).getGoalArray()[playerNumber] + ")");
+                System.out.println("");
                 childs.add(next);
             }
             best = childs.peek();
