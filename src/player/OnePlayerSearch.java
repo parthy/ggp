@@ -113,6 +113,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 						endTime = realEndTime;
 						
 						visitedStates.clear();
+						currentDepthLimit = node.getDepth()+1;
 						
 						IDS(node);
 					}
