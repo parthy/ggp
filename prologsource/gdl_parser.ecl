@@ -224,7 +224,7 @@ gdl_sentence_star_right_parens2([Sentence|Sentences], State) --> gdl_sentence(Se
 gdl_relsent(Relation, State) --> gdl_left_parens, gdl_white_star, gdl_relsent2_right_parens(Relation, State).
 gdl_relsent2_right_parens(Relation, State) --> gdl_constant(Atom), gdl_term_star_right_parens(Terms),
 	{	(Atom=distinct ->
-			Relation=..[~=|Terms]
+			Relation=..['~='|Terms]
 		;
 			Relation1=..[Atom|Terms],
 			rename_predicate(Relation1, State, Relation)
