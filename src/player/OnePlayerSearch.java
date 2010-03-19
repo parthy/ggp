@@ -59,7 +59,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 
 		try {
 			// simulate for half of the time, then use the experience to search
-			/*while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*600 && !foundSolution) {
+			while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*600 && !foundSolution) {
 				simulateGame(game.getTree().getRootNode());
 			}
 			for(String fluent : domainSizes.keySet()) {
@@ -69,7 +69,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 				}
 			}
 			System.out.println("Done simulating. I found out that "+stepcounter+" must be the stepcounter.");
-			*/
+			
 			currentDepthLimit = 2;
 			
 			IDS(game.getTree().getRootNode());
