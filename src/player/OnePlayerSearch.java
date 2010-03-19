@@ -222,8 +222,10 @@ public class OnePlayerSearch extends AbstractStrategy {
 			ValuesEntry prev = values.get(makeKeyString(node.getState()));
 			if(prev != null && prev.getOccurences() == Integer.MAX_VALUE)
 				return true;
-			
-			values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(node, stepcounter)}, 1));
+			if(prev == null)
+				values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(node, stepcounter)}, 1));
+			else
+				values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{Math.round(new Float(0.3*heuristic.calculateHeuristic(node, stepcounter)+0.7*prev.getGoalArray()[0]))}, 1));
 			// we can expand in the next iteration
 			return true;
 		}
