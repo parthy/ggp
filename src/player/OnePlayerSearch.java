@@ -59,7 +59,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 
 		try {
 			// simulate for half of the time, then use the experience to search
-			while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*600 && !foundSolution) {
+			/*while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*600 && !foundSolution) {
 				simulateGame(game.getTree().getRootNode());
 			}
 			for(String fluent : domainSizes.keySet()) {
@@ -69,7 +69,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 				}
 			}
 			System.out.println("Done simulating. I found out that "+stepcounter+" must be the stepcounter.");
-			
+			*/
 			currentDepthLimit = 2;
 			
 			IDS(game.getTree().getRootNode());
@@ -191,10 +191,6 @@ public class OnePlayerSearch extends AbstractStrategy {
 		
 		game.regenerateNode(node);
 		
-		if(node.getState().toString().matches(".*porder p1 p2 p3 p4 p5 p6.*")) {
-			System.out.println(node);
-		}
-		
 		nodesVisited++;
 
 		
@@ -202,9 +198,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			throw new InterruptedException("interrupted by time");
 		}
 
-		if (game.isTerminal(node) || node.isTerminal() || (node.getState() != null && node.getState().getGoalValues() != null && node.getState().getGoalValues()[0] == 100)) {
-			System.out.println(node);
-			System.out.println(game.getGoalValues(node)[0]);
+		if (node.isTerminal()) {
 			
 			if(node.getState().getGoalValues()[0] == 100) {
 				foundSolution = true;
@@ -284,11 +278,9 @@ public class OnePlayerSearch extends AbstractStrategy {
 				IFluent f = it.next();
 				if(f.getName().equals(stepcounter)) {
 					fluents.remove(f);
-					break;
+				} else {
+					key += f+" ";
 				}
-			}
-			for(IFluent f : fluents) {
-				key += f+" ";
 			}
 		} else {
 			key = state.toString();
