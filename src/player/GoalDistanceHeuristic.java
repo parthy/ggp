@@ -114,12 +114,7 @@ public class GoalDistanceHeuristic implements IHeuristic {
 		}
 		Float f = new Float(((new Float(fulfilled))/(new Float(count))*100.0));
 		int value = Math.round(f);
-		if(value < 0 || value > 100) {
-			System.out.println("Found weird value: "+value);
-		}
-		if(!stepcounter.equals("") && state.matches(".*room a.*")) {
-			return value;
-		}
+		
 		return value;
 	}
 

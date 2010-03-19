@@ -70,7 +70,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			}
 			System.out.println("Done simulating. I found out that "+stepcounter+" must be the stepcounter.");
 			
-			currentDepthLimit = maxDepth/4;
+			currentDepthLimit = 2;
 			
 			IDS(game.getTree().getRootNode());
 		} catch (InterruptedException ex) {
@@ -191,6 +191,10 @@ public class OnePlayerSearch extends AbstractStrategy {
 		
 		game.regenerateNode(node);
 		
+		if(node.getState().toString().matches(".*porder p1 p2 p3 p4 p5 p6.*")) {
+			System.out.println(node);
+		}
+		
 		nodesVisited++;
 
 		
@@ -198,14 +202,10 @@ public class OnePlayerSearch extends AbstractStrategy {
 			throw new InterruptedException("interrupted by time");
 		}
 
-		if (depth >= currentDepthLimit) {
-			// reached the fringe -> ask for a evaluation
-			values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(node, stepcounter)}, 1));
-			// we can expand in the next iteration
-			return true;
-		}
-
-		if (node.isTerminal()) {
+		if (game.isTerminal(node) || node.isTerminal() || (node.getState() != null && node.getState().getGoalValues() != null && node.getState().getGoalValues()[0] == 100)) {
+			System.out.println(node);
+			System.out.println(game.getGoalValues(node)[0]);
+			
 			if(node.getState().getGoalValues()[0] == 100) {
 				foundSolution = true;
 				solution = node;
@@ -214,6 +214,24 @@ public class OnePlayerSearch extends AbstractStrategy {
 			// save in hash
 			values.put(makeKeyString(node.getState()), new ValuesEntry(node.getState().getGoalValues(), Integer.MAX_VALUE));
 			return false;
+		}
+		
+		// If the rules tell us the value of a node, just use that! Rules always rule!
+		if(node.getState() != null && node.getState().getGoalValues() != null && node.getState().getGoalValues()[0] != -1) {
+			values.put(makeKeyString(node.getState()), new ValuesEntry(node.getState().getGoalValues(), Integer.MAX_VALUE));
+		}
+		
+		if (depth >= currentDepthLimit) {
+			// reached the fringe -> ask for a evaluation
+			
+			// if we have a certain value in there, don't destroy it.
+			ValuesEntry prev = values.get(makeKeyString(node.getState()));
+			if(prev != null && prev.getOccurences() == Integer.MAX_VALUE)
+				return true;
+			
+			values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(node, stepcounter)}, 1));
+			// we can expand in the next iteration
+			return true;
 		}
 
 		if (visitedStates.containsKey(node.getState().toString())) {
@@ -250,7 +268,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			
 			// propagate values
 			if((parVal == null && childVal != null) || (childVal != null && parVal != null && childVal.getGoalArray()[0] > parVal.getGoalArray()[0])) {
-				values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{childVal.getGoalArray()[0]}, 1));
+				values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{childVal.getGoalArray()[0]}, childVal.getOccurences()));
 			}
 		}
 		
@@ -418,7 +436,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 	 * Hand out a value from our Hash
 	 */
 	public ValuesEntry getValue(IGameState state) {
-		return this.values.get(state);
+		return this.values.get(makeKeyString(state));
 	}
 
 	/*

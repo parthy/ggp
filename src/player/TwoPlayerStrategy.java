@@ -233,6 +233,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             propagatedHash.put(node.getState(), game.getGoalValues(node)[playerNumber]);
             return false;
         }
+        
+        // If the rules tell us the value of a node, just use that! Rules always rule!
+		if(node.getState() != null && node.getState().getGoalValues() != null && node.getState().getGoalValues()[0] != -1) {
+			values.put(node.getState(), new ValuesEntry(node.getState().getGoalValues(), Integer.MAX_VALUE));
+		}
 
         if (visitedStates.containsKey(node.getState())) {
             Integer foundDepth = visitedStates.get(node.getState());

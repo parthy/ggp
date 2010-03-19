@@ -23,8 +23,13 @@ public class OnePlayerHeuristic implements IHeuristic {
 		try {
 			strategy.getGame().regenerateNode(node);
 		} catch(InterruptedException e) {}
-
-		return helper.calculateHeuristic(node, stepcounter);
+		
+		// try to merge with existing simulation values
+		ValuesEntry val = strategy.getValue(node.getState());
+		if(val == null) // don't trust our heuristics too much!
+			return Math.round(new Float(0.6*helper.calculateHeuristic(node, stepcounter)));
+		else
+			return Math.round(new Float(0.6*helper.calculateHeuristic(node, stepcounter) + 0.4*val.getGoalArray()[0]));
 	}
 
 }

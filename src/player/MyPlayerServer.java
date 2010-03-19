@@ -26,6 +26,7 @@ public class MyPlayerServer extends PlayerServer {
      * Command line options: --port=<port> --slave=<true|false>
      */
     public static void main(String[] args) {
+    	
         if (!DEBUG) {
             try {
                 System.setErr(new PrintStream(new FileOutputStream("/dev/null", true)));
