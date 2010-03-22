@@ -1,5 +1,6 @@
 package player;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -196,6 +197,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		// do not work with global variables in a recursive function
 		List<IGameNode> children = new LinkedList<IGameNode>();
 		List<IMove[]> moves = game.getCombinedMoves(node);
+
 		int player = whoseTurn(node);
 		
 		Boolean expandFurther = false;
@@ -283,7 +285,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	@Override
 	public IMove getMove(IGameNode arg0) {
 		// first search for the time we have
-		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2000;
+		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2500;
 		
 		// if we there is the threat of memory exceed coming, clear visitedStates.
 		// by the time this happens, it is not a that big problem, anyway.
@@ -304,7 +306,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			// search finished or end of time, now we have to decide.
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MultiPlayerComparator(values, playerNumber));
 			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
-				if(System.currentTimeMillis() > endTime+800) {
+				if(System.currentTimeMillis() > endTime+1300) {
 					// we have no time left, just return random move
 					System.out.println("No time left!");
 					break;
@@ -314,7 +316,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 				// regenerate node
 				game.regenerateNode(next);
 				
-				//System.out.println("Possible move: "+combMove[playerNumber]+", values "+aryToString(values.get(next.getState())));
+				System.out.println("Possible move: "+combMove[playerNumber]+", values "+aryToString(values.get(next.getState())));
 				childs.add(next);
 			}
 			if(childs.size() == 0)

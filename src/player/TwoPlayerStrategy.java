@@ -43,7 +43,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
     Evaluator evaluator;
     
     public void setFirstEndTime(long endTime) {
-        this.endTime = endTime - 600;
+        this.endTime = endTime - 1000;
     }
 
     @SuppressWarnings("unchecked")
@@ -321,6 +321,12 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             LinkedList<Float> line = new LinkedList<Float>();
             //for each move i enemy can do
             for (int j = 0; j < enemyMoves.length; j++) {
+            	if(System.currentTimeMillis() > endTime+800) {
+					// we have no time left, just return random move
+					System.out.println("No time left!");
+					break;
+				}
+            	
                 // calculate the child
                 IMove[] move = {myMoves[i], enemyMoves[j]};
                 IGameNode child = game.getNextNode(node, move);
@@ -335,6 +341,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 line.add(value);
             }
             problem.add(line);
+            if(System.currentTimeMillis() > endTime+800) {
+				// we have no time left, just return random move
+				System.out.println("No time left!");
+				break;
+			}
         }
 
         Float value = solver.solve(problem);
@@ -406,14 +417,20 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             System.out.println("best we can get: " + evaluateNode(current));
             PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this));
             for (IMove[] combMove : game.getCombinedMoves(current)) {
+            	if(System.currentTimeMillis() > endTime+800) {
+					// we have no time left, just return random move
+					System.out.println("No time left!");
+					break;
+				}
+            	
                 IGameNode next = game.getNextNode(current, combMove);
                 game.regenerateNode(next);
 
-                //System.out.print("Possible move: " + combMove[playerNumber]);
+                System.out.print("Possible move: " + combMove[playerNumber]);
 
-                //System.out.print("   Value: (" + evaluateNode(next) + " ,");
-                //System.out.print(evaluator.evaluateNode(next, playerNumber) + " ,");
-                //System.out.println("");
+                System.out.print("   Value: (" + evaluateNode(next) + " ,");
+                System.out.print(evaluator.evaluateNode(next, playerNumber) + " ,");
+                System.out.println("");
                 childs.add(next);
             }
             best = childs.peek();
@@ -441,6 +458,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             LinkedList<Float> line = new LinkedList<Float>();
             //for each move i enemy can do
             for (int j = 0; j < enemyMoves.length; j++) {
+            	if(System.currentTimeMillis() > endTime+800) {
+					// we have no time left, just return random move
+					System.out.println("No time left!");
+					break;
+				}
                 // calculate the child
                 IMove[] move = {myMoves[i], enemyMoves[j]};
                 IGameNode child = game.getNextNode(node, move);
@@ -450,6 +472,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 line.add(value);
             }
             problem.add(line);
+            if(System.currentTimeMillis() > endTime+800) {
+				// we have no time left, just return random move
+				System.out.println("No time left!");
+				break;
+			}
         }
         //System.out.println("P: " + problem);
         Float gameValue = solver.solve(problem);

@@ -37,13 +37,24 @@ public class MainStrategy implements IStrategy {
 			((MultiPlayerStrategy) myStrategy).setFirstEndTime(firstEndTime);
 		}
 		
-		myStrategy.initMatch(initMatch);
+		try {
+			myStrategy.initMatch(initMatch);
+		} catch(Exception e) {
+			// Unexpected behaviour
+			e.printStackTrace(System.out);
+		}
 	}
 	
 	@Override
 	public IMove getMove(IGameNode arg0) {
-            System.out.println("\n");
-		return this.myStrategy.getMove(arg0);
+        System.out.println("\n");
+		try {
+			return this.myStrategy.getMove(arg0);
+		} catch(Exception e) {
+			// Unexpected behaviour
+			e.printStackTrace(System.out);
+		}
+		return null;
 	}
 
 	public void dispose() {
