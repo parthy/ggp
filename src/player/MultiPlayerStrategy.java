@@ -304,19 +304,22 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			// search finished or end of time, now we have to decide.
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MultiPlayerComparator(values, playerNumber));
 			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
-				/*if(System.currentTimeMillis() > endTime+800) {
+				if(System.currentTimeMillis() > endTime+800) {
 					// we have no time left, just return random move
 					System.out.println("No time left!");
-					return game.getRandomMove(arg0)[playerNumber];
-				}*/
+					break;
+				}
 				IGameNode next = game.getNextNode(arg0, combMove);
 				
 				// regenerate node
 				game.regenerateNode(next);
 				
-				System.out.println("Possible move: "+combMove[playerNumber]+", values "+aryToString(values.get(next.getState())));
+				//System.out.println("Possible move: "+combMove[playerNumber]+", values "+aryToString(values.get(next.getState())));
 				childs.add(next);
 			}
+			if(childs.size() == 0)
+				return game.getRandomMove(arg0)[playerNumber];
+			
 			IGameNode best = childs.peek();
 			if(best == null) { // we didn't find anything.. (actually not possible)
 				return game.getRandomMove(arg0)[playerNumber];

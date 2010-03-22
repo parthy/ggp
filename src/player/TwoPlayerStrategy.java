@@ -385,7 +385,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 //			if(!searchFinished) {
             //       propagatedHash.clear();
 
-            endTime = System.currentTimeMillis() + match.getPlayTime() * 1000 - 800;
+            endTime = System.currentTimeMillis() + match.getPlayTime() * 1000 - 1200;
             // a little simulation doesn't harm
             while (System.currentTimeMillis() < (endTime - match.getPlayTime() * 500)) {
                 simulateGame(current);
@@ -409,11 +409,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 IGameNode next = game.getNextNode(current, combMove);
                 game.regenerateNode(next);
 
-                System.out.print("Possible move: " + combMove[playerNumber]);
+                //System.out.print("Possible move: " + combMove[playerNumber]);
 
-                System.out.print("   Value: (" + evaluateNode(next) + " ,");
-                System.out.print(evaluator.evaluateNode(next, playerNumber) + " ,");
-                System.out.println("");
+                //System.out.print("   Value: (" + evaluateNode(next) + " ,");
+                //System.out.print(evaluator.evaluateNode(next, playerNumber) + " ,");
+                //System.out.println("");
                 childs.add(next);
             }
             best = childs.peek();
@@ -451,25 +451,25 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             }
             problem.add(line);
         }
-        System.out.println("P: " + problem);
+        //System.out.println("P: " + problem);
         Float gameValue = solver.solve(problem);
-        System.out.println("guaranteed value: "+gameValue);
+        //System.out.println("guaranteed value: "+gameValue);
         LinkedList<Float> moves = solver.getMoves(problem);
 
         // choose the move randomly
         int rand = random.nextInt(1000);
-        System.out.println("move values: " + moves);
+        //System.out.println("move values: " + moves);
         Float currentSpace = 0f;
         IMove move = null;
         for (int i = 0; i < moves.size(); i++) {
             if ((moves.get(i) >= 0f) && moves.get(i) <= 1f) {
-                System.out.println("Possible Move: " + myMoves[i] + " if (" + currentSpace + " <= " + rand + " < " + (currentSpace + moves.get(i) * 1000) + " ).");
+                //System.out.println("Possible Move: " + myMoves[i] + " if (" + currentSpace + " <= " + rand + " < " + (currentSpace + moves.get(i) * 1000) + " ).");
                 if (move == null && (currentSpace <= rand) && (rand < (currentSpace + moves.get(i) * 1000))) {
                     move = myMoves[i];
                 }
                 currentSpace += moves.get(i) * 1000;
             } else {
-                System.out.println("Possible Move: " + myMoves[i] + " if (never )");
+                //System.out.println("Possible Move: " + myMoves[i] + " if (never )");
             }
         }
 
@@ -590,7 +590,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
     @Override
     public void dispose() {
         // new functionality: transform hash and serialize it
-        HashMap<String, Integer> propagatedHashNew = new HashMap<String, Integer>();
+        /*HashMap<String, Integer> propagatedHashNew = new HashMap<String, Integer>();
         HashMap<String, ValuesEntry> valuesHashNew = new HashMap<String, ValuesEntry>();
 
         for (Entry<IGameState, Integer> entry : propagatedHash.entrySet()) {

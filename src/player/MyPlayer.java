@@ -12,7 +12,7 @@ import org.eclipse.palamedes.gdl.core.simulation.IStrategy;
 public final class MyPlayer extends Player {
 
     public static IStrategy strategy;
-    private final Boolean OPTIMIZE_RULES = true;
+    private final Boolean OPTIMIZE_RULES = false;
 
     /**
      * This method is called when a new match begins.
