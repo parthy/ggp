@@ -180,11 +180,6 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			values.put(node.getState(), evaluateNode(node));
 			return false;
 		}
-		
-		// If the rules tell us the value of a node, just use that! Rules always rule!
-		if(node.getState() != null && node.getState().getGoalValues() != null && node.getState().getGoalValues()[0] != -1) {
-			values.put(node.getState(), new int[][]{node.getState().getGoalValues(), {Integer.MAX_VALUE}});
-		}
 
 		if (visitedStates.containsKey(node.getState())) {
 			Integer foundDepth = visitedStates.get(node.getState());
@@ -204,6 +199,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		int player = whoseTurn(node);
 		
 		Boolean expandFurther = false;
+		int j=1;
 		for (IMove[] move : moves) {
 			IGameNode child = game.getNextNode(node, move);
 			children.add(child);
@@ -219,9 +215,16 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			
 			// propagate values
 			if(!turntaking || player == -1) {
-				// no turntaking game, we assume the best for us
-				if(parVal == null || childVal[0][playerNumber] > parVal[0][playerNumber]) {
+				// no turntaking game, we build an average
+				if(parVal == null || j == 1) {
 					values.put(node.getState(), new int[][]{childVal[0].clone(), {0, PROP}});
+				} else if(parVal != null) {
+					int[][] before = values.get(node.getState()).clone();
+					for(int k=0; k<before[0].length; k++) {
+						before[0][k] = Math.round(new Float(((j-1)*before[0][k] + childVal[0][k]))/new Float(j)); 
+					}
+					before[1] = new int[]{j, PROP};
+					values.put(node.getState(), before);
 				}
 			} else {
 				// turntaking, find player in action
