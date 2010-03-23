@@ -375,8 +375,8 @@ public class OnePlayerSearch extends AbstractStrategy {
 				if(currentNode.getDepth()+1 > maxDepth)
 					maxDepth = currentNode.getDepth()+1;
 
-				System.out.println("Played a game and got score "+value[playerNumber]);
-				System.out.println("values "+values.size());
+				//System.out.println("Played a game and got score "+value[playerNumber]);
+				//System.out.println("values "+values.size());
                                 if(value[0] == 100) { // we accidentally won.
 					foundSolution = true;
 					solution = currentNode;
