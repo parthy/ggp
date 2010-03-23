@@ -40,7 +40,7 @@ public class MainStrategy implements IStrategy {
 		try {
 			myStrategy.initMatch(initMatch);
 		} catch(Exception e) {
-			// Unexpected behaviour
+			// Unexpected behavior
 			e.printStackTrace(System.out);
 		}
 	}
@@ -51,7 +51,7 @@ public class MainStrategy implements IStrategy {
 		try {
 			return this.myStrategy.getMove(arg0);
 		} catch(Exception e) {
-			// Unexpected behaviour
+			// Unexpected behavior
 			e.printStackTrace(System.out);
 		}
 		return null;

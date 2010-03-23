@@ -164,7 +164,13 @@ public class SimplexSolver {
         //clear for each problem
         visitedPivot.clear();
 
+        int count = 0;
         while (!isSolved(matrix)) {
+        	if(count > 100){
+        		System.out.println("WARNING: simplex doesnt terminate!");
+        		break;
+        	}
+        	count++;
             if (OUTPUT) {
                 System.out.println("======= next step ===========");
             }
