@@ -175,6 +175,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
                 visitedStates.clear();
                 canSearchDeeper = DLS(start, start.getDepth(), Integer.MIN_VALUE, Integer.MAX_VALUE);
+                System.out.println("until here? 06");
+
                 currentDepthLimit++;
             }
 
@@ -215,8 +217,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             // if we can't even make the iteration with depth limit 1 we just suck
             throw new InterruptedException("interrupted by time");
         }
+        
+        if(Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+        	System.out.println("Memory loss");
+        	return false;
+        }
 
-        if (depth >= currentDepthLimit || Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+        if (depth >= currentDepthLimit) {
             // reached the fringe -> ask for a evaluation
             propagatedHash.put(node.getState(), evaluateNode(node));
             // we can expand in the next iteration
@@ -340,23 +347,26 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 	System.out.println("EXC: mymove "+myMoves);
                 	System.out.println("EXC: enemymove "+enemyMoves);
                 }
+                if(child == null) {
+                	continue;
+                }
                 if (DLS(child, depth + 1, Integer.MIN_VALUE, Integer.MAX_VALUE)) {
                     expandFurther = true;
                 }
-
+                
                 game.regenerateNode(child);
                 Float value = new Float(evaluateNode(child));
-
+                if(value < 0f)
+                	value = 20f;
                 line.add(value);
             }
             problem.add(line);
-            if(System.currentTimeMillis() > endTime+800) {
+            if(System.currentTimeMillis() > endTime) {
 				// we have no time left, just return random move
 				System.out.println("No time left!");
 				break;
 			}
         }
-
         Float value = 0f;        
         try{
         	value = solver.solve(problem);
@@ -367,6 +377,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         	
         game.regenerateNode(node);
         propagatedHash.put(node.getState(), Math.round(value));
+//        System.out.println("P: "+problem);
 //        System.out.println("value: "+value);
 
         return expandFurther;
