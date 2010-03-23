@@ -47,35 +47,8 @@ public class Evaluator {
 		ValuesEntry entry = simulationValues.get(node.getState());
 		Integer val = (entry != null) ? simulationValues.get(node.getState()).getGoalArray()[playerNumber] : null;
 
-		int assumedTruth = -1;
-		int boundary = 10;
-		int i = 0;
-		MemorizeState best = null;
-		for (MemorizeState state : goodStates) {
-			int truth = RuleOptimizer.calculateTruthDegree(node.getState().toString(), state.getState().toString());
-			if (assumedTruth == -1 || truth > assumedTruth) {
-				assumedTruth = truth;
-				best = state;
-			}
-
-			if (++i >= boundary) {
-				break;
-			}
-		}
-
-		if (assumedTruth >= 90) {
-			//System.out.println("\ntruth: "+assumedTruth+"between\n"+node.getState()+"\nand\n"+best.getState());
-			return best.getValue();
-
-			//		System.out.println("Evaluator val: "+val+ " assumed truth: "+assumedTruth);
-
-		}
 		if (val == null) {
-			if (best != null) {
-				return best.getValue();
-			} else {
-				return -1;
-			}
+			return -1;
 		} else {
 			return val;
 		}
