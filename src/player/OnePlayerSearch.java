@@ -195,6 +195,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 
 		
 		if (System.currentTimeMillis() >= endTime || Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+			visitedStates.clear();
 			throw new InterruptedException("interrupted by time or memory");
 		}
 
@@ -215,12 +216,13 @@ public class OnePlayerSearch extends AbstractStrategy {
 			values.put(makeKeyString(node.getState()), new ValuesEntry(node.getState().getGoalValues(), Integer.MAX_VALUE));
 		}
 		
-                if(Runtime.getRuntime().freeMemory() < 100*1024*1024){
-                    System.out.println("WARNING: memory full");
-                    return false;
-                }
+        if(Runtime.getRuntime().freeMemory() < 100*1024*1024){
+            System.out.println("WARNING: memory full");
+            visitedStates.clear();
+            return false;
+        }
 
-                if (depth >= currentDepthLimit) {
+        if (depth >= currentDepthLimit) {
 			// reached the fringe -> ask for a evaluation
 			
 			// if we have a certain value in there, don't destroy it.

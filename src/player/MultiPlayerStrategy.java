@@ -313,6 +313,9 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 				}
 				IGameNode next = game.getNextNode(arg0, combMove);
 				
+				if(next.isTerminal() && next.getState().getGoalValues() != null && next.getState().getGoalValues()[playerNumber] == 100)
+                	return next.getMoves()[playerNumber];
+				
 				// regenerate node
 				game.regenerateNode(next);
 				
