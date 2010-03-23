@@ -175,7 +175,6 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
                 visitedStates.clear();
                 canSearchDeeper = DLS(start, start.getDepth(), Integer.MIN_VALUE, Integer.MAX_VALUE);
-                System.out.println("until here? 06");
 
                 currentDepthLimit++;
             }
@@ -232,9 +231,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
         if (node.isTerminal()) {
             // remember this state as being good to reach -> goal Distance
-            if (game.getGoalValues(node)[playerNumber] >= 80) {
+            /*if (game.getGoalValues(node)[playerNumber] >= 80) {
                 memorizeStates.add(new MemorizeState(node.getState(), game.getGoalValues(node)[playerNumber]));
-            }
+            }*/
             // can also save in constant hash
             values.put(node.getState(), new ValuesEntry(game.getGoalValues(node), Integer.MAX_VALUE));
             propagatedHash.put(node.getState(), game.getGoalValues(node)[playerNumber]);
@@ -357,7 +356,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 game.regenerateNode(child);
                 Float value = new Float(evaluateNode(child));
                 if(value < 0f)
-                	value = 20f;
+                	value = 49f;
                 line.add(value);
             }
             problem.add(line);
@@ -515,7 +514,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         LinkedList<Float> moves = new LinkedList<Float>();        
         try{
         gameValue = solver.solve(problem);
-        //System.out.println("guaranteed value: "+gameValue);
+        System.out.println("guaranteed value: "+gameValue);
         moves = solver.getMoves(problem);
         }catch(Exception e){
         	System.out.println("WARNING: simplex crashed!");
@@ -529,13 +528,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         IMove move = null;
         for (int i = 0; i < moves.size(); i++) {
             if ((moves.get(i) >= 0f) && moves.get(i) <= 1f) {
-                //System.out.println("Possible Move: " + myMoves[i] + " if (" + currentSpace + " <= " + rand + " < " + (currentSpace + moves.get(i) * 1000) + " ).");
+                System.out.println("Possible Move: " + myMoves[i] + " if (" + currentSpace + " <= " + rand + " < " + (currentSpace + moves.get(i) * 1000) + " ).");
                 if (move == null && (currentSpace <= rand) && (rand < (currentSpace + moves.get(i) * 1000))) {
                     move = myMoves[i];
                 }
                 currentSpace += moves.get(i) * 1000;
             } else {
-                //System.out.println("Possible Move: " + myMoves[i] + " if (never )");
+                System.out.println("Possible Move: " + myMoves[i] + " if (never )");
             }
         }
 
@@ -596,9 +595,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             // game over?
             if (currentNode.isTerminal()) {
                 // remember this state as being good
-                if (game.getGoalValues(currentNode)[playerNumber] <= 20 || game.getGoalValues(currentNode)[playerNumber] >= 80) {
+                /*if (game.getGoalValues(currentNode)[playerNumber] <= 20 || game.getGoalValues(currentNode)[playerNumber] >= 80) {
                     memorizeStates.add(new MemorizeState(currentNode.getState(), game.getGoalValues(currentNode)[playerNumber]));
-                }
+                }*/
 
                 // set the value and break
                 value = currentNode.getState().getGoalValues();
