@@ -215,7 +215,12 @@ public class OnePlayerSearch extends AbstractStrategy {
 			values.put(makeKeyString(node.getState()), new ValuesEntry(node.getState().getGoalValues(), Integer.MAX_VALUE));
 		}
 		
-		if (depth >= currentDepthLimit || Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+                if(Runtime.getRuntime().freeMemory() < 100*1024*1024){
+                    System.out.println("WARNING: memory full");
+                    return false;
+                }
+
+                if (depth >= currentDepthLimit) {
 			// reached the fringe -> ask for a evaluation
 			
 			// if we have a certain value in there, don't destroy it.
@@ -231,6 +236,8 @@ public class OnePlayerSearch extends AbstractStrategy {
 			// we can expand in the next iteration
 			return true;
 		}
+                
+
 
 		if (visitedStates.containsKey(node.getState().toString())) {
 			Integer foundDepth = visitedStates.get(node.getState().toString());
@@ -318,6 +325,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 	 *  (goal -> goalValue, states before goal -> average goal value achieved from this state
 	 */
 	private void simulateGame(IGameNode start) throws InterruptedException {
+            try{
 		// first we just play a game
 		IGameNode currentNode = start;
 		int[] value;
@@ -357,12 +365,12 @@ public class OnePlayerSearch extends AbstractStrategy {
 			// game over?
 			if(currentNode.isTerminal()) {
 				value = currentNode.getState().getGoalValues();
-
 				if(currentNode.getDepth()+1 > maxDepth)
 					maxDepth = currentNode.getDepth()+1;
 
-				//System.out.println("Played a game and got score "+value[playerNumber]);
-				if(value[0] == 100) { // we accidentally won.
+				System.out.println("Played a game and got score "+value[playerNumber]);
+				System.out.println("values "+values.size());
+                                if(value[0] == 100) { // we accidentally won.
 					foundSolution = true;
 					solution = currentNode;
 					return;
@@ -426,6 +434,8 @@ public class OnePlayerSearch extends AbstractStrategy {
 				}
 			}
 		}
+            }catch(Exception e){
+            }
 	}
 
 	/*
