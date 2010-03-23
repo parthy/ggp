@@ -194,8 +194,8 @@ public class OnePlayerSearch extends AbstractStrategy {
 		nodesVisited++;
 
 		
-		if (System.currentTimeMillis() >= endTime) {
-			throw new InterruptedException("interrupted by time");
+		if (System.currentTimeMillis() >= endTime || Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+			throw new InterruptedException("interrupted by time or memory");
 		}
 
 		if (node.isTerminal()) {
@@ -215,17 +215,19 @@ public class OnePlayerSearch extends AbstractStrategy {
 			values.put(makeKeyString(node.getState()), new ValuesEntry(node.getState().getGoalValues(), Integer.MAX_VALUE));
 		}
 		
-		if (depth >= currentDepthLimit) {
+		if (depth >= currentDepthLimit || Runtime.getRuntime().freeMemory() < 100*1024*1024) {
 			// reached the fringe -> ask for a evaluation
 			
 			// if we have a certain value in there, don't destroy it.
 			ValuesEntry prev = values.get(makeKeyString(node.getState()));
 			if(prev != null && prev.getOccurences() == Integer.MAX_VALUE)
 				return true;
+			
 			if(prev == null)
 				values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(node, stepcounter)}, 1));
 			else
 				values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{Math.round(new Float(0.3*heuristic.calculateHeuristic(node, stepcounter)+0.7*prev.getGoalArray()[0]))}, 1));
+			
 			// we can expand in the next iteration
 			return true;
 		}
@@ -316,6 +318,11 @@ public class OnePlayerSearch extends AbstractStrategy {
 	 *  (goal -> goalValue, states before goal -> average goal value achieved from this state
 	 */
 	private void simulateGame(IGameNode start) throws InterruptedException {
+		if(Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+			domainSizes.clear();
+			domains.clear();
+			throw new InterruptedException("No memory left!");
+		}
 		// first we just play a game
 		IGameNode currentNode = start;
 		int[] value;
