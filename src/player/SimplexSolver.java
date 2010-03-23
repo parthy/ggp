@@ -170,12 +170,18 @@ public class SimplexSolver {
             }
 
             //set pivotColumn, pivotRow, pivotValue
+            try{
             choosePivot(matrix);
+            }catch(Exception e){
+            	movesMax.clear();
+            	return 0f;
+            }
             if (OUTPUT) {
                 System.out.println("pivotRow: " + pivotRow + " pivotColumn: " + pivotColumn + " val: " + pivotVal);
             }
 
             if (pivotVal == null) {
+            	movesMax.clear();
                 return 0f;
             }
 
@@ -252,8 +258,10 @@ public class SimplexSolver {
                     // a*_jl must be greater 0
                     pivotRow = j;
                     min = valY;
+
                 }
-            }
+                	
+                }
             //TODO: what happened when pivotRow is still null
             if (pivotRow == null) {
                 // choose another pivotColumn

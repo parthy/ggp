@@ -329,8 +329,17 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             	
                 // calculate the child
                 IMove[] move = {myMoves[i], enemyMoves[j]};
-                IGameNode child = game.getNextNode(node, move);
+                IGameNode child = null;
+                try{
+                 child = game.getNextNode(node, move);
 
+                }catch(Exception e){
+                	e.printStackTrace(System.out);
+                	System.out.println("EXC: node "+node);
+                	System.out.println("EXC: move "+move);
+                	System.out.println("EXC: mymove "+myMoves);
+                	System.out.println("EXC: enemymove "+enemyMoves);
+                }
                 if (DLS(child, depth + 1, Integer.MIN_VALUE, Integer.MAX_VALUE)) {
                     expandFurther = true;
                 }
@@ -348,8 +357,14 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			}
         }
 
-        Float value = solver.solve(problem);
-
+        Float value = 0f;        
+        try{
+        	value = solver.solve(problem);
+        }catch(Exception e){
+        	System.out.println("WARNING: simplex crashed!");
+        }
+        	
+        	
         game.regenerateNode(node);
         propagatedHash.put(node.getState(), Math.round(value));
 //        System.out.println("value: "+value);
@@ -479,10 +494,17 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 			}
         }
         //System.out.println("P: " + problem);
-        Float gameValue = solver.solve(problem);
+        Float gameValue = 0f;
+        LinkedList<Float> moves = new LinkedList<Float>();        
+        try{
+        gameValue = solver.solve(problem);
         //System.out.println("guaranteed value: "+gameValue);
-        LinkedList<Float> moves = solver.getMoves(problem);
-
+        moves = solver.getMoves(problem);
+        }catch(Exception e){
+        	System.out.println("WARNING: simplex crashed!");
+        	
+        }
+        
         // choose the move randomly
         int rand = random.nextInt(1000);
         //System.out.println("move values: " + moves);
