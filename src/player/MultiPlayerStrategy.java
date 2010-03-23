@@ -165,7 +165,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			throw new InterruptedException("interrupted by time");
 		}
 
-		if (depth >= currentDepthLimit) {
+		if (depth >= currentDepthLimit || Runtime.getRuntime().freeMemory() < 100*1024*1024) {
 			// reached the fringe -> ask for a evaluation
 			values.put(node.getState(), evaluateNode(node));
 			// we can expand in the next iteration

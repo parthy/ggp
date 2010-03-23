@@ -207,7 +207,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         game.regenerateNode(node);
         
         nodesVisited++;
-
+        
         if (System.currentTimeMillis() >= endSearchTime) {
 //			propagatedHash.put(node.getState(), evaluateNode(node));
             // we don't need to evaluate the state, because good values for the decision
@@ -216,7 +216,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             throw new InterruptedException("interrupted by time");
         }
 
-        if (depth >= currentDepthLimit) {
+        if (depth >= currentDepthLimit || Runtime.getRuntime().freeMemory() < 100*1024*1024) {
             // reached the fringe -> ask for a evaluation
             propagatedHash.put(node.getState(), evaluateNode(node));
             // we can expand in the next iteration
@@ -417,7 +417,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             System.out.println("best we can get: " + evaluateNode(current));
             PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this));
             for (IMove[] combMove : game.getCombinedMoves(current)) {
-            	if(System.currentTimeMillis() > endTime+800) {
+            	if(System.currentTimeMillis() > endTime+600) {
 					// we have no time left, just return random move
 					System.out.println("No time left!");
 					break;
@@ -426,6 +426,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 IGameNode next = game.getNextNode(current, combMove);
                 game.regenerateNode(next);
 
+                if(next.isTerminal() && next.getState().getGoalValues() != null && next.getState().getGoalValues()[playerNumber] == 100)
+                	return next.getMoves()[playerNumber];
+                
                 System.out.print("Possible move: " + combMove[playerNumber]);
 
                 System.out.print("   Value: (" + evaluateNode(next) + " ,");
@@ -434,7 +437,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 childs.add(next);
             }
             best = childs.peek();
-
+            
             if (best == null) { // we didn't find anything.. (actually not possible)
                 return game.getRandomMove(current)[playerNumber];
             }
@@ -467,6 +470,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 IMove[] move = {myMoves[i], enemyMoves[j]};
                 IGameNode child = game.getNextNode(node, move);
 
+                if(child.isTerminal() && child.getState().getGoalValues() != null && child.getState().getGoalValues()[playerNumber] == 100)
+                	return child.getMoves()[playerNumber];
+                
                 Float value = new Float(evaluateNode(child));
 
                 line.add(value);

@@ -215,17 +215,19 @@ public class OnePlayerSearch extends AbstractStrategy {
 			values.put(makeKeyString(node.getState()), new ValuesEntry(node.getState().getGoalValues(), Integer.MAX_VALUE));
 		}
 		
-		if (depth >= currentDepthLimit) {
+		if (depth >= currentDepthLimit || Runtime.getRuntime().freeMemory() < 100*1024*1024) {
 			// reached the fringe -> ask for a evaluation
 			
 			// if we have a certain value in there, don't destroy it.
 			ValuesEntry prev = values.get(makeKeyString(node.getState()));
 			if(prev != null && prev.getOccurences() == Integer.MAX_VALUE)
 				return true;
+			System.out.println("Does it happen here?");
 			if(prev == null)
 				values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(node, stepcounter)}, 1));
 			else
 				values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{Math.round(new Float(0.3*heuristic.calculateHeuristic(node, stepcounter)+0.7*prev.getGoalArray()[0]))}, 1));
+			System.out.println("no!");
 			// we can expand in the next iteration
 			return true;
 		}
