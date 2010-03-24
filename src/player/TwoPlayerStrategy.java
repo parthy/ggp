@@ -210,11 +210,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         nodesVisited++;
         
         if (System.currentTimeMillis() >= endSearchTime) {
-//			propagatedHash.put(node.getState(), evaluateNode(node));
-            // we don't need to evaluate the state, because good values for the decision
-            // should be made in the last iteration
-            // if we can't even make the iteration with depth limit 1 we just suck
-            throw new InterruptedException("interrupted by time");
+            return false;
         }
         
         if(Runtime.getRuntime().freeMemory() < 100*1024*1024) {
@@ -230,10 +226,6 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         }
 
         if (node.isTerminal()) {
-            // remember this state as being good to reach -> goal Distance
-            /*if (game.getGoalValues(node)[playerNumber] >= 80) {
-                memorizeStates.add(new MemorizeState(node.getState(), game.getGoalValues(node)[playerNumber]));
-            }*/
             // can also save in constant hash
             values.put(node.getState(), new ValuesEntry(game.getGoalValues(node), Integer.MAX_VALUE));
             propagatedHash.put(node.getState(), game.getGoalValues(node)[playerNumber]);
@@ -273,8 +265,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             game.regenerateNode(child);
             Integer val = propagatedHash.get(child.getState());
 
-            // constraint: (val != null) because of DLS(child, ... )
-
+            // constraint: (val != null) because of DLS(child, ... ) not always satisfied!
+            if(val == null) {
+            	val = 29;
+            }
             // alpha: guaranteed value for max player
             //			-> the higher the better for max, worse for min
             //			-> start at positive INFINITY
@@ -330,7 +324,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             	if(System.currentTimeMillis() > endTime+800) {
 					// we have no time left, just return random move
 					System.out.println("No time left!");
-					break;
+					return false;
 				}
             	
                 // calculate the child
@@ -356,14 +350,14 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 game.regenerateNode(child);
                 Float value = new Float(evaluateNode(child));
                 if(value < 0f)
-                	value = 49f;
+                	value = 19f;
                 line.add(value);
             }
             problem.add(line);
             if(System.currentTimeMillis() > endTime) {
 				// we have no time left, just return random move
 				System.out.println("No time left!");
-				break;
+				return false;
 			}
         }
         Float value = 0f;        
@@ -418,8 +412,6 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         IGameNode best = null;
         try {
             game.regenerateNode(current);
-//			if(!searchFinished) {
-            //       propagatedHash.clear();
 
             endTime = System.currentTimeMillis() + match.getPlayTime() * 1000 - 1200;
             // a little simulation doesn't harm
@@ -430,15 +422,18 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             // search a bit more, from the node arg0.
             // nope -> try to search the same depth like we did in the last search
             // but this time one from one step deeper, so ...
-            //currentDepthLimit=current.getDepth()+1;
             currentDepthLimit = current.getDepth() + 1;
 
+            // I still think we need to do this. Often the value 0 still is in the propHash and in some cases (timout, ...) 
+            // gets propagated up even if we would have found others. Now we get slightly better results.
+            propagatedHash.clear();
+            
             IDS(endTime, current);
 
             if (max == 2) {
                 return getMove_simultaneous(current);
             }
-
+            System.out.println("Do we maximize? "+maximize(current));
             System.out.println("best we can get: " + evaluateNode(current));
             PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this));
             for (IMove[] combMove : game.getCombinedMoves(current)) {
@@ -454,11 +449,22 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 if(next.isTerminal() && next.getState().getGoalValues() != null && next.getState().getGoalValues()[playerNumber] == 100)
                 	return next.getMoves()[playerNumber];
                 
+                Integer val1 = propagatedHash.get(next.getState());
+                ValuesEntry val2 = values.get(next.getState());
+                String val1S="", val2S="";
+                if(val1 != null) {
+                	val1S = "prop: "+val1.toString();
+                }
+                if(val2 != null) {
+                	val2S = "val: {"+val2.getGoalArray()[0]+", "+val2.getGoalArray()[1]+"}^"+val2.getOccurences();
+                }
+                
                 System.out.print("Possible move: " + combMove[playerNumber]);
 
                 System.out.print("   Value: (" + evaluateNode(next) + " ,");
-                System.out.print(evaluator.evaluateNode(next, playerNumber) + " ,");
-                System.out.println("");
+                System.out.println(evaluator.evaluateNode(next, playerNumber) + " ,");
+                System.out.println(val1S);
+                System.out.println(val2S);
                 childs.add(next);
             }
             best = childs.peek();
@@ -567,18 +573,20 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         	return bestmove;
     }
 
-    /**
+    /*
      * dont use this anymore
      * instead use the evaluate function
+     * -- yes, use it. to distinguish among equal propagated values. --
      * @return
+     */ 
     public HashMap<IGameState, ValuesEntry> getValues(){
-    return values;
+    	return values;
     }
-     */
-    /*    public int getPlayerNumber() {
-    return playerNumber;
+    
+    public int getPlayerNumber() {
+    	return playerNumber;
     }
-     */
+    
     /*
      * new method designed to play a game according to either random choose or some heuristic function
      * while doing this, we already populate the values hash with some values
@@ -594,13 +602,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
             // game over?
             if (currentNode.isTerminal()) {
-                // remember this state as being good
-                /*if (game.getGoalValues(currentNode)[playerNumber] <= 20 || game.getGoalValues(currentNode)[playerNumber] >= 80) {
-                    memorizeStates.add(new MemorizeState(currentNode.getState(), game.getGoalValues(currentNode)[playerNumber]));
-                }*/
-
                 // set the value and break
                 value = currentNode.getState().getGoalValues();
+                //System.out.println("Played a game with values "+value[0]+", "+value[1]);
                 break;
             }
             game.regenerateNode(currentNode);
@@ -642,7 +646,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 Integer newCount = values.get(node.getState()).getOccurences() + 1;
                 int[] tempVal = values.get(node.getState()).getGoalArray();
                 for (int i = 0; i < value.length; i++) {
-                    tempVal[i] = ((newCount - 1) * tempVal[i] + value[i]) / newCount;
+                    tempVal[i] = Math.round(new Float(((newCount - 1) * tempVal[i] + value[i])) / new Float(newCount));
                 }
                 values.put(node.getState(), new ValuesEntry(tempVal, newCount));
             }
@@ -654,45 +658,6 @@ public class TwoPlayerStrategy extends AbstractStrategy {
      */
     @Override
     public void dispose() {
-        // new functionality: transform hash and serialize it
-        /*HashMap<String, Integer> propagatedHashNew = new HashMap<String, Integer>();
-        HashMap<String, ValuesEntry> valuesHashNew = new HashMap<String, ValuesEntry>();
-
-        for (Entry<IGameState, Integer> entry : propagatedHash.entrySet()) {
-            if (entry == null || entry.getKey() == null || entry.getValue() == null) {
-                continue;
-            }
-            propagatedHashNew.put(entry.getKey().toString(), entry.getValue());
-        }
-
-        for (Entry<IGameState, ValuesEntry> entry : values.entrySet()) {
-            if (entry == null || entry.getKey() == null || entry.getValue() == null) {
-                continue;
-            }
-            valuesHashNew.put(entry.getKey().toString(), entry.getValue());
-        }
-
-
-        /* TODO: solve this
-         * this will probably get mixed up if we take only the GDL as hash without
-         * our player number
-         * -> if we are the other player the values are 100-x actually
-         
-        try {
-            MD5Hash hash = new MD5Hash(game.getSourceGDL().concat(String.valueOf(playerNumber)));
-            FileOutputStream out = new FileOutputStream(hash.toString());
-
-            ObjectOutputStream oos = new ObjectOutputStream(out);
-
-            oos.writeObject(propagatedHashNew);
-            oos.writeObject(valuesHashNew);
-            oos.close();
-        } catch (Exception ex) {
-            System.out.println("Exception occurred while writing out values: ");
-            ex.printStackTrace(System.out);
-            Logger.getLogger(TwoPlayerStrategy.class.getName()).log(Level.SEVERE, null, ex);
-        }
-	*/
         this.queue.clear();
         this.queue = null;
         this.values.clear();

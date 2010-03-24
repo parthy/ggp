@@ -23,7 +23,6 @@ public class Evaluator {
 	 */
 	public Evaluator(HashMap<IGameState, ValuesEntry> values, Set<MemorizeState> goodStates) {
 		this.simulationValues = values;
-		this.goodStates = goodStates;
 	}
 	
 	/**

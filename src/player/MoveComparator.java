@@ -52,10 +52,26 @@ public class MoveComparator implements Comparator<IGameNode>{
 */
 	Integer val0 = strat.evaluateNode(arg0);
 	Integer val1 = strat.evaluateNode(arg1);
-
+	
 	// if it cant be evaluated set it to 49
-	val0 = (val0 == null) ? 49 : val0;
-	val1 = (val1 == null) ? 49 : val1;
+	val0 = (val0 == null || val0 == -1) ? 49 : val0;
+	val1 = (val1 == null || val1 == -1) ? 49 : val1;
+	
+	if(val0 == val1) {
+		ValuesEntry v0 = strat.getValues().get(arg0.getState());
+		ValuesEntry v1 = strat.getValues().get(arg1.getState());
+		
+		if(v0 == null || v1 == null) {
+			return 0;
+		} else {
+			if(v0.getGoalArray()[strat.getPlayerNumber()] > v1.getGoalArray()[strat.getPlayerNumber()])
+				return -1;
+			if(v0.getGoalArray()[strat.getPlayerNumber()] < v1.getGoalArray()[strat.getPlayerNumber()])
+				return 1;
+			else
+				return 0;
+		}
+	}
 
 	return -val0.compareTo(val1);
 	}
