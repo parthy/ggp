@@ -246,7 +246,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 				}
 				if(all_present && sum > max_score && PRUNING_ENABLED) {
 					values.put(node.getState(), evaluateNode(node));
-					return expandFurther;
+					return false;
 				}
 				if(parVal == null || childVal[0][player] > parVal[0][player]) {
 					values.put(node.getState(), new int[][]{childVal[0].clone(), {0, PROP}});
