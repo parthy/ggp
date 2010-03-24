@@ -428,7 +428,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             // gets propagated up even if we would have found others. Also, if we prune because of a 0 for us and the opponent is
             // too stupid to realize his possibility, we now search from scratch.
             // Now we get slightly better results.
-            propagatedHash.clear();
+            if(current.getDepth() >= 2)
+            	propagatedHash.clear();
             
             IDS(endTime, current);
 
@@ -461,12 +462,12 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 	val2S = "val: {"+val2.getGoalArray()[0]+", "+val2.getGoalArray()[1]+"}^"+val2.getOccurences();
                 }
                 
-                System.out.print("Possible move: " + combMove[playerNumber]);
+                /*System.out.print("Possible move: " + combMove[playerNumber]);
 
                 System.out.print("   Value: (" + evaluateNode(next) + " ,");
                 System.out.println(evaluator.evaluateNode(next, playerNumber) + " ,");
                 System.out.println(val1S);
-                System.out.println(val2S);
+                System.out.println(val2S);*/
                 childs.add(next);
             }
             best = childs.peek();

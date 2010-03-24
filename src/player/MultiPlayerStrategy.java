@@ -69,7 +69,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	private int max_score = 0;
 	
 	public void setFirstEndTime(long endTime) {
-		this.endTime = endTime - 1000;
+		this.endTime = endTime - 2500;
 	}
 	
 	public void initMatch(Match arg0) {
@@ -84,7 +84,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		//root.setPreserve(true);
 		
 		// First, we try to learn something about the game by randomly simulating it
-		while(System.currentTimeMillis() < endTime-match.getStartTime()*450) { // simulate for almost the half start time
+		while(System.currentTimeMillis() < endTime-match.getStartTime()*550) { // simulate for almost the half start time
 			try {
 				simulateGame(root);
 			} catch(InterruptedException e) {}
@@ -215,6 +215,9 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			int[][] childVal = values.get(child.getState());
 			int[][] parVal = values.get(node.getState());
 			
+			if(childVal == null)
+				continue;
+
 			// propagate values
 			if(!turntaking || player == -1) {
 				// no turntaking game, we build an average
@@ -285,7 +288,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	@Override
 	public IMove getMove(IGameNode arg0) {
 		// first search for the time we have
-		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 2500;
+		long realEndTime = System.currentTimeMillis() + match.getPlayTime()*1000 - 3000;
 		
 		// if we there is the threat of memory exceed coming, clear visitedStates.
 		// by the time this happens, it is not a that big problem, anyway.
@@ -306,7 +309,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			// search finished or end of time, now we have to decide.
 			PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MultiPlayerComparator(values, playerNumber));
 			for(IMove[] combMove : game.getCombinedMoves(arg0)) {
-				if(System.currentTimeMillis() > endTime+1300) {
+				if(System.currentTimeMillis() > endTime+1000) {
 					// we have no time left, just return random move
 					System.out.println("No time left!");
 					break;
@@ -319,7 +322,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 				// regenerate node
 				game.regenerateNode(next);
 				
-				System.out.println("Possible move: "+combMove[playerNumber]+", values "+aryToString(values.get(next.getState())));
+				//System.out.println("Possible move: "+combMove[playerNumber]+", values "+aryToString(values.get(next.getState())));
 				childs.add(next);
 			}
 			if(childs.size() == 0)

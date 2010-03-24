@@ -123,9 +123,9 @@ public class OnePlayerSearch extends AbstractStrategy {
 				PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values, false, this));
 				for(IMove[] move : allMoves) {
 					IGameNode next = game.getNextNode(node, move);
-					String k = makeKeyString(next.getState());
-					ValuesEntry val = values.get(k);
-					System.out.println("Possible move "+move[0].getMove()+" has value: "+val);
+					//String k = makeKeyString(next.getState());
+					//ValuesEntry val = values.get(k);
+					//System.out.println("Possible move "+move[0].getMove()+" has value: "+val);
 					if(next.isTerminal()){
 						if(game.getGoalValues(next)[0] == 100){
 							//if we can reach the goal -> do it
