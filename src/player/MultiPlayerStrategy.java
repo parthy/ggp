@@ -162,7 +162,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			// we don't need to evaluate the state, because good values for the decision
 			// should be made in the last iteration
 			// if we can't even make the iteration with depth limit 1 we just suck
-			throw new InterruptedException("interrupted by time");
+			return false;
 		}
 
 		if (depth >= currentDepthLimit || Runtime.getRuntime().freeMemory() < 100*1024*1024) {

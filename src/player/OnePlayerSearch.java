@@ -196,7 +196,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 		
 		if (System.currentTimeMillis() >= endTime || Runtime.getRuntime().freeMemory() < 100*1024*1024) {
 			visitedStates.clear();
-			throw new InterruptedException("interrupted by time or memory");
+			return false;
 		}
 
 		if (node.isTerminal()) {
