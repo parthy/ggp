@@ -250,12 +250,12 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         }
 
         // do not work with global variables in a recursive function
-        List<IGameNode> children = new LinkedList<IGameNode>();
+        //List<IGameNode> children = new LinkedList<IGameNode>();
         List<IMove[]> moves = game.getCombinedMoves(node);
         Boolean expandFurther = false;
         for (IMove[] move : moves) {
             IGameNode child = game.getNextNode(node, move);
-            children.add(child);
+            //children.add(child);
             if (DLS(child, depth + 1, alpha, beta)) {
                 expandFurther = true;
             }
@@ -281,27 +281,27 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                     // val is greater than what the minimizing player gets in another branch
                     // -> min-player will not go into this branch
                     propagatedHash.put(node.getState(), beta);
-                    break;
+                    return false;
                 }
                 if (val > alpha) {
                     alpha = val;
                 }
                 propagatedHash.put(node.getState(), alpha);
                 if (alpha == 100) {
-                    break;
+                    return false;
                 }
             } else {
                 //minimize
                 if (val <= alpha) {
                     propagatedHash.put(node.getState(), alpha);
-                    break;
+                    return false;
                 }
                 if (val < beta) {
                     beta = val;
                 }
                 propagatedHash.put(node.getState(), beta);
                 if (beta == 0) {
-                    break;
+                    return false;
                 }
             }
         }
@@ -424,8 +424,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             // but this time one from one step deeper, so ...
             currentDepthLimit = current.getDepth() + 1;
 
-            // I still think we need to do this. Often the value 0 still is in the propHash and in some cases (timout, ...) 
-            // gets propagated up even if we would have found others. Now we get slightly better results.
+            // I still think we need to do this. Often the value 0 still is in the propHash and in some cases (timeout, ...) 
+            // gets propagated up even if we would have found others. Also, if we prune because of a 0 for us and the opponent is
+            // too stupid to realize his possibility, we now search from scratch.
+            // Now we get slightly better results.
             propagatedHash.clear();
             
             IDS(endTime, current);
