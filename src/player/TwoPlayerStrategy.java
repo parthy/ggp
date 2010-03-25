@@ -38,6 +38,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
     private int max = 1;
     private long endTime;
     private boolean timeout=false;
+    private boolean justStarted = false;
     private int enemyNumber;
     private SimplexSolver solver = new SimplexSolver();
     private long endSearchTime;
@@ -120,8 +121,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 System.out.println("Visited: " + nodesVisited);
 
                 visitedStates.clear();
-                canSearchDeeper = DLS(start, start.getDepth(), Integer.MIN_VALUE, Integer.MAX_VALUE);
-
+                for(IMove[] combMove : start.getState().getCombinedLegalMoves()) {
+                	IGameNode child = game.getNextNode(start, combMove);
+                	canSearchDeeper = DLS(child, child.getDepth(), Integer.MIN_VALUE, Integer.MAX_VALUE);
+                }
                 currentDepthLimit++;
             }
 
@@ -233,7 +236,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	                if (val >= beta) {
 	                    // val is greater than what the minimizing player gets in another branch
 	                    // -> min-player will not go into this branch
-	                    propagatedHash.put(node.getState(), beta+1);
+	                    propagatedHash.put(node.getState(), beta);
 	                    return expandFurther;
 	                }
 	                if (val > alpha) {
@@ -246,7 +249,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	            } else {
 	                //minimize
 	                if (val <= alpha) {
-	                    propagatedHash.put(node.getState(), alpha-1);
+	                    propagatedHash.put(node.getState(), alpha);
 	                    return expandFurther;
 	                }
 	                if (val < beta) {
