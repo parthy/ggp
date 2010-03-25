@@ -5,6 +5,7 @@ package player;
  */
 
 //package src.de.tudresden.inf.ggp.basicplayer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -36,6 +37,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
     private int nodesVisited;
     private int max = 1;
     private long endTime;
+    private boolean timeout=false;
     private int enemyNumber;
     private SimplexSolver solver = new SimplexSolver();
     private long endSearchTime;
@@ -56,62 +58,6 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
         // end time is set from outside
         System.out.println("\nINIT: 2playerStrategy. Player: "+playerNumber+", enemy: "+enemyNumber);
-
-        /*
-        // try to find previous results of this game in a file.
-        MD5Hash hash = new MD5Hash(game.getSourceGDL().concat(String.valueOf(playerNumber)));
-        try {
-            FileInputStream istream = new FileInputStream(hash.toString());
-            ObjectInputStream ois = new ObjectInputStream(istream);
-
-            // if no exception occurred here, we have valid data. read out.
-            HashMap<String, Integer> propagatedHashRead = (HashMap<String, Integer>) ois.readObject();
-            HashMap<String, ValuesEntry> valuesRead = (HashMap<String, ValuesEntry>) ois.readObject();
-            propagatedHash = new HashMap<IGameState, Integer>();
-            for (Entry<String, Integer> entry : propagatedHashRead.entrySet()) {
-                String fluentString = entry.getKey();
-                List<String> fluentList = RuleOptimizer.getListFromFluentString(fluentString);
-
-                List<CompoundTerm> compTermList = new ArrayList<CompoundTerm>();
-
-                for (String fluent : fluentList) {
-                    compTermList.add(EclipseConnector.getInstance().parseTerm(fluent));
-                }
-                HelpingStateAdapter state = new HelpingStateAdapter(EclipseConnector.getInstance(), compTermList);
-                propagatedHash.put(state, entry.getValue());
-            }
-
-            for (Entry<String, ValuesEntry> entry : valuesRead.entrySet()) {
-                String fluentString = entry.getKey();
-                List<String> fluentList = RuleOptimizer.getListFromFluentString(fluentString);
-
-                List<CompoundTerm> compTermList = new ArrayList<CompoundTerm>();
-
-                for (String fluent : fluentList) {
-                    compTermList.add(EclipseConnector.getInstance().parseTerm(fluent));
-                }
-                HelpingStateAdapter state = new HelpingStateAdapter(EclipseConnector.getInstance(), compTermList);
-                values.put(state, entry.getValue());
-            }
-            System.out.println("Done reading hashes.");
-        } catch (FileNotFoundException ex) {
-            // we have no data. or the game is rewritten/scrambled whatsoever.
-            System.out.println("No file found.");
-        } catch (IOException e) {
-            // An unspecified error occurred.
-            System.out.println("IOException.");
-        } catch (ClassNotFoundException e) {
-            // While reading, the class was not found.
-            System.out.println("Class not found.");
-        } catch (Exception e) {
-            // Something totally irrelevant just happened.
-            System.out.println("Some exception occurred.");
-            e.printStackTrace(System.out);
-        }
-
-        System.out.println("read " + propagatedHash.size() + " propagated values successfully.");
-        System.out.println("read " + values.size() + " simulated values successfully.");
-	*/
 
         // Set up the evaluator
         this.evaluator = new Evaluator(values, memorizeStates);
@@ -164,7 +110,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
     public boolean IDS(long endSearchTime, IGameNode start) throws InterruptedException {
         this.endSearchTime = endSearchTime;
         Boolean finishedSearch = false;
-
+        timeout = false;
         try {
             boolean canSearchDeeper = true;
             while (canSearchDeeper) {
@@ -184,7 +130,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             System.out.println("couldnt finish search because of time");
         }
 
-        System.out.println("stopped search and visited " + nodesVisited + " nodes.");
+        System.out.println("stopped search and visited " + nodesVisited + " nodes. finished? "+(!timeout));
+        System.out.println("We think we can get "+evaluateNode(start)+" points in this game.");
 
         return finishedSearch;
     }
@@ -206,10 +153,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
      */
     private Boolean DLS(IGameNode node, int depth, Integer alpha, Integer beta) throws InterruptedException {
         game.regenerateNode(node);
-        
+        //System.out.println("Searching node: "+node);
         nodesVisited++;
         
         if (System.currentTimeMillis() >= endSearchTime) {
+        	timeout = true;
             return false;
         }
         
@@ -220,8 +168,9 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
         if (node.isTerminal()) {
             // can also save in constant hash
-            values.put(node.getState(), new ValuesEntry(game.getGoalValues(node), Integer.MAX_VALUE));
-            propagatedHash.put(node.getState(), game.getGoalValues(node)[playerNumber]);
+            values.put(node.getState(), new ValuesEntry(node.getState().getGoalValues(), Integer.MAX_VALUE));
+            propagatedHash.put(node.getState(), node.getState().getGoalValue(playerNumber));
+
             return false;
         }
 
@@ -241,7 +190,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             }
         }
 
-        visitedStates.put(node.getState(), node.getDepth() - 1);
+        visitedStates.put(node.getState(), depth);
         // recursion
 
 
@@ -249,62 +198,72 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             return DLS_simultaneous(node, depth);
         }
 
-        // do not work with global variables in a recursive function
-        //List<IGameNode> children = new LinkedList<IGameNode>();
-        List<IMove[]> moves = game.getCombinedMoves(node);
+        IMove[] myMoves = game.getLegalMoves(node)[playerNumber];
+        IMove[] enemyMoves = game.getLegalMoves(node)[enemyNumber];
+        
+        // we mustn't call different children with different alpha/beta values. so we use these backups for the recursive calls.
+        Integer alpha_bak = alpha;
+        Integer beta_bak = beta;
+        
         Boolean expandFurther = false;
-        for (IMove[] move : moves) {
-            IGameNode child = game.getNextNode(node, move);
-            //children.add(child);
-            if (DLS(child, depth + 1, alpha, beta)) {
-                expandFurther = true;
-            }
-
-            // MiniMax
-            game.regenerateNode(node);
-            game.regenerateNode(child);
-            Integer val = propagatedHash.get(child.getState());
-
-            // constraint: (val != null) because of DLS(child, ... ) not always satisfied!
-            if(val == null) {
-            	val = 29;
-            }
-            // alpha: guaranteed value for max player
-            //			-> the higher the better for max, worse for min
-            //			-> start at positive INFINITY
-            // beta: guaranteed value for min player
-            //			-> the lower the better for min, worse for max
-            //			-> start at negative INFINITY
-
-            if (maximize(node)) {
-                if (val >= beta) {
-                    // val is greater than what the minimizing player gets in another branch
-                    // -> min-player will not go into this branch
-                    propagatedHash.put(node.getState(), beta);
-                    return false;
-                }
-                if (val > alpha) {
-                    alpha = val;
-                }
-                propagatedHash.put(node.getState(), alpha);
-                if (alpha == 100) {
-                    return false;
-                }
-            } else {
-                //minimize
-                if (val <= alpha) {
-                    propagatedHash.put(node.getState(), alpha);
-                    return false;
-                }
-                if (val < beta) {
-                    beta = val;
-                }
-                propagatedHash.put(node.getState(), beta);
-                if (beta == 0) {
-                    return false;
-                }
-            }
+        for(int i=0; i<myMoves.length; i++) {
+	        for (int j=0; j<enemyMoves.length; j++) {
+	        	IMove[] move = (playerNumber == 0) ? new IMove[]{myMoves[i], enemyMoves[j]} : new IMove[]{enemyMoves[j], myMoves[i]};
+	        	
+	            IGameNode child = game.getNextNode(node, move);
+	            
+	            if (DLS(child, depth + 1, alpha_bak, beta_bak)) {
+	                expandFurther = true;
+	            }
+	
+	            // MiniMax
+	            game.regenerateNode(node);
+	            game.regenerateNode(child);
+	            Integer val = propagatedHash.get(child.getState());
+	           
+	            //System.out.println("Got child value "+val);
+	            // constraint: (val != null) because of DLS(child, ... ) not always satisfied!
+	            if(val == null) {
+	            	val = 29;
+	            }
+	            // alpha: guaranteed value for max player
+	            //			-> the higher the better for max, worse for min
+	            //			-> start at positive INFINITY
+	            // beta: guaranteed value for min player
+	            //			-> the lower the better for min, worse for max
+	            //			-> start at negative INFINITY
+	
+	            if (maximize(node)) {
+	                if (alpha >= beta) {
+	                    // val is greater than what the minimizing player gets in another branch
+	                    // -> min-player will not go into this branch
+	                    propagatedHash.put(node.getState(), alpha);
+	                    return expandFurther;
+	                }
+	                if (val > alpha) {
+	                    alpha = val;
+	                }
+	                propagatedHash.put(node.getState(), alpha);
+	                if (alpha == 100) {
+	                   return expandFurther;
+	                }
+	            } else {
+	                //minimize
+	                if (alpha >= beta) {
+	                    propagatedHash.put(node.getState(), beta);
+	                    return expandFurther;
+	                }
+	                if (val < beta) {
+	                    beta = val;
+	                }
+	                propagatedHash.put(node.getState(), beta);
+	                if (beta == 0) {
+	                    return expandFurther;
+	                }
+	            }
+	        }
         }
+        //System.out.println("Therefore node has value "+propagatedHash.get(node.getState()));
         return expandFurther;
     }
 
@@ -323,6 +282,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             for (int j = 0; j < enemyMoves.length; j++) {
             	if(System.currentTimeMillis() > endTime+600) {
 					// we have no time left, just return random move
+            		timeout = true;
 					System.out.println("No time left!");
 					return false;
 				}
@@ -356,6 +316,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             problem.add(line);
             if(System.currentTimeMillis() > endTime) {
 				// we have no time left, just return random move
+            	timeout = true;
 				System.out.println("No time left!");
 				return false;
 			}
@@ -393,7 +354,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
      */
     private boolean maximize(IGameNode node) throws InterruptedException {
         game.regenerateNode(node);
-        //	System.out.println("GUCKE HIER: "+node.getState());
+        
         if (game.getLegalMoves(node)[playerNumber].length > 1) {
             return true;
         } else {
@@ -413,64 +374,80 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         try {
             game.regenerateNode(current);
 
-            endTime = System.currentTimeMillis() + match.getPlayTime() * 1000 - 1200;
-            // a little simulation doesn't harm
-            while (System.currentTimeMillis() < (endTime - match.getPlayTime() * 500)) {
-                simulateGame(current);
+            // try this: we only search in the first call, if we didn't get a timeout last time. 
+            // otherwise we risk losing our information!
+            if(current.getDepth() > game.getTree().getRootNode().getDepth() || timeout) {
+	            endTime = System.currentTimeMillis() + match.getPlayTime() * 1000 - 1500;
+	            // a little simulation doesn't harm
+	            while (System.currentTimeMillis() < (endTime - match.getPlayTime() * 500)) {
+	                simulateGame(current);
+	            }
+	            System.out.println("While simulating, I raised values to " + values.size() + " .");
+	            // search a bit more, from the node arg0.
+	            // nope -> try to search the same depth like we did in the last search
+	            // but this time one from one step deeper, so ...
+	            currentDepthLimit = current.getDepth() + 1;
+	            
+	            // I still think we need to do this. Often the value 0 still is in the propHash and in some cases (timeout, ...) 
+	            // gets propagated up even if we would have found others. Also, if we prune because of a 0 for us and the opponent is
+	            // too stupid to realize his possibility, we now search from scratch.
+	            // Now we get slightly better results.
+	            //if(current.getDepth() >= 2)
+	            propagatedHash.clear();
+	            
+	            IDS(endTime, current);
             }
-            System.out.println("While simulating, I raised values to " + values.size() + " .");
-            // search a bit more, from the node arg0.
-            // nope -> try to search the same depth like we did in the last search
-            // but this time one from one step deeper, so ...
-            currentDepthLimit = current.getDepth() + 1;
-
-            // I still think we need to do this. Often the value 0 still is in the propHash and in some cases (timeout, ...) 
-            // gets propagated up even if we would have found others. Also, if we prune because of a 0 for us and the opponent is
-            // too stupid to realize his possibility, we now search from scratch.
-            // Now we get slightly better results.
-            if(current.getDepth() >= 2)
-            	propagatedHash.clear();
-            
-            IDS(endTime, current);
-
             if (max == 2) {
                 return getMove_simultaneous(current);
             }
             System.out.println("Do we maximize? "+maximize(current));
             System.out.println("best we can get: " + evaluateNode(current));
-            PriorityQueue<IGameNode> childs = new PriorityQueue<IGameNode>(10, new MoveComparator(this));
-            for (IMove[] combMove : game.getCombinedMoves(current)) {
-            	if(System.currentTimeMillis() > endTime+600) {
+
+            IMove[] myMoves = game.getLegalMoves(current)[playerNumber];
+            IMove[] enemyMoves = game.getLegalMoves(current)[enemyNumber];
+
+            PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new MoveComparator(this));
+            for(int i=0; i<myMoves.length; i++) {
+	            for (int j=0; j<enemyMoves.length; j++) {
+	            	IMove[] combMove = (playerNumber == 0) ? new IMove[]{myMoves[i], enemyMoves[j]} : new IMove[]{enemyMoves[j], myMoves[i]};
+	            	
+	            	if(System.currentTimeMillis() > endTime+600) {
+						// we have no time left, just return random move
+						System.out.println("No time left!");
+						break;
+					}
+	            	
+	                IGameNode next = game.getNextNode(current, combMove);
+	                game.regenerateNode(next);
+	
+	                if(next.isTerminal() && next.getState().getGoalValues() != null && next.getState().getGoalValues()[playerNumber] == 100)
+	                	return next.getMoves()[playerNumber];
+	                
+	                Integer val1 = propagatedHash.get(next.getState());
+	                ValuesEntry val2 = values.get(next.getState());
+	                String val1S="", val2S="";
+	                if(val1 != null) {
+	                	val1S = "prop: "+val1.toString();
+	                }
+	                if(val2 != null) {
+	                	val2S = "val: {"+val2.getGoalArray()[0]+", "+val2.getGoalArray()[1]+"}^"+val2.getOccurences();
+	                }
+	                
+	                System.out.print("Possible move: " + combMove[playerNumber]);
+	
+	                System.out.print("   Value: (" + evaluateNode(next) + " ,");
+	                System.out.println(evaluator.evaluateNode(next, playerNumber) + ")");
+	                System.out.println(val1S);
+	                System.out.println(val2S);
+	                children.add(next);
+	            }
+	            if(System.currentTimeMillis() > endTime+600) {
 					// we have no time left, just return random move
 					System.out.println("No time left!");
 					break;
 				}
-            	
-                IGameNode next = game.getNextNode(current, combMove);
-                game.regenerateNode(next);
-
-                if(next.isTerminal() && next.getState().getGoalValues() != null && next.getState().getGoalValues()[playerNumber] == 100)
-                	return next.getMoves()[playerNumber];
-                
-                Integer val1 = propagatedHash.get(next.getState());
-                ValuesEntry val2 = values.get(next.getState());
-                String val1S="", val2S="";
-                if(val1 != null) {
-                	val1S = "prop: "+val1.toString();
-                }
-                if(val2 != null) {
-                	val2S = "val: {"+val2.getGoalArray()[0]+", "+val2.getGoalArray()[1]+"}^"+val2.getOccurences();
-                }
-                
-                /*System.out.print("Possible move: " + combMove[playerNumber]);
-
-                System.out.print("   Value: (" + evaluateNode(next) + " ,");
-                System.out.println(evaluator.evaluateNode(next, playerNumber) + " ,");
-                System.out.println(val1S);
-                System.out.println(val2S);*/
-                childs.add(next);
             }
-            best = childs.peek();
+            best = children.peek();
             
             if (best == null) { // we didn't find anything.. (actually not possible)
                 return game.getRandomMove(current)[playerNumber];
@@ -478,7 +455,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         } catch (InterruptedException e) {
             System.out.println("WARNING: getMove() got interrupted");
         }
-
+        
         return best.getMoves()[playerNumber];
     }
 
@@ -639,7 +616,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             // choose a move
             currentNode = game.getNextNode(currentNode, game.getRandomMove(currentNode));
         }
-
+        
         // since the game is over, we can now go all the way back and fiddle around with the goals
         ValuesEntry existingValue = values.get(currentNode.getState());
 
