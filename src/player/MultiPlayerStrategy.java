@@ -165,13 +165,6 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			return false;
 		}
 
-		if (depth >= currentDepthLimit || Runtime.getRuntime().freeMemory() < 100*1024*1024) {
-			// reached the fringe -> ask for a evaluation
-			values.put(node.getState(), evaluateNode(node));
-			// we can expand in the next iteration
-			return true;
-		}
-
 		if (node.isTerminal()) {
 			// remember this state as being good to reach -> goal Distance
 			if (game.getGoalValues(node)[playerNumber] <= 20 || game.getGoalValues(node)[playerNumber] >= 80) {
@@ -180,6 +173,13 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			// save in hash
 			values.put(node.getState(), evaluateNode(node));
 			return false;
+		}
+
+		if (depth >= currentDepthLimit || Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+			// reached the fringe -> ask for a evaluation
+			values.put(node.getState(), evaluateNode(node));
+			// we can expand in the next iteration
+			return true;
 		}
 
 		if (visitedStates.containsKey(node.getState())) {
@@ -195,7 +195,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		// recursion
 
 		// do not work with global variables in a recursive function
-		List<IGameNode> children = new LinkedList<IGameNode>();
+		//List<IGameNode> children = new LinkedList<IGameNode>();
 		List<IMove[]> moves = game.getCombinedMoves(node);
 
 		int player = whoseTurn(node);
@@ -204,7 +204,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		int j=1;
 		for (IMove[] move : moves) {
 			IGameNode child = game.getNextNode(node, move);
-			children.add(child);
+			//children.add(child);
 			if (DLS(child, depth + 1, new_bounds)) {
 				expandFurther = true;
 			}

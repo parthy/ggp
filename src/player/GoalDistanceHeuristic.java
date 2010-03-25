@@ -64,9 +64,6 @@ public class GoalDistanceHeuristic implements IHeuristic {
 					}
 				} else {
 					count++;
-					if(!stepcounter.equals("") && state.matches(".*room a.*")) {
-						System.out.println("Yep");
-					}
 					if(state.matches(".*"+regex+".*"))
 						fulfilled++;
 				}

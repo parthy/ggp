@@ -55,7 +55,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         enemyNumber = (playerNumber == 0) ? 1 : 0;
 
         // end time is set from outside
-        System.out.println("\nINIT: 2playerStrategy.");
+        System.out.println("\nINIT: 2playerStrategy. Player: "+playerNumber+", enemy: "+enemyNumber);
 
         /*
         // try to find previous results of this game in a file.
@@ -218,18 +218,18 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         	return false;
         }
 
-        if (depth >= currentDepthLimit) {
-            // reached the fringe -> ask for a evaluation
-            propagatedHash.put(node.getState(), evaluateNode(node));
-            // we can expand in the next iteration
-            return true;
-        }
-
         if (node.isTerminal()) {
             // can also save in constant hash
             values.put(node.getState(), new ValuesEntry(game.getGoalValues(node), Integer.MAX_VALUE));
             propagatedHash.put(node.getState(), game.getGoalValues(node)[playerNumber]);
             return false;
+        }
+
+        if (depth >= currentDepthLimit) {
+            // reached the fringe -> ask for a evaluation
+            propagatedHash.put(node.getState(), evaluateNode(node));
+            // we can expand in the next iteration
+            return true;
         }
 
         if (visitedStates.containsKey(node.getState())) {
@@ -321,14 +321,14 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             LinkedList<Float> line = new LinkedList<Float>();
             //for each move i enemy can do
             for (int j = 0; j < enemyMoves.length; j++) {
-            	if(System.currentTimeMillis() > endTime+800) {
+            	if(System.currentTimeMillis() > endTime+600) {
 					// we have no time left, just return random move
 					System.out.println("No time left!");
 					return false;
 				}
             	
                 // calculate the child
-                IMove[] move = {myMoves[i], enemyMoves[j]};
+                IMove[] move = (playerNumber == 0) ? new IMove[]{myMoves[i], enemyMoves[j]} : new IMove[]{enemyMoves[j], myMoves[i]};
                 IGameNode child = null;
                 try{
                  child = game.getNextNode(node, move);
@@ -495,13 +495,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             LinkedList<Float> line = new LinkedList<Float>();
             //for each move i enemy can do
             for (int j = 0; j < enemyMoves.length; j++) {
-            	if(System.currentTimeMillis() > endTime+800) {
+            	if(System.currentTimeMillis() > endTime+500) {
 					// we have no time left, just return random move
 					System.out.println("No time left!");
 					break;
 				}
                 // calculate the child
-                IMove[] move = {myMoves[i], enemyMoves[j]};
+                IMove[] move = (playerNumber == 0) ? new IMove[]{myMoves[i], enemyMoves[j]} : new IMove[]{enemyMoves[j], myMoves[i]};
                 IGameNode child = game.getNextNode(node, move);
 
                 if(child.isTerminal() && child.getState().getGoalValues() != null && child.getState().getGoalValues()[playerNumber] == 100)
@@ -512,7 +512,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 line.add(value);
             }
             problem.add(line);
-            if(System.currentTimeMillis() > endTime+800) {
+            if(System.currentTimeMillis() > endTime+500) {
 				// we have no time left, just return random move
 				System.out.println("No time left!");
 				break;
@@ -536,6 +536,12 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         Float currentSpace = 0f;
         IMove move = null;
         for (int i = 0; i < moves.size(); i++) {
+            if(System.currentTimeMillis() > endTime+500) {
+				// we have no time left, just return random move
+				System.out.println("No time left!");
+				break;
+			}
+
             if ((moves.get(i) >= 0f) && moves.get(i) <= 1f) {
                 System.out.println("Possible Move: " + myMoves[i] + " if (" + currentSpace + " <= " + rand + " < " + (currentSpace + moves.get(i) * 1000) + " ).");
                 if (move == null && (currentSpace <= rand) && (rand < (currentSpace + moves.get(i) * 1000))) {
@@ -559,6 +565,12 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         IMove bestmove = null;
         int bestVal = -1;
         for(IMove[] possibleMove : game.getCombinedMoves(node)) {
+            if(System.currentTimeMillis() > endTime+500) {
+				// we have no time left, just return random move
+				System.out.println("No time left!");
+				break;
+			}
+
         	int val=-1;
         	try {
         		val = values.get(game.getNextNode(node, possibleMove).getState()).getGoalArray()[playerNumber];
