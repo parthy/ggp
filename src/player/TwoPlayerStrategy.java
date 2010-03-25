@@ -201,10 +201,6 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         IMove[] myMoves = game.getLegalMoves(node)[playerNumber];
         IMove[] enemyMoves = game.getLegalMoves(node)[enemyNumber];
         
-        // we mustn't call different children with different alpha/beta values. so we use these backups for the recursive calls.
-        Integer alpha_bak = alpha;
-        Integer beta_bak = beta;
-        
         Boolean expandFurther = false;
         for(int i=0; i<myMoves.length; i++) {
 	        for (int j=0; j<enemyMoves.length; j++) {
@@ -212,7 +208,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	        	
 	            IGameNode child = game.getNextNode(node, move);
 	            
-	            if (DLS(child, depth + 1, alpha_bak, beta_bak)) {
+	            if (DLS(child, depth + 1, alpha, beta)) {
 	                expandFurther = true;
 	            }
 	
@@ -234,10 +230,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	            //			-> start at negative INFINITY
 	
 	            if (maximize(node)) {
-	                if (alpha >= beta) {
+	                if (val >= beta) {
 	                    // val is greater than what the minimizing player gets in another branch
 	                    // -> min-player will not go into this branch
-	                    propagatedHash.put(node.getState(), alpha);
+	                    propagatedHash.put(node.getState(), beta+1);
 	                    return expandFurther;
 	                }
 	                if (val > alpha) {
@@ -249,8 +245,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	                }
 	            } else {
 	                //minimize
-	                if (alpha >= beta) {
-	                    propagatedHash.put(node.getState(), beta);
+	                if (val <= alpha) {
+	                    propagatedHash.put(node.getState(), alpha-1);
 	                    return expandFurther;
 	                }
 	                if (val < beta) {
