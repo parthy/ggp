@@ -122,7 +122,26 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 	                for(int i=0; i<game.getRoleCount(); i++)
 	                	lower_bounds[i] = Integer.MIN_VALUE;
 	                
-	                canSearchDeeper = DLS(start, start.getDepth(), lower_bounds);
+	                if(Runtime.getRuntime().freeMemory() < 200*1024*1024) {
+	                	return false;
+	                }
+	                
+	                game.regenerateNode(start);
+	                if(start == null || start.getState() == null || game.getCombinedMoves(start) == null)
+	                	return false;
+	                
+	                for(IMove[] combMove : game.getCombinedMoves(start)) {
+	                	if(System.currentTimeMillis() >= endSearchTime)
+	                		return false;
+	                	if(combMove == null)
+	                		continue;
+	                	
+	                	IGameNode child = game.getNextNode(start, combMove);
+	                	if(child == null)
+	                		continue;
+	                	canSearchDeeper = DLS(child, child.getDepth(), lower_bounds);
+	                }
+	                
 	                currentDepthLimit++;
 	            }
 
@@ -175,7 +194,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 			return false;
 		}
 
-		if (depth >= currentDepthLimit || Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+		if (depth >= currentDepthLimit || Runtime.getRuntime().freeMemory() < 200*1024*1024) {
 			// reached the fringe -> ask for a evaluation
 			values.put(node.getState(), evaluateNode(node));
 			// we can expand in the next iteration
@@ -203,6 +222,9 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		Boolean expandFurther = false;
 		int j=1;
 		for (IMove[] move : moves) {
+			if(System.currentTimeMillis() >= endSearchTime)
+        		break;
+        	
 			IGameNode child = game.getNextNode(node, move);
 			//children.add(child);
 			if (DLS(child, depth + 1, new_bounds)) {
@@ -292,7 +314,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 		
 		// if we there is the threat of memory exceed coming, clear visitedStates.
 		// by the time this happens, it is not a that big problem, anyway.
-		if(Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+		if(Runtime.getRuntime().freeMemory() < 200*1024*1024) {
 			visitedStates.clear();
 			values.clear();
 		}

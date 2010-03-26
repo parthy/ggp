@@ -121,10 +121,28 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 System.out.println("Visited: " + nodesVisited);
 
                 visitedStates.clear();
-                for(IMove[] combMove : start.getState().getCombinedLegalMoves()) {
+                if(Runtime.getRuntime().freeMemory() < 200*1024*1024) {
+                	return false;
+                }
+                
+                game.regenerateNode(start);
+                if(start == null || start.getState() == null || game.getCombinedMoves(start) == null)
+                	return false;
+                
+                for(IMove[] combMove : game.getCombinedMoves(start)) {
+                	if(System.currentTimeMillis() >= endSearchTime)
+                		return false;
+                	
+                	if(combMove == null)
+                		continue;
+                	
                 	IGameNode child = game.getNextNode(start, combMove);
+                	if(child == null)
+                		continue;
+                	
                 	canSearchDeeper = DLS(child, child.getDepth(), Integer.MIN_VALUE, Integer.MAX_VALUE);
                 }
+                
                 currentDepthLimit++;
             }
 
@@ -164,7 +182,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             return false;
         }
         
-        if(Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+        if(Runtime.getRuntime().freeMemory() < 200*1024*1024) {
         	System.out.println("Memory loss");
         	return false;
         }
@@ -363,7 +381,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
     @Override
     public IMove getMove(IGameNode current) {
-    	if(Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+    	if(Runtime.getRuntime().freeMemory() < 200*1024*1024) {
 			visitedStates.clear();
 			values.clear();
 			propagatedHash.clear();

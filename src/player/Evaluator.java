@@ -47,7 +47,7 @@ public class Evaluator {
 		Integer val = (entry != null) ? simulationValues.get(node.getState()).getGoalArray()[playerNumber] : null;
 
 		if (val == null) {
-			return -1;
+			return 39;
 		} else {
 			return val;
 		}
@@ -88,7 +88,7 @@ public class Evaluator {
 				if (best != null) {
 					retVal[0][playerNumber] = best.getValue();
 				} else {
-					retVal[0][playerNumber] = -1;
+					retVal[0][playerNumber] = 39;
 				}
 			} else {
 				retVal[0][playerNumber] = val;
