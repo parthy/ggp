@@ -73,7 +73,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			}
 			System.out.println("Done simulating. I found out that "+stepcounter+" must be the stepcounter.");
 			
-			currentDepthLimit = maxDepth;
+			currentDepthLimit = maxDepth+5;
 			
 			IDS(game.getTree().getRootNode());
 		} catch (InterruptedException ex) {
@@ -117,7 +117,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 						endTime = realEndTime;
 						
 						visitedStates.clear();
-						currentDepthLimit = maxDepth;
+						currentDepthLimit = maxDepth+5;
 						
 						IDS(node);
 					}
@@ -136,12 +136,16 @@ public class OnePlayerSearch extends AbstractStrategy {
 				if(curMaxGoal > 0)
 					System.out.println("Currently best solution yields "+curMaxGoal+" using move "+currentWay.get(0).getMoves()[0]);
 				
+				Integer min_occs=Integer.MAX_VALUE;
+
 				PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values, false, this));
 				for(IMove[] move : allMoves) {
 					IGameNode next = game.getNextNode(node, move);
 					String k = makeKeyString(next.getState());
 					ValuesEntry val = values.get(k);
-
+					if(val != null && val.getOccurences() < min_occs) {
+						min_occs = val.getOccurences();
+					}
 					System.out.println("Possible move "+move[0].getMove()+" has value: "+val);
 					if(next.isTerminal()){
 						if(game.getGoalValues(next)[0] == 100){
@@ -163,7 +167,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 					ValuesEntry val = values.get(makeKeyString(next.getState()));
 					if(val.getGoalArray()[0] <= curMaxGoal && currentWay.size() > 0) {
 						System.out.println("Found nothing better, playing according to currently best solution.");
-						if(val.getOccurences() == Integer.MAX_VALUE) {
+						if(min_occs == Integer.MAX_VALUE) {
 							// We can not get any better. Stop looking for it. 
 							foundSolution = true;
 						}
