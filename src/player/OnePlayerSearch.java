@@ -2,8 +2,10 @@ package player;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -29,6 +31,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 	private int nodesVisited;
 	private long endTime;
 	IGameNode solution;
+	Integer curMaxGoal = 0;
 	IGameNode node;
 	
 	private int currentDepthLimit;
@@ -70,7 +73,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			}
 			System.out.println("Done simulating. I found out that "+stepcounter+" must be the stepcounter.");
 			
-			currentDepthLimit = 2;
+			currentDepthLimit = maxDepth;
 			
 			IDS(game.getTree().getRootNode());
 		} catch (InterruptedException ex) {
@@ -92,7 +95,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 			values.clear();
 		}
 		System.out.println(node);
-		if(!currentWay.isEmpty()) {
+		if(foundSolution && !currentWay.isEmpty()) {
 			//System.out.println("Doing move "+currentWay.get(0).getMoves()[0].getMove()+" has value: "+values.get(currentWay.get(0).getState()).toString());
 			return currentWay.remove(0).getMoves()[0];
 		}
@@ -106,26 +109,40 @@ public class OnePlayerSearch extends AbstractStrategy {
 					while(System.currentTimeMillis() < endTime) {
 						simulateGame(node);
 					}
+					// fill the current way with the best we've got
+					fillCurrentWayLimited(node.getDepth());
 					if(foundSolution) {
-						fillCurrentWayLimited(node.getDepth());
 						return currentWay.remove(0).getMoves()[0];
 					} else {
 						endTime = realEndTime;
 						
 						visitedStates.clear();
-						currentDepthLimit = node.getDepth()+1;
+						currentDepthLimit = maxDepth;
 						
 						IDS(node);
 					}
+					// fill the current way with the best we've got
+					fillCurrentWayLimited(node.getDepth());
+					if(foundSolution) {
+						return currentWay.remove(0).getMoves()[0];
+					}
 				} catch(InterruptedException ex) {}
 
-				List<IMove[]> allMoves = game.getCombinedMoves(node);
+				List<IMove[]> allMoves = new LinkedList<IMove[]>(game.getCombinedMoves(node));
+				
+				// ensure that we take random moves if all are equal
+				Collections.shuffle(allMoves);
+				
+				if(curMaxGoal > 0)
+					System.out.println("Currently best solution yields "+curMaxGoal+" using move "+currentWay.get(0).getMoves()[0]);
+				
 				PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values, false, this));
 				for(IMove[] move : allMoves) {
 					IGameNode next = game.getNextNode(node, move);
-					//String k = makeKeyString(next.getState());
-					//ValuesEntry val = values.get(k);
-					//System.out.println("Possible move "+move[0].getMove()+" has value: "+val);
+					String k = makeKeyString(next.getState());
+					ValuesEntry val = values.get(k);
+
+					System.out.println("Possible move "+move[0].getMove()+" has value: "+val);
 					if(next.isTerminal()){
 						if(game.getGoalValues(next)[0] == 100){
 							//if we can reach the goal -> do it
@@ -141,9 +158,18 @@ public class OnePlayerSearch extends AbstractStrategy {
 					children.add(next);
 				}
 				if(!children.isEmpty()) {
-					IGameNode next = game.getNextNode(node, children.peek().getMoves());
+					IGameNode next = children.poll();
 					game.regenerateNode(next);
 					ValuesEntry val = values.get(makeKeyString(next.getState()));
+					if(val.getGoalArray()[0] <= curMaxGoal && currentWay.size() > 0) {
+						System.out.println("Found nothing better, playing according to currently best solution.");
+						if(val.getOccurences() == Integer.MAX_VALUE) {
+							// We can not get any better. Stop looking for it. 
+							foundSolution = true;
+						}
+						return currentWay.remove(0).getMoves()[0];
+					}
+					
 					if(val != null && val.getGoalArray()[0] == 0 && val.getOccurences() == Integer.MAX_VALUE) {
 						// we take the 0 with the least certainty
 						IMove last = null;
@@ -194,8 +220,10 @@ public class OnePlayerSearch extends AbstractStrategy {
 		nodesVisited++;
 
 		
-		if (System.currentTimeMillis() >= endTime || Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+		if (System.currentTimeMillis() >= endTime || Runtime.getRuntime().freeMemory() < 200*1024*1024) {
 			visitedStates.clear();
+			if(values.get(makeKeyString(node.getState())) == null)
+				values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(node, stepcounter)}, -1));
 			return false;
 		}
 
@@ -204,19 +232,16 @@ public class OnePlayerSearch extends AbstractStrategy {
 			if(node.getState().getGoalValues()[0] == 100) {
 				foundSolution = true;
 				solution = node;
-				fillCurrentWay();
+			} else if(node.getState().getGoalValues()[0] > curMaxGoal) {
+				curMaxGoal = node.getState().getGoalValues()[0];
+				solution = node;
 			}
 			// save in hash
 			values.put(makeKeyString(node.getState()), new ValuesEntry(node.getState().getGoalValues(), Integer.MAX_VALUE));
 			return false;
 		}
 		
-		// If the rules tell us the value of a node, just use that! Rules always rule!
-		if(node.getState() != null && node.getState().getGoalValues() != null && node.getState().getGoalValues()[0] != -1) {
-			values.put(makeKeyString(node.getState()), new ValuesEntry(node.getState().getGoalValues(), Integer.MAX_VALUE));
-		}
-		
-        if(Runtime.getRuntime().freeMemory() < 100*1024*1024){
+        if(Runtime.getRuntime().freeMemory() < 200*1024*1024){
             System.out.println("WARNING: memory full");
             visitedStates.clear();
             return false;
@@ -230,10 +255,8 @@ public class OnePlayerSearch extends AbstractStrategy {
 			if(prev != null && prev.getOccurences() == Integer.MAX_VALUE)
 				return true;
 			
-			if(prev == null)
-				values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(node, stepcounter)}, 1));
-			else
-				values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{Math.round(new Float(0.3*heuristic.calculateHeuristic(node, stepcounter)+0.7*prev.getGoalArray()[0]))}, 1));
+			values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(node, stepcounter)}, 1));
+			
 			
 			// we can expand in the next iteration
 			return true;
@@ -254,30 +277,62 @@ public class OnePlayerSearch extends AbstractStrategy {
 		// recursion
 
 		// do not work with global variables in a recursive function
-		//PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values, false, this));
+		PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new OnePlayerComparator(values, false, this));
 		List<IMove[]> moves = game.getCombinedMoves(node);
+		IGameNode child;
+		ValuesEntry childVal;
+		ValuesEntry parVal = values.get(makeKeyString(node.getState()));
+		
+		// we already examined this node fully. cut search here.
+		if(parVal != null && parVal.getOccurences() == Integer.MAX_VALUE) {
+			//System.out.println("Found a node we already have fully expanded. Cutting search.");
+			return false;
+		}
 		
 		Boolean expandFurther = false;
 		for (IMove[] move : moves) {
-			IGameNode child = game.getNextNode(node, move);
-			if(values.get(makeKeyString(child.getState())) == null)
-				values.put(makeKeyString(child.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(child)}, -1));
+			child = game.getNextNode(node, move);
+			
+			childVal = values.get(makeKeyString(child.getState()));
+			if(childVal == null)
+				values.put(makeKeyString(child.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(child, stepcounter)}, -1));
+			children.add(child);
+		}
+
+		Integer min_occurences=Integer.MAX_VALUE;
+		
+		while(!children.isEmpty()) {
+			child = children.poll();
 			
 			// Max
 			game.regenerateNode(node);
-			game.regenerateNode(child);
-			ValuesEntry childVal = values.get(makeKeyString(child.getState()));
-			ValuesEntry parVal = values.get(makeKeyString(node.getState()));
+			game.regenerateNode(child);	
+			
+			
 			
 			if (DLS(child, depth + 1)) {
 				expandFurther = true;
 			}
 			
-			// propagate values
-			if((parVal == null && childVal != null) || (childVal != null && parVal != null && childVal.getGoalArray()[0] > parVal.getGoalArray()[0])) {
-				values.put(makeKeyString(node.getState()), new ValuesEntry(new int[]{childVal.getGoalArray()[0]}, childVal.getOccurences()));
+			childVal = values.get(makeKeyString(child.getState()));
+			
+			if(childVal.getOccurences() < min_occurences)
+				min_occurences = childVal.getOccurences();
+			
+			if(values.get(makeKeyString(child.getState())) == null)
+				values.put(makeKeyString(child.getState()), new ValuesEntry(new int[]{heuristic.calculateHeuristic(child, stepcounter)}, -1));
+			
+			// propagate values, if:
+			// (1) the parent has no value yet, or
+			// (2) the parent has a value that is smaller, or
+			// (3) the parent has a value that is less reliable, i.e. the child has occ INTMAX, but the parent doesn't.
+			if((parVal == null && childVal != null) || (childVal != null && parVal != null && (childVal.getGoalArray()[0] > parVal.getGoalArray()[0] || (childVal.getOccurences() == Integer.MAX_VALUE && parVal.getOccurences() < Integer.MAX_VALUE)))) {
+				parVal = new ValuesEntry(new int[]{childVal.getGoalArray()[0]}, childVal.getOccurences());
 			}
 		}
+		
+		values.put(makeKeyString(node.getState()), new ValuesEntry(parVal.getGoalArray(), min_occurences));
+		
 		
 		return expandFurther;
 	}
@@ -305,17 +360,19 @@ public class OnePlayerSearch extends AbstractStrategy {
 	void fillCurrentWay() {
 		IGameNode cur = solution;
 		while(cur.getParent() != null) {
-			System.out.println(cur);
+			//System.out.println(cur);
 			currentWay.add(0, cur);
 			cur = cur.getParent();
 		}
 	}
 
 	void fillCurrentWayLimited(int limit) {
+		if(solution == null)
+			return;
 		IGameNode cur = solution;
 		currentWay.clear();
 		while(cur.getParent() != null && cur.getDepth() > limit) {
-			System.out.println(cur);
+			//System.out.println(cur);
 			currentWay.add(0, cur);
 			cur = cur.getParent();
 		}
@@ -337,6 +394,12 @@ public class OnePlayerSearch extends AbstractStrategy {
 		IGameNode currentNode = start;
 		int[] value;
 		while(true) {
+			// watch out for the endTime
+			if(System.currentTimeMillis() > endTime){
+				System.out.println("stop sim because of time");
+				return;
+			}
+			
 			game.regenerateNode(currentNode);
 
 			// remember for each fluent, how many different occurrences it had
@@ -377,35 +440,28 @@ public class OnePlayerSearch extends AbstractStrategy {
 
 				//System.out.println("Played a game and got score "+value[playerNumber]);
 				//System.out.println("values "+values.size());
-                                if(value[0] == 100) { // we accidentally won.
+                if(value[0] == 100) { // we accidentally won.
 					foundSolution = true;
 					solution = currentNode;
 					return;
+				} else {
+					if(value[0] > curMaxGoal) {
+						// we remember the best score we got so that we can weigh the moves according to that solution
+						solution = currentNode;
+						curMaxGoal = value[0];
+					}
 				}
-
-				// watch out for the endTime
-				if(System.currentTimeMillis() > endTime){
-					System.out.println("stop sim because of time");
-					return;
-				}
+                
 				break;
 			}
-
-			// fill the domainSizes hash
 
 			// choose a move
 			currentNode = game.getNextNode(currentNode, game.getRandomMove(currentNode));
 		}
 
 		// since the game is over, we can now go all the way back and fiddle around with the goals
-		ValuesEntry existingValue = values.get(makeKeyString(currentNode.getState()));
-
-		//System.out.println("Existing Value in Hash: "+existingValue);
-
-		// if there is no value yet, we put it in
-		if(existingValue == null) {
-			values.put(makeKeyString(currentNode.getState()), new ValuesEntry(value, 1));
-		}
+		values.put(makeKeyString(currentNode.getState()), new ValuesEntry(value, Integer.MAX_VALUE));
+		
 		// now we look at the parent of the goal state.
 		IGameNode node = currentNode;
 
@@ -426,8 +482,14 @@ public class OnePlayerSearch extends AbstractStrategy {
 			if(entry == null || tempVal == null) { // no value in there yet, so we just set the achieved goal value
 				values.put(makeKeyString(node.getState()), new ValuesEntry(value, 1));
 			} else { // otherwise, we build the average of the existing value and the achieved value in this particular game
-				Integer newCount = values.get(makeKeyString(node.getState())).getOccurences();
-				if(newCount < Integer.MAX_VALUE) { 
+				ValuesEntry old = values.get(makeKeyString(node.getState()));
+				Integer newCount = old.getOccurences();
+				
+				if(old.getGoalArray()[0] < value[0]) {
+					// If there was a lower value in the hash, this is obviously wrong. what we can get in single player, we can definitely get.
+					values.put(makeKeyString(node.getState()), new ValuesEntry(value, newCount++));
+				} else if(newCount < Integer.MAX_VALUE && value[0] > old.getGoalArray()[0]) {
+					// only if we have a value greater than or equal to value, build the average.
 					newCount++;
 					int[] goalValues;
 					if(newCount == 0) {

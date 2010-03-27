@@ -26,8 +26,8 @@ public class OnePlayerComparator implements Comparator<IGameNode> {
         } catch (InterruptedException e) {
         }
 
-        ValuesEntry val1 = this.values.get(strategy.makeKeyString(arg0.getState()));
-        ValuesEntry val2 = this.values.get(strategy.makeKeyString(arg1.getState()));
+        ValuesEntry val1 = this.strategy.getValue(arg0.getState());
+        ValuesEntry val2 = this.strategy.getValue(arg1.getState());
         if (val1 != null && val2 != null) {
 
             if ((val1.getGoalArray()[0]) < (val2.getGoalArray()[0])) {

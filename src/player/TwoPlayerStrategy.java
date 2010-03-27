@@ -223,11 +223,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         IMove[] enemyMoves = game.getLegalMoves(node)[enemyNumber];
         
         Boolean expandFurther = false;
+        IGameNode child;
+        Integer val;
         for(int i=0; i<myMoves.length; i++) {
 	        for (int j=0; j<enemyMoves.length; j++) {
 	        	IMove[] move = (playerNumber == 0) ? new IMove[]{myMoves[i], enemyMoves[j]} : new IMove[]{enemyMoves[j], myMoves[i]};
 	        	
-	            IGameNode child = game.getNextNode(node, move);
+	            child = game.getNextNode(node, move);
 	            
 	            if (DLS(child, depth + 1, alpha, beta)) {
 	                expandFurther = true;
@@ -236,7 +238,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 	            // MiniMax
 	            game.regenerateNode(node);
 	            game.regenerateNode(child);
-	            Integer val = propagatedHash.get(child.getState());
+	            
+	            val = propagatedHash.get(child.getState());
 	           
 	            //System.out.println("Got child value "+val);
 	            // constraint: (val != null) because of DLS(child, ... ) not always satisfied!
@@ -293,6 +296,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
         // for each move the enemy can do
         Boolean expandFurther = false;
+        IMove[] move;
+        IGameNode child;
         for (int i = 0; i < myMoves.length; i++) {
             LinkedList<Float> line = new LinkedList<Float>();
             //for each move i enemy can do
@@ -305,8 +310,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				}
             	
                 // calculate the child
-                IMove[] move = (playerNumber == 0) ? new IMove[]{myMoves[i], enemyMoves[j]} : new IMove[]{enemyMoves[j], myMoves[i]};
-                IGameNode child = null;
+                move = (playerNumber == 0) ? new IMove[]{myMoves[i], enemyMoves[j]} : new IMove[]{enemyMoves[j], myMoves[i]};
+                child = null;
                 try{
                  child = game.getNextNode(node, move);
 
@@ -424,9 +429,12 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             IMove[] enemyMoves = game.getLegalMoves(current)[enemyNumber];
 
             PriorityQueue<IGameNode> children = new PriorityQueue<IGameNode>(10, new MoveComparator(this));
+            IMove[] combMove;
+            IGameNode next;
+            
             for(int i=0; i<myMoves.length; i++) {
 	            for (int j=0; j<enemyMoves.length; j++) {
-	            	IMove[] combMove = (playerNumber == 0) ? new IMove[]{myMoves[i], enemyMoves[j]} : new IMove[]{enemyMoves[j], myMoves[i]};
+	            	combMove = (playerNumber == 0) ? new IMove[]{myMoves[i], enemyMoves[j]} : new IMove[]{enemyMoves[j], myMoves[i]};
 	            	
 	            	if(System.currentTimeMillis() > endTime+600) {
 						// we have no time left, just return random move
@@ -434,7 +442,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 						break;
 					}
 	            	
-	                IGameNode next = game.getNextNode(current, combMove);
+	                next = game.getNextNode(current, combMove);
 	                game.regenerateNode(next);
 	
 	                if(next.isTerminal() && next.getState().getGoalValues() != null && next.getState().getGoalValues()[playerNumber] == 100)
@@ -484,6 +492,10 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
         LinkedList<LinkedList<Float>> problem = new LinkedList<LinkedList<Float>>();
 
+        IMove[] move;
+        IGameNode child;
+        Float value;
+        
         // for each move the enemy can do
         for (int i = 0; i < myMoves.length; i++) {
             LinkedList<Float> line = new LinkedList<Float>();
@@ -495,13 +507,13 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 					break;
 				}
                 // calculate the child
-                IMove[] move = (playerNumber == 0) ? new IMove[]{myMoves[i], enemyMoves[j]} : new IMove[]{enemyMoves[j], myMoves[i]};
-                IGameNode child = game.getNextNode(node, move);
+                move = (playerNumber == 0) ? new IMove[]{myMoves[i], enemyMoves[j]} : new IMove[]{enemyMoves[j], myMoves[i]};
+                child = game.getNextNode(node, move);
 
                 if(child.isTerminal() && child.getState().getGoalValues() != null && child.getState().getGoalValues()[playerNumber] == 100)
                 	return child.getMoves()[playerNumber];
                 
-                Float value = new Float(evaluateNode(child));
+                value = new Float(evaluateNode(child));
 
                 line.add(value);
             }
@@ -528,7 +540,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         int rand = random.nextInt(1000);
         //System.out.println("move values: " + moves);
         Float currentSpace = 0f;
-        IMove move = null;
+        IMove move2 = null;
         for (int i = 0; i < moves.size(); i++) {
             if(System.currentTimeMillis() > endTime+500) {
 				// we have no time left, just return random move
@@ -538,8 +550,8 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 
             if ((moves.get(i) >= 0f) && moves.get(i) <= 1f) {
                 System.out.println("Possible Move: " + myMoves[i] + " if (" + currentSpace + " <= " + rand + " < " + (currentSpace + moves.get(i) * 1000) + " ).");
-                if (move == null && (currentSpace <= rand) && (rand < (currentSpace + moves.get(i) * 1000))) {
-                    move = myMoves[i];
+                if (move2 == null && (currentSpace <= rand) && (rand < (currentSpace + moves.get(i) * 1000))) {
+                    move2 = myMoves[i];
                 }
                 currentSpace += moves.get(i) * 1000;
             } else {
@@ -547,11 +559,11 @@ public class TwoPlayerStrategy extends AbstractStrategy {
             }
         }
 
-        if ((move == null)) {
+        if ((move2 == null)) {
             // should not happen
             System.out.println("WARNING: getMovesimultaneous() found no move while solving the problem");
         } else {
-            return move;
+            return move2;
         }
 
         // shall not come until here

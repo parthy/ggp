@@ -18,11 +18,17 @@ import org.eclipse.palamedes.gdl.core.model.IGameState;
  */
 public class MoveComparator implements Comparator<IGameNode>{
 	private TwoPlayerStrategy strat;
+	private boolean reverse = false;
 	
 	public MoveComparator(TwoPlayerStrategy strat){
 		this.strat = strat;
 	}
 
+	public MoveComparator(TwoPlayerStrategy strat, boolean reverse) {
+		this.strat = strat;
+		this.reverse = reverse;
+	}
+	
 	@Override
 	public int compare(IGameNode arg0, IGameNode arg1) {
 		// arg0 is better than arg1, if the value in the hash is either better, or more reliable.
@@ -65,15 +71,15 @@ public class MoveComparator implements Comparator<IGameNode>{
 			return 0;
 		} else {
 			if(v0.getGoalArray()[strat.getPlayerNumber()] > v1.getGoalArray()[strat.getPlayerNumber()])
-				return -1;
+				return (reverse) ? 1 : -1;
 			if(v0.getGoalArray()[strat.getPlayerNumber()] < v1.getGoalArray()[strat.getPlayerNumber()])
-				return 1;
+				return (reverse) ? -1 : 1;
 			else
 				return 0;
 		}
 	}
 
-	return -val0.compareTo(val1);
+	return (reverse) ? -val0.compareTo(val1) : -val0.compareTo(val1);
 	}
 
 	
