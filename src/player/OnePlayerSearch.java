@@ -45,7 +45,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 	private OnePlayerHeuristic heuristic;
 
 	public void setFirstEndTime(long endTime) {
-		this.endTime = endTime - 600;
+		this.endTime = endTime - 1500;
 	}
 
 	public String getStepCounter() {
@@ -62,7 +62,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 
 		try {
 			// simulate for half of the time, then use the experience to search
-			while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*600 && !foundSolution) {
+			while(System.currentTimeMillis() < endTime-initMatch.getStartTime()*500 && !foundSolution) {
 				simulateGame(game.getTree().getRootNode());
 			}
 			for(String fluent : domainSizes.keySet()) {
@@ -90,7 +90,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 		/*
 		 * return the head element of currentWay and remove it from the list
 		 */
-		if(Runtime.getRuntime().freeMemory() < 100*1024*1024) {
+		if(Runtime.getRuntime().freeMemory() < 200*1024*1024) {
 			visitedStates.clear();
 			values.clear();
 		}
@@ -223,7 +223,10 @@ public class OnePlayerSearch extends AbstractStrategy {
 		
 		nodesVisited++;
 
-		
+		if(System.currentTimeMillis() >= endTime+1000) {
+			// It's getting critical!
+			throw new InterruptedException();
+		}
 		if (System.currentTimeMillis() >= endTime || Runtime.getRuntime().freeMemory() < 200*1024*1024) {
 			visitedStates.clear();
 			if(values.get(makeKeyString(node.getState())) == null)

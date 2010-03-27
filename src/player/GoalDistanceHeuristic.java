@@ -109,6 +109,7 @@ public class GoalDistanceHeuristic implements IHeuristic {
 					fulfilled++;*/
 			}
 		}
+		if(count == 0) return 0;
 		Float f = new Float(((new Float(fulfilled))/(new Float(count))*100.0));
 		int value = Math.round(f);
 		

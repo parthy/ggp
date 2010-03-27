@@ -160,7 +160,7 @@ public class RuleOptimizer {
 			boolean foundSomething = true;
 			while(foundSomething) {
 				foundSomething = false;
-				boolean found = head.matches("\\(goal (.*) 100\\)");
+				boolean found = head.matches("\\(.* 100\\)");
 				if(found) {
 					// walk through all goal rules and collect positive as well as negative ones
 					for(String r : body) {
@@ -292,7 +292,8 @@ public class RuleOptimizer {
 		boolean foundSomething = true;
 		while(foundSomething) {
 			foundSomething = false;
-			boolean found = head.matches("\\(goal (.*) 100\\)");
+			// We consider all with a 100 in it as goal rule that gives us 100 points. Can't be that wrong.
+			boolean found = head.matches("\\(.* 100\\)");
 			if(found) {
 				// walk through all goal rules and collect positive as well as negative ones
 				for(String r : body) {
