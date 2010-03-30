@@ -351,7 +351,7 @@ public class MultiPlayerStrategy extends AbstractStrategy {
 				return game.getRandomMove(arg0)[playerNumber];
 			
 			IGameNode best = childs.peek();
-			if(best == null || best.getMoves()[playerNumber].toString().equals(this.noop_name)) { // we didn't find anything.. (actually not possible)
+			if(best == null || best.getMoves()[playerNumber].getMove().equals(this.noop_name)) { // we didn't find anything.. (actually not possible)
 				return game.getRandomMove(arg0)[playerNumber];
 			}
 			return best.getMoves()[playerNumber];
