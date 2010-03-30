@@ -6,6 +6,7 @@ package player;
 
 //package src.de.tudresden.inf.ggp.basicplayer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -514,6 +515,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
                 	return child.getMoves()[playerNumber];
                 
                 value = new Float(evaluateNode(child));
+             //   System.out.println("Move "+Arrays.toString(move)+" has value "+value);
 
                 line.add(value);
             }
@@ -524,7 +526,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				break;
 			}
         }
-        //System.out.println("P: " + problem);
+        System.out.println("P: " + problem);
         Float gameValue = 0f;
         LinkedList<Float> moves = new LinkedList<Float>();        
         try{
@@ -538,7 +540,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
         
         // choose the move randomly
         int rand = random.nextInt(1000);
-        //System.out.println("move values: " + moves);
+        System.out.println("move values: " + moves);
         Float currentSpace = 0f;
         IMove move2 = null;
         for (int i = 0; i < moves.size(); i++) {
@@ -548,7 +550,7 @@ public class TwoPlayerStrategy extends AbstractStrategy {
 				break;
 			}
 
-            if ((moves.get(i) >= 0f) && moves.get(i) <= 1f) {
+            if ((moves.get(i) >= 0f) && moves.get(i) <= 1.1f) {
                 System.out.println("Possible Move: " + myMoves[i] + " if (" + currentSpace + " <= " + rand + " < " + (currentSpace + moves.get(i) * 1000) + " ).");
                 if (move2 == null && (currentSpace <= rand) && (rand < (currentSpace + moves.get(i) * 1000))) {
                     move2 = myMoves[i];
