@@ -165,7 +165,7 @@ public class OnePlayerSearch extends AbstractStrategy {
 					IGameNode next = children.poll();
 					game.regenerateNode(next);
 					ValuesEntry val = values.get(makeKeyString(next.getState()));
-					if(val.getGoalArray()[0] <= curMaxGoal && currentWay.size() > 0) {
+					if(val != null && val.getGoalArray()[0] <= curMaxGoal && currentWay.size() > 0) {
 						System.out.println("Found nothing better, playing according to currently best solution.");
 						if(min_occs == Integer.MAX_VALUE) {
 							// We can not get any better. Stop looking for it. 
